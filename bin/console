@@ -1,0 +1,13 @@
+<?php
+
+require_once __DIR__.'/../vendor/autoload.php';
+
+$app = new Eole\Silex\Application(array(
+    'project.root' => dirname(__DIR__),
+    'env' => 'dev',
+    'debug' => true,
+));
+
+$console = new \Eole\Silex\Console($app);
+
+$console->run();

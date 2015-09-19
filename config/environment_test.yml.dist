@@ -1,0 +1,8 @@
+database:
+    connection:
+        driver:     pdo_sqlite
+        path:       var/eole_test.sqlite
+        user:       root
+        password:   ~
+        memory:     false
+        charset:    utf8

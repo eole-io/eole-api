@@ -1,0 +1,13 @@
+Eole\Core\Model\Player:
+    type: entity
+    repositoryClass: Eole\Core\Repository\PlayerRepository
+    table: eole_player
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        guest:
+            type: boolean
+            column: guest

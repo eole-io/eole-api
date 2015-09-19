@@ -1,0 +1,12 @@
+phpunit.xml
+config/environment.yml
+config/environment_*.yml
+composer.lock
+vendor/
+*~
+*.old
+var/*.sqlite
+var/logs/*
+!var/logs/.gitkeep
+var/cache/*
+!var/cache/.gitkeep

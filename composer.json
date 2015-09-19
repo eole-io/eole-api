@@ -1,0 +1,69 @@
+{
+    "name":         "eole/eole-api",
+    "license":      "MIT",
+    "type":         "library",
+    "description":  "Eole",
+    "homepage":     "https://github.com/alcalyn/eole-api",
+    "keywords":     ["silex", "user", "userprovider"],
+    "authors": [
+        {
+            "name": "Julien Maulny",
+            "email": "doubjulien@hotmail.fr"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.5",
+        "cube/composer-dist-installer": "~1.0@beta",
+        "alcalyn/elo": "~1.0.0",
+        "doctrine/dbal": "~2.0",
+        "doctrine/orm": "~2.0",
+        "symfony/yaml": "~2.0",
+        "symfony/security": "~2.0",
+        "symfony/http-kernel": "~2.0",
+        "symfony/http-foundation": "~2.0",
+        "symfony/console": "~2.0",
+        "silex/silex": "~2.0",
+        "alcalyn/symfony-wsse": "1.0.x",
+        "alcalyn/silex-wsse": "1.0.x",
+        "saxulum/saxulum-doctrine-orm-manager-registry-provider": "~3.0",
+        "cboden/ratchet": "dev-master"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.8.*",
+        "symfony/browser-kit": "^3.0@dev",
+        "symfony/process": "~2.0",
+        "symfony/css-selector": "^3.0@dev",
+        "squizlabs/php_codesniffer": "2.x"
+    },
+    "autoload": {
+        "psr-4": {
+            "Alcalyn\\UserApi\\": "src/Alcalyn/UserApi",
+            "Alcalyn\\DoctrineUserApi\\": "src/Alcalyn/DoctrineUserApi",
+            "Eole\\": "src/Eole",
+            "Alcalyn\\Wsse\\": "ext/symfony-wsse",
+            "Alcalyn\\SilexWsse\\": "ext/silex-wsse"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "Cube\\ComposerDistInstaller\\Bootstrap::install"
+        ],
+        "post-update-cmd": [
+            "Cube\\ComposerDistInstaller\\Bootstrap::install"
+        ],
+        "dump-dist": [
+            "Cube\\ComposerDistInstaller\\Bootstrap::install"
+        ]
+    },
+    "extra": {
+        "dist-installer-params": [
+            {
+                "file": "config/environment.yml"
+            },
+            {
+                "file": "config/environment_test.yml"
+            }
+        ]
+    }
+}
