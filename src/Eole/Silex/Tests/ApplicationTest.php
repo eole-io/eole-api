@@ -138,6 +138,25 @@ class ApplicationTest extends WebTestCase
         $this->assertContains('ROLE_PLAYER', $player->roles, 'Created player has role ROLE_PLAYER.');
     }
 
+    public function testCreatePlayerWithMissingArgumentReturnsBadRequest()
+    {
+        $client = $this->createClient();
+
+        $client->request('POST', '/api/players', array(
+            'username' => '',
+            'password' => 'test-pass',
+        ));
+
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $client->getResponse()->getStatusCode());
+
+        $client->request('POST', '/api/players', array(
+            'username' => 'test-user',
+            'password' => '',
+        ));
+
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $client->getResponse()->getStatusCode());
+    }
+
     public function testCreatePlayerTwiceReturnsConflictStatusCode()
     {
         $client = $this->createClient();

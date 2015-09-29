@@ -106,10 +106,22 @@ class UserController
         $username = $request->request->get('username');
         $password = $request->request->get('password');
 
+        if (empty($username)) {
+            throw new HttpException(JsonResponse::HTTP_BAD_REQUEST, 'Username cannot be empty.');
+        }
+
+        if (empty($password)) {
+            throw new HttpException(JsonResponse::HTTP_BAD_REQUEST, 'Password cannot be empty.');
+        }
+
         try {
             $user = $this->api->createUser($username, $password);
         } catch (DBALException $e) {
-            throw new HttpException(409, 'An user with username '.$username.' already exists.', $e);
+            throw new HttpException(
+                JsonResponse::HTTP_CONFLICT,
+                'An user with username '.$username.' already exists.',
+                $e
+            );
         }
 
         return new JsonResponse($user, JsonResponse::HTTP_CREATED);
