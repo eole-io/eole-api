@@ -1,11 +1,11 @@
 database:
     connection:
-        driver:     pdo_mysql
-        host:       localhost
-        dbname:     eole
-        user:       root
-        password:   ~
-        charset:    utf8
+        driver:     {{driver []?|pdo_mysql}}
+        host:       {{host []?|localhost}}
+        dbname:     {{dbname []?|eole}}
+        user:       {{user []?|root}}
+        password:   {{password []?|~}}
+        charset:    {{charset []?|utf8}}
 
 websocket:
     server:
