@@ -1,7 +1,6 @@
 phpunit.xml
 config/environment.yml
 config/environment_*.yml
-composer.lock
 vendor/
 *~
 *.old
