@@ -73,6 +73,7 @@ class User implements AdvancedUserInterface, \JsonSerializable
     {
         $this->enabled = true;
         $this->locked = false;
+        $this->emailVerified = false;
         $this->dateCreated = new \DateTime();
     }
 

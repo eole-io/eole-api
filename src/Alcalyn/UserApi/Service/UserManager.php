@@ -22,7 +22,7 @@ class UserManager
      * @param EncoderFactoryInterface $encoderFactory
      * @param string $userClass
      */
-    public function __construct(EncoderFactoryInterface $encoderFactory, $userClass = 'User')
+    public function __construct(EncoderFactoryInterface $encoderFactory, $userClass = 'Alcalyn\UserApi\Model\User')
     {
         $this->encoderFactory = $encoderFactory;
         $this->userClass = $userClass;
@@ -31,11 +31,10 @@ class UserManager
     /**
      * @param string $username
      * @param string $password
-     * @param array $fields
      *
      * @return User
      */
-    public function createUser($username, $password, array $fields = array())
+    public function createUser($username, $password)
     {
         $user = new $this->userClass();
 

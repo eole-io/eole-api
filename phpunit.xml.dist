@@ -5,5 +5,8 @@
         <testsuite name="Eole Silex test suite">
             <directory suffix="Test.php">./src/Eole/Silex/Tests/</directory>
         </testsuite>
+        <testsuite name="UserApi test suite">
+            <directory suffix="Test.php">./src/Alcalyn/UserApi/Tests/</directory>
+        </testsuite>
     </testsuites>
 </phpunit>
