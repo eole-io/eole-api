@@ -5,6 +5,7 @@ vendor/
 *~
 *.old
 var/*.sqlite
+var/*.sqlite-journal
 var/logs/*
 !var/logs/.gitkeep
 var/cache/*
