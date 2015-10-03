@@ -41,3 +41,6 @@ Alcalyn\UserApi\Model\User:
             type: datetime
             column: credentials_expires_at
             nullable: true
+        dateCreated:
+            type: datetime
+            column: date_created

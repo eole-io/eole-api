@@ -62,12 +62,18 @@ class User implements AdvancedUserInterface, \JsonSerializable
     protected $credentialsExpiresAt;
 
     /**
+     * @var \DateTime
+     */
+    protected $dateCreated;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
         $this->enabled = true;
         $this->locked = false;
+        $this->dateCreated = new \DateTime();
     }
 
     /**
@@ -291,6 +297,26 @@ class User implements AdvancedUserInterface, \JsonSerializable
     }
 
     /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->dateCreated;
+    }
+
+    /**
+     * @param \DateTime $dateCreated
+     *
+     * @return User
+     */
+    public function setDateCreated(\DateTime $dateCreated)
+    {
+        $this->dateCreated = $dateCreated;
+
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function jsonSerialize()
@@ -307,6 +333,7 @@ class User implements AdvancedUserInterface, \JsonSerializable
             'roles' => $roles,
             'enabled' => $this->getEnabled(),
             'salt' => $this->getSalt(),
+            'date_created' => $this->getDateCreated(),
         );
     }
 
