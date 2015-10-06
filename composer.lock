@@ -4,9 +4,51 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "408a13200283229f1f3983604bbae2d9",
-    "content-hash": "04afe8531145815ee8dd2d5b465b82a9",
+    "hash": "10cdc2ec8be63f01f724f4c0d4ce7acc",
     "packages": [
+        {
+            "name": "alcalyn/doctrine-user-api",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alcalyn/doctrine-user-api.git",
+                "reference": "9c5203aebb125d523157f0465cf815bb2ad6c610"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alcalyn/doctrine-user-api/zipball/9c5203aebb125d523157f0465cf815bb2ad6c610",
+                "reference": "9c5203aebb125d523157f0465cf815bb2ad6c610",
+                "shasum": ""
+            },
+            "require": {
+                "alcalyn/user-api": "~1.0",
+                "doctrine/orm": "~2.1",
+                "php": ">=5.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Alcalyn\\DoctrineUserApi\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Julien Maulny",
+                    "email": "doubjulien@hotmail.fr"
+                }
+            ],
+            "description": "User Api",
+            "homepage": "https://github.com/alcalyn/doctrine-user-api",
+            "keywords": [
+                "doctrine",
+                "user-management"
+            ],
+            "time": "2015-10-06 19:33:18"
+        },
         {
             "name": "alcalyn/elo",
             "version": "v1.0",
@@ -133,6 +175,53 @@
                 "wsse"
             ],
             "time": "2015-10-01 18:47:15"
+        },
+        {
+            "name": "alcalyn/user-api",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alcalyn/user-api.git",
+                "reference": "627aa3d11b16f9908e77da522c431d724ed9fe1d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alcalyn/user-api/zipball/627aa3d11b16f9908e77da522c431d724ed9fe1d",
+                "reference": "627aa3d11b16f9908e77da522c431d724ed9fe1d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3",
+                "symfony/console": "~2.0",
+                "symfony/http-foundation": "~2.0",
+                "symfony/http-kernel": "~2.0",
+                "symfony/security": "~2.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.8.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Alcalyn\\UserApi\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Julien Maulny",
+                    "email": "doubjulien@hotmail.fr"
+                }
+            ],
+            "description": "User Api",
+            "homepage": "https://github.com/alcalyn/user-api",
+            "keywords": [
+                "user-management"
+            ],
+            "time": "2015-10-06 19:32:20"
         },
         {
             "name": "cboden/ratchet",
@@ -1072,6 +1161,48 @@
             "time": "2014-05-01 21:36:02"
         },
         {
+            "name": "paragonie/random_compat",
+            "version": "1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paragonie/random_compat.git",
+                "reference": "456d84c8823207a18fb146c29f8b9e3aa0a9a31c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/456d84c8823207a18fb146c29f8b9e3aa0a9a31c",
+                "reference": "456d84c8823207a18fb146c29f8b9e3aa0a9a31c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "lib/random.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Paragon Initiative Enterprises",
+                    "email": "security@paragonie.com",
+                    "homepage": "https://paragonie.com"
+                }
+            ],
+            "description": "PHP 5.x polyfill for random_bytes() and random_int() from PHP 7",
+            "keywords": [
+                "csprng",
+                "pseudorandom",
+                "random"
+            ],
+            "time": "2015-10-02 22:19:38"
+        },
+        {
             "name": "pimple/pimple",
             "version": "dev-master",
             "source": {
@@ -1363,12 +1494,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/silexphp/Silex.git",
-                "reference": "ed42ae067bab529e80dbc5144b205902708b1b12"
+                "reference": "55b5c4e5bb92c62b2fa94c7c343570487665ecaa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/silexphp/Silex/zipball/ed42ae067bab529e80dbc5144b205902708b1b12",
-                "reference": "ed42ae067bab529e80dbc5144b205902708b1b12",
+                "url": "https://api.github.com/repos/silexphp/Silex/zipball/55b5c4e5bb92c62b2fa94c7c343570487665ecaa",
+                "reference": "55b5c4e5bb92c62b2fa94c7c343570487665ecaa",
                 "shasum": ""
             },
             "require": {
@@ -1438,7 +1569,7 @@
             "keywords": [
                 "microframework"
             ],
-            "time": "2015-10-01 20:28:04"
+            "time": "2015-10-03 15:45:08"
         },
         {
             "name": "symfony/console",
@@ -1446,12 +1577,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "b44dcb71e14cec5484c7224a104976b7d541336e"
+                "reference": "e7e8b85e1018eda3a0dab51d8dc37fd112f90ddb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/b44dcb71e14cec5484c7224a104976b7d541336e",
-                "reference": "b44dcb71e14cec5484c7224a104976b7d541336e",
+                "url": "https://api.github.com/repos/symfony/console/zipball/e7e8b85e1018eda3a0dab51d8dc37fd112f90ddb",
+                "reference": "e7e8b85e1018eda3a0dab51d8dc37fd112f90ddb",
                 "shasum": ""
             },
             "require": {
@@ -1495,7 +1626,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2015-10-01 15:32:55"
+            "time": "2015-10-06 17:12:59"
         },
         {
             "name": "symfony/debug",
@@ -1503,12 +1634,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/debug.git",
-                "reference": "a4d227fc8993061f251a22b8bf20342c1f61e55a"
+                "reference": "a688bc1aeeb53ee4ed16b8f28de6768fdb8931fc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/debug/zipball/a4d227fc8993061f251a22b8bf20342c1f61e55a",
-                "reference": "a4d227fc8993061f251a22b8bf20342c1f61e55a",
+                "url": "https://api.github.com/repos/symfony/debug/zipball/a688bc1aeeb53ee4ed16b8f28de6768fdb8931fc",
+                "reference": "a688bc1aeeb53ee4ed16b8f28de6768fdb8931fc",
                 "shasum": ""
             },
             "require": {
@@ -1550,7 +1681,7 @@
             ],
             "description": "Symfony Debug Component",
             "homepage": "https://symfony.com",
-            "time": "2015-09-29 12:32:55"
+            "time": "2015-10-02 16:37:57"
         },
         {
             "name": "symfony/event-dispatcher",
@@ -1669,12 +1800,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-kernel.git",
-                "reference": "52627cda8927f3e69498ecf5c97a9e3b32f99bb0"
+                "reference": "fb474d7bd639275b86f22c07274cf67fc1d4ffe1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-kernel/zipball/52627cda8927f3e69498ecf5c97a9e3b32f99bb0",
-                "reference": "52627cda8927f3e69498ecf5c97a9e3b32f99bb0",
+                "url": "https://api.github.com/repos/symfony/http-kernel/zipball/fb474d7bd639275b86f22c07274cf67fc1d4ffe1",
+                "reference": "fb474d7bd639275b86f22c07274cf67fc1d4ffe1",
                 "shasum": ""
             },
             "require": {
@@ -1741,7 +1872,7 @@
             ],
             "description": "Symfony HttpKernel Component",
             "homepage": "https://symfony.com",
-            "time": "2015-09-30 11:38:06"
+            "time": "2015-10-06 17:12:59"
         },
         {
             "name": "symfony/property-access",
@@ -1749,12 +1880,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/property-access.git",
-                "reference": "371b98c0beded81b47a33f2d2deadf2384d3931d"
+                "reference": "5084bfbc8dfab96c565c7de70f08e2c9fde7e971"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/property-access/zipball/371b98c0beded81b47a33f2d2deadf2384d3931d",
-                "reference": "371b98c0beded81b47a33f2d2deadf2384d3931d",
+                "url": "https://api.github.com/repos/symfony/property-access/zipball/5084bfbc8dfab96c565c7de70f08e2c9fde7e971",
+                "reference": "5084bfbc8dfab96c565c7de70f08e2c9fde7e971",
                 "shasum": ""
             },
             "require": {
@@ -1801,7 +1932,7 @@
                 "property path",
                 "reflection"
             ],
-            "time": "2015-09-29 14:08:28"
+            "time": "2015-10-05 15:24:55"
         },
         {
             "name": "symfony/routing",
@@ -1881,15 +2012,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/security.git",
-                "reference": "c2d213d3f64a1c7cfaa226626687cce57cb64ba8"
+                "reference": "5d74e1996313fc483fed9d4040acfa7f7b4fd297"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/security/zipball/c2d213d3f64a1c7cfaa226626687cce57cb64ba8",
-                "reference": "c2d213d3f64a1c7cfaa226626687cce57cb64ba8",
+                "url": "https://api.github.com/repos/symfony/security/zipball/5d74e1996313fc483fed9d4040acfa7f7b4fd297",
+                "reference": "5d74e1996313fc483fed9d4040acfa7f7b4fd297",
                 "shasum": ""
             },
             "require": {
+                "paragonie/random_compat": "~1.0",
                 "php": ">=5.3.9",
                 "symfony/event-dispatcher": "~2.2|~3.0.0",
                 "symfony/http-foundation": "~2.1|~3.0.0",
@@ -1909,6 +2041,7 @@
                 "ircmaxell/password-compat": "~1.0",
                 "psr/log": "~1.0",
                 "symfony/expression-language": "~2.6|~3.0.0",
+                "symfony/finder": "~2.3|~3.0.0",
                 "symfony/intl": "~2.3|~3.0.0",
                 "symfony/ldap": "~2.8|~3.0.0",
                 "symfony/phpunit-bridge": "~2.7|~3.0.0",
@@ -1918,7 +2051,6 @@
             },
             "suggest": {
                 "ircmaxell/password-compat": "For using the BCrypt password encoder in PHP <5.5",
-                "paragonie/random_compat": "",
                 "symfony/class-loader": "For using the ACL generateSql script",
                 "symfony/expression-language": "For using the expression voter",
                 "symfony/finder": "For using the ACL generateSql script",
@@ -1954,7 +2086,7 @@
             ],
             "description": "Symfony Security Component",
             "homepage": "https://symfony.com",
-            "time": "2015-10-01 06:20:17"
+            "time": "2015-10-06 18:09:25"
         },
         {
             "name": "symfony/security-acl",
@@ -2020,12 +2152,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "b0a34de3306a4a5392b6d13f188d9e4bfc2ed714"
+                "reference": "36ddab7971364b20229155cd972631a2257d7dac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/b0a34de3306a4a5392b6d13f188d9e4bfc2ed714",
-                "reference": "b0a34de3306a4a5392b6d13f188d9e4bfc2ed714",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/36ddab7971364b20229155cd972631a2257d7dac",
+                "reference": "36ddab7971364b20229155cd972631a2257d7dac",
                 "shasum": ""
             },
             "require": {
@@ -2061,7 +2193,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2015-10-02 06:55:39"
+            "time": "2015-10-02 12:38:01"
         }
     ],
     "packages-dev": [
@@ -2234,12 +2366,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "ef1ca6835468857944d5c3b48fa503d5554cff2f"
+                "reference": "eabf68b476ac7d0f73793aada060f1c1a9bf8979"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/ef1ca6835468857944d5c3b48fa503d5554cff2f",
-                "reference": "ef1ca6835468857944d5c3b48fa503d5554cff2f",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/eabf68b476ac7d0f73793aada060f1c1a9bf8979",
+                "reference": "eabf68b476ac7d0f73793aada060f1c1a9bf8979",
                 "shasum": ""
             },
             "require": {
@@ -2288,7 +2420,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2015-09-14 06:51:16"
+            "time": "2015-10-06 15:47:00"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -2474,12 +2606,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "4ecd63c4e88c8eb77d8a93e76e3c5936ec5c3a04"
+                "reference": "43f0f64a10e76b7c49b1f1ad5676f60b081b11f1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/4ecd63c4e88c8eb77d8a93e76e3c5936ec5c3a04",
-                "reference": "4ecd63c4e88c8eb77d8a93e76e3c5936ec5c3a04",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/43f0f64a10e76b7c49b1f1ad5676f60b081b11f1",
+                "reference": "43f0f64a10e76b7c49b1f1ad5676f60b081b11f1",
                 "shasum": ""
             },
             "require": {
@@ -2538,7 +2670,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2015-10-02 08:18:49"
+            "time": "2015-10-06 11:10:54"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -3103,12 +3235,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/css-selector.git",
-                "reference": "6849837969ac3f2d7a02773f19a8f48f305489bf"
+                "reference": "d069207d1665968bef930981a4df89b07b47460b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/css-selector/zipball/6849837969ac3f2d7a02773f19a8f48f305489bf",
-                "reference": "6849837969ac3f2d7a02773f19a8f48f305489bf",
+                "url": "https://api.github.com/repos/symfony/css-selector/zipball/d069207d1665968bef930981a4df89b07b47460b",
+                "reference": "d069207d1665968bef930981a4df89b07b47460b",
                 "shasum": ""
             },
             "require": {
@@ -3148,7 +3280,7 @@
             ],
             "description": "Symfony CssSelector Component",
             "homepage": "https://symfony.com",
-            "time": "2015-09-30 12:48:33"
+            "time": "2015-10-02 12:29:10"
         },
         {
             "name": "symfony/dom-crawler",
@@ -3156,12 +3288,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dom-crawler.git",
-                "reference": "3936a5e58d110c6898552d35f275f5374043af27"
+                "reference": "88d17aa9d3fb266b6a2827b2cc599bc9d397b775"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/3936a5e58d110c6898552d35f275f5374043af27",
-                "reference": "3936a5e58d110c6898552d35f275f5374043af27",
+                "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/88d17aa9d3fb266b6a2827b2cc599bc9d397b775",
+                "reference": "88d17aa9d3fb266b6a2827b2cc599bc9d397b775",
                 "shasum": ""
             },
             "require": {
@@ -3201,7 +3333,7 @@
             ],
             "description": "Symfony DomCrawler Component",
             "homepage": "https://symfony.com",
-            "time": "2015-09-30 12:30:29"
+            "time": "2015-10-06 07:31:12"
         },
         {
             "name": "symfony/process",
@@ -3209,12 +3341,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "6f73f6b561bf3c56d18806305e50dd852709e907"
+                "reference": "69d7a410cf97857296f62f662105db4101fabdc5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/6f73f6b561bf3c56d18806305e50dd852709e907",
-                "reference": "6f73f6b561bf3c56d18806305e50dd852709e907",
+                "url": "https://api.github.com/repos/symfony/process/zipball/69d7a410cf97857296f62f662105db4101fabdc5",
+                "reference": "69d7a410cf97857296f62f662105db4101fabdc5",
                 "shasum": ""
             },
             "require": {
@@ -3250,7 +3382,7 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "https://symfony.com",
-            "time": "2015-09-29 12:32:55"
+            "time": "2015-10-06 17:12:59"
         }
     ],
     "aliases": [],

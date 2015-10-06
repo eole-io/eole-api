@@ -39,11 +39,11 @@
     },
     "autoload": {
         "psr-4": {
-            "Alcalyn\\UserApi\\": "src/Alcalyn/UserApi",
-            "Alcalyn\\DoctrineUserApi\\": "src/Alcalyn/DoctrineUserApi",
             "Eole\\": "src/Eole",
             "Alcalyn\\Wsse\\": "ext/symfony-wsse",
-            "Alcalyn\\SilexWsse\\": "ext/silex-wsse"
+            "Alcalyn\\SilexWsse\\": "ext/silex-wsse",
+            "Alcalyn\\UserApi\\": "ext/user-api",
+            "Alcalyn\\DoctrineUserApi\\": "ext/doctrine-user-api"
         }
     },
     "scripts": {

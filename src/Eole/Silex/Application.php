@@ -153,7 +153,7 @@ class Application extends BaseApplication
                     array(
                         'type' => 'yml',
                         'namespace' => 'Alcalyn\UserApi\Model',
-                        'path' => $this['project.root'].'/src/Alcalyn/DoctrineUserApi/Mapping',
+                        'path' => $this['project.root'].'/vendor/alcalyn/doctrine-user-api/Mapping',
                     ),
                     array(
                         'type' => 'yml',
