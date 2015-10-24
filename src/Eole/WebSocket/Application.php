@@ -8,13 +8,13 @@ use Ratchet\Wamp\WampServerInterface;
 class Application implements WampServerInterface
 {
     /**
-     * @var ApplicationTopicInterface[]
+     * @var ApplicationTopic[]
      */
     private $topics;
 
-    public function addApplicationTopic($path, ApplicationTopicInterface $topic)
+    public function addApplicationTopic(ApplicationTopic $topic)
     {
-        $this->topics[$path] = $topic;
+        $this->topics[$topic->getId()] = $topic;
     }
 
     public function onOpen(ConnectionInterface $conn)

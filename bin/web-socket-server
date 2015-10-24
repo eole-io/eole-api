@@ -19,7 +19,7 @@ $silexApp = new SilexApplication(array(
 
 $wsApp = new WebSocketApplication();
 
-$wsApp->addApplicationTopic('eole/core/chat', new Eole\WebSocket\Chat('eole/core/chat'));
+$wsApp->addApplicationTopic(new Eole\WebSocket\Chat('eole/core/chat'));
 
 $address = '0.0.0.0';
 $port = 8080;
