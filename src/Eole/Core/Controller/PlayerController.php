@@ -34,9 +34,11 @@ class PlayerController extends UserController
      *
      * @return JsonResponse
      */
-    public function postGuest()
+    public function postGuest(Request $request)
     {
-        $guest = $this->api->createGuest();
+        $password = $request->request->get('password');
+
+        $guest = $this->api->createGuest($password);
 
         return new JsonResponse($guest, JsonResponse::HTTP_CREATED);
     }

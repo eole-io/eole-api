@@ -11,19 +11,26 @@ use Eole\WebSocket\Application as WebSocketApplication;
 
 echo 'Initialization...'.PHP_EOL;
 
+// Create Eole silex application
 $silexApp = new SilexApplication(array(
     'project.root' => dirname(__DIR__),
     'env' => 'dev',
     'debug' => true,
 ));
 
-$wsApp = new WebSocketApplication();
+$silexApp['websocket.topics'] = function () {
+    return array(
+        new Eole\WebSocket\Chat('eole/core/chat'),
+    );
+};
 
-$wsApp->addApplicationTopic(new Eole\WebSocket\Chat('eole/core/chat'));
+// Create Eole websocket application
+$wsApp = new WebSocketApplication($silexApp);
 
 $address = '0.0.0.0';
 $port = 8080;
 
+// Create websocket server
 $server = IoServer::factory(new HttpServer(new WsServer(new ServerProtocol($wsApp))), $port, $address);
 
 echo 'Running websocket server...'.PHP_EOL;

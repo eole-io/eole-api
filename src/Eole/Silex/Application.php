@@ -107,6 +107,8 @@ class Application extends BaseApplication
                 $this['orm.em']->getRepository('Eole:Player')
             );
         };
+
+        $this['eole.user_provider'] = $userProvider;
     }
 
     /*
