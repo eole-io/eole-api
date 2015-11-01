@@ -2,6 +2,7 @@
 
 namespace Eole\WebSocket;
 
+use Alcalyn\Wsse\Security\Authentication\Token\WsseUserToken;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\WampServerInterface;
 use Eole\Silex\Application as SilexApplication;
@@ -31,34 +32,67 @@ class Application implements WampServerInterface
         }
     }
 
-    public function onOpen(ConnectionInterface $conn)
+    /**
+     * @param ConnectionInterface $conn
+     *
+     * @return \Eole\Core\Model\Player
+     *
+     * @throws \Symfony\Component\Security\Core\Exception\AuthenticationException
+     * @throws \Exception
+     */
+    private function authenticatePlayer(ConnectionInterface $conn)
     {
-        $wsseToken = $conn->WebSocket->request->getQuery()->get('wsse_token');
+        $wsseTokenRaw = $conn->WebSocket->request->getQuery()->get('wsse_token');
 
-        if (null === $wsseToken) {
-            $reason = 'Closing because missing Wsse token.';
-            $conn->send($reason);
-            echo $reason.PHP_EOL;
-            $conn->close();
+        if (null === $wsseTokenRaw) {
+            throw new \Exception('Missing Wsse token in query.');
         }
 
         $tokenValidator = $this->silexApp['security.wsse.token_validator'];
         $userProvider = $this->silexApp['eole.user_provider'];
 
-        // Authenticate user from Wsse token, or close connection
+        $wsseTokenObject = json_decode(base64_decode($wsseTokenRaw));
 
+        $wsseToken = new WsseUserToken();
+        $wsseToken->created = $wsseTokenObject->created;
+        $wsseToken->digest = $wsseTokenObject->digest;
+        $wsseToken->nonce = $wsseTokenObject->nonce;
+
+        $player = $userProvider->loadUserByUsername($wsseTokenObject->username);
+
+        $tokenValidator->validateDigest($wsseToken, $player);
+
+        return $player;
+    }
+
+    public function onOpen(ConnectionInterface $conn)
+    {
         echo __METHOD__.PHP_EOL;
+
+        try {
+            $player = $this->authenticatePlayer($conn);
+        } catch (\Exception $e) {
+            echo $e->getMessage().PHP_EOL;
+            $conn->send(json_encode('Could not authenticate client, closing connection.'));
+            $conn->close();
+
+            return;
+        }
+
+        $conn->player = $player;
     }
 
     public function onSubscribe(ConnectionInterface $conn, $topic)
     {
         echo __METHOD__.PHP_EOL;
+
         $this->topics[$topic]->onSubscribe($conn, $topic);
     }
 
     public function onPublish(ConnectionInterface $conn, $topic, $event, array $exclude, array $eligible)
     {
         echo __METHOD__.PHP_EOL;
+
         $this->topics[$topic]->onPublish($conn, $topic, $event, $exclude, $eligible);
     }
 
@@ -80,6 +114,6 @@ class Application implements WampServerInterface
 
     public function onError(ConnectionInterface $conn, \Exception $e)
     {
-        echo __METHOD__.PHP_EOL;
+        echo __METHOD__.' '.$e->getMessage().PHP_EOL;
     }
 }

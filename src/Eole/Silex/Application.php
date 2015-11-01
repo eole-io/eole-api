@@ -101,6 +101,10 @@ class Application extends BaseApplication
             ),
         ));
 
+        $this['security.encoder.digest'] = function () {
+            return new \Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder('sha512', true, 42);
+        };
+
         $this['eole.player_api'] = function () {
             return new \Eole\Core\Service\PlayerApi(
                 $this['eole.player_manager'],
