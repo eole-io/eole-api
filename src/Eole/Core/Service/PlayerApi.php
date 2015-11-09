@@ -24,12 +24,17 @@ class PlayerApi extends DoctrineApi
     /**
      * Generate a guest.
      *
+     * @param string $password
+     *
      * @return Player
      */
-    public function createGuest()
+    public function createGuest($password = null)
     {
         $username = $this->generateGuestPseudo();
-        $password = 'password';
+
+        if (null === $password) {
+            $password = md5(mt_rand());
+        }
 
         $guest = $this->userManager->createUser($username, $password);
         $guest->setGuest(true);

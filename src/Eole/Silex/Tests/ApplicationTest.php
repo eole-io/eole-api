@@ -216,6 +216,33 @@ class ApplicationTest extends WebTestCase
         $this->assertNotEquals($guests[0]->username, $guests[1]->username, 'Comparing guests usernames.');
     }
 
+    public function testCreateGuestUseProvidedPasswordIfAny()
+    {
+        $client = $this->createClient();
+
+        $client->request('POST', '/api/players/guest', array(
+            'provided-password',
+        ));
+
+        $this->assertEquals(Response::HTTP_CREATED, $client->getResponse()->getStatusCode());
+
+        $guest = json_decode($client->getResponse()->getContent());
+
+        $this->assertObjectHasAttribute('id', $guest);
+        $this->assertObjectHasAttribute('username', $guest);
+        $this->assertObjectHasAttribute('guest', $guest);
+
+        $this->assertTrue($guest->guest, 'Guest field is set to true.');
+
+        $client->request('GET', '/api/players/'.$guest->username);
+
+        $guestRetrieved = json_decode($client->getResponse()->getContent());
+
+        $this->assertEquals($guestRetrieved, $guest);
+
+        // Todo check whether password is provided password
+    }
+
     public function testAuthMeCanAuthenticateCreatedGuest()
     {
         $client = $this->createClient();
