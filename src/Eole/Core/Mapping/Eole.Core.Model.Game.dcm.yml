@@ -1,0 +1,14 @@
+Eole\Core\Model\Game:
+    type: entity
+    repositoryClass: Eole\Core\Repository\GameRepository
+    table: eole_game
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            column: name
+            length: 31
