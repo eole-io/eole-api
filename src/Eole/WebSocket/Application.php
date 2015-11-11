@@ -27,7 +27,8 @@ class Application implements WampServerInterface
         $this->silexApp = $silexApp;
         $this->topics = array();
 
-        foreach ($silexApp['websocket.topics'] as $topic) {
+        foreach ($silexApp->findTaggedServiceIds('websocket.topic') as $serviceId) {
+            $topic = $silexApp[$serviceId];
             $this->topics[$topic->getId()] = $topic;
         }
     }

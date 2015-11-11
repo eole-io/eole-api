@@ -4,11 +4,14 @@ namespace Eole\Silex;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Silex\Application as BaseApplication;
+use Alcalyn\Pimple\TaggedServicesTrait;
 use Alcalyn\Wsse\Security\Authentication\Provider\PasswordDigestValidator;
 use Alcalyn\SilexWsse\Provider\WsseServiceProvider;
 
 class Application extends BaseApplication
 {
+    use TaggedServicesTrait;
+
     /**
      * {@InheritDoc}
      */

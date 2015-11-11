@@ -43,7 +43,8 @@
             "Alcalyn\\Wsse\\": "ext/symfony-wsse",
             "Alcalyn\\SilexWsse\\": "ext/silex-wsse",
             "Alcalyn\\UserApi\\": "ext/user-api",
-            "Alcalyn\\DoctrineUserApi\\": "ext/doctrine-user-api"
+            "Alcalyn\\DoctrineUserApi\\": "ext/doctrine-user-api",
+            "Alcalyn\\": "src/Alcalyn"
         }
     },
     "scripts": {
