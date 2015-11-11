@@ -8,5 +8,8 @@
         <testsuite name="UserApi test suite">
             <directory suffix="Test.php">./src/Alcalyn/UserApi/Tests/</directory>
         </testsuite>
+        <testsuite name="TaggedServicesTrait test suite">
+            <directory suffix="Test.php">./src/Alcalyn/Pimple/Tests/</directory>
+        </testsuite>
     </testsuites>
 </phpunit>
