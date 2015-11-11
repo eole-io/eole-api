@@ -197,6 +197,12 @@ class Application extends BaseApplication
             );
         };
 
+        $this['eole.controller.game'] = function () {
+            return new \Eole\Core\Controller\GameController(
+                $this['orm.em']->getRepository('Eole:Game')
+            );
+        };
+
         $this->before(function (\Symfony\Component\HttpFoundation\Request $request, BaseApplication $app) {
             if (null !== $app['user']) {
                 $app['eole.controller.player']->setLoggedUser($app['user']);
@@ -210,6 +216,7 @@ class Application extends BaseApplication
     private function mountApi()
     {
         $this->mount('api', new ControllerProvider\PlayerControllerProvider());
+        $this->mount('api', new ControllerProvider\GameControllerProvider());
     }
 
     /**

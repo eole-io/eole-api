@@ -5,6 +5,7 @@ namespace Eole\Silex\Tests;
 use Symfony\Component\HttpFoundation\Response;
 use Silex\WebTestCase;
 use Eole\Core\Model\Player;
+use Eole\Core\Model\Game;
 use Eole\Core\Service\PlayerManager;
 use Eole\Silex\Application;
 
@@ -43,11 +44,20 @@ class ApplicationTest extends WebTestCase
         $this->playerManager = $this->app['eole.player_manager'];
 
         $this->app['db']->executeQuery('delete from eole_player');
+        $this->app['db']->executeQuery('delete from eole_game');
 
         $player = new Player();
         $player->setUsername('existing-player');
         $this->playerManager->updatePassword($player, 'good-password');
 
+        $game0 = new Game();
+        $game0->setName('game-0');
+
+        $game1 = new Game();
+        $game1->setName('game-1');
+
+        $this->app['orm.em']->persist($game0);
+        $this->app['orm.em']->persist($game1);
         $this->app['orm.em']->persist($player);
         $this->app['orm.em']->flush();
     }
@@ -345,6 +355,39 @@ class ApplicationTest extends WebTestCase
         ));
 
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $client->getResponse()->getStatusCode());
+    }
+
+    public function testGetGames()
+    {
+        $client = $this->createClient();
+
+        $client->request('GET', '/api/games');
+
+        $this->assertTrue($client->getResponse()->isSuccessful(), 'Response is successful');
+
+        $games = json_decode($client->getResponse()->getContent());
+
+        $this->assertCount(2, $games);
+
+        $this->assertObjectHasAttribute('id', $games[0]);
+        $this->assertObjectHasAttribute('name', $games[0]);
+        $this->assertObjectHasAttribute('id', $games[1]);
+        $this->assertObjectHasAttribute('name', $games[1]);
+    }
+
+    public function testGetGameByNameReturnsExpectedGame()
+    {
+        $client = $this->createClient();
+
+        $client->request('GET', '/api/games/game-0');
+
+        $this->assertTrue($client->getResponse()->isSuccessful(), 'Response is successful');
+
+        $game = json_decode($client->getResponse()->getContent());
+
+        $this->assertObjectHasAttribute('id', $game);
+        $this->assertObjectHasAttribute('name', $game);
+        $this->assertEquals('game-0', $game->name);
     }
 
     public function testChangePassword()
