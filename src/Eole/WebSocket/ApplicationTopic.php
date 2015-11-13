@@ -9,7 +9,7 @@ abstract class ApplicationTopic extends Topic
 {
     public function onSubscribe(WampConnection $conn, $topic)
     {
-        $this->subscribers[$conn] = $conn;
+        $this->subscribers []= $conn;
     }
 
     public function onPublish(WampConnection $conn, $topic, $event)
