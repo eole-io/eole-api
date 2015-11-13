@@ -1,3 +1,4 @@
+composer.lock
 phpunit.xml
 config/environment.yml
 config/environment_*.yml

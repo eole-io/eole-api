@@ -48,12 +48,6 @@
         }
     },
     "scripts": {
-        "post-install-cmd": [
-            "Cube\\ComposerDistInstaller\\Bootstrap::install"
-        ],
-        "post-update-cmd": [
-            "Cube\\ComposerDistInstaller\\Bootstrap::install"
-        ],
         "dump-dist": [
             "Cube\\ComposerDistInstaller\\Bootstrap::install"
         ]
