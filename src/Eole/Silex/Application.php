@@ -190,6 +190,12 @@ class Application extends BaseApplication
             );
         };
 
+        $this['eole.converter.game'] = function () {
+            return new \Eole\Core\Converter\GameConverter(
+                $this['orm.em']->getRepository('Eole:Game')
+            );
+        };
+
         $this['eole.controller.player'] = function () {
             return new \Eole\Core\Controller\PlayerController(
                 $this['eole.player_api'],
@@ -200,6 +206,13 @@ class Application extends BaseApplication
         $this['eole.controller.game'] = function () {
             return new \Eole\Core\Controller\GameController(
                 $this['orm.em']->getRepository('Eole:Game')
+            );
+        };
+
+        $this['eole.controller.party'] = function () {
+            return new \Eole\Core\Controller\PartyController(
+                $this['orm.em']->getRepository('Eole:Party'),
+                $this['orm.em']
             );
         };
 
@@ -217,6 +230,7 @@ class Application extends BaseApplication
     {
         $this->mount('api', new ControllerProvider\PlayerControllerProvider());
         $this->mount('api', new ControllerProvider\GameControllerProvider());
+        $this->mount('api', new ControllerProvider\PartyControllerProvider());
     }
 
     /**

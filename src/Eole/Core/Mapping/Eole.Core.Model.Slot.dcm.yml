@@ -1,0 +1,15 @@
+Eole\Core\Model\Slot:
+    type: entity
+    repositoryClass: Eole\Core\Repository\SlotRepository
+    table: eole_slot
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    manyToOne:
+        player:
+            targetEntity: Eole\Core\Model\Player
+        party:
+            targetEntity: Eole\Core\Model\Party
+            inversedBy: slots

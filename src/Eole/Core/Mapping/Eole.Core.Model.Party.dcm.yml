@@ -1,0 +1,16 @@
+Eole\Core\Model\Party:
+    type: entity
+    repositoryClass: Eole\Core\Repository\PartyRepository
+    table: eole_party
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    manyToOne:
+        game:
+            targetEntity: Eole\Core\Model\Game
+    oneToMany:
+        slots:
+            targetEntity: Eole\Core\Model\Slot
+            mappedBy: party
