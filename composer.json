@@ -11,7 +11,7 @@
             "email": "doubjulien@hotmail.fr"
         }
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "require": {
         "php": ">=5.5",
         "cube/composer-dist-installer": "~1.0@beta",
@@ -23,18 +23,18 @@
         "symfony/http-kernel": "~2.0",
         "symfony/http-foundation": "~2.0",
         "symfony/console": "~2.0",
-        "silex/silex": "~2.0",
+        "silex/silex": "~2.0@dev",
         "alcalyn/symfony-wsse": "1.0.x",
         "alcalyn/silex-wsse": "1.0.x",
         "alcalyn/doctrine-user-api": "1.0.x",
         "saxulum/saxulum-doctrine-orm-manager-registry-provider": "~3.0",
-        "cboden/ratchet": "dev-master"
+        "cboden/ratchet": "~0.3"
     },
     "require-dev": {
         "phpunit/phpunit": "4.8.*",
-        "symfony/browser-kit": "^3.0@dev",
+        "symfony/browser-kit": "~2.0",
         "symfony/process": "~2.0",
-        "symfony/css-selector": "^3.0@dev",
+        "symfony/css-selector": "~2.0",
         "squizlabs/php_codesniffer": "2.x"
     },
     "autoload": {
