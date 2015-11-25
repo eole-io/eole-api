@@ -10,6 +10,8 @@ Eole\Core\Model\Party:
     manyToOne:
         game:
             targetEntity: Eole\Core\Model\Game
+        host:
+            targetEntity: Eole\Core\Model\Player
     oneToMany:
         slots:
             targetEntity: Eole\Core\Model\Slot

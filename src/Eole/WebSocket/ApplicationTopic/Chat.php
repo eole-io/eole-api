@@ -1,8 +1,9 @@
 <?php
 
-namespace Eole\WebSocket;
+namespace Eole\WebSocket\ApplicationTopic;
 
 use Ratchet\Wamp\WampConnection;
+use Eole\WebSocket\ApplicationTopic;
 
 class Chat extends ApplicationTopic
 {
@@ -18,8 +19,6 @@ class Chat extends ApplicationTopic
 
     public function onPublish(WampConnection $conn, $topic, $event)
     {
-        parent::onPublish($conn, $topic, $event);
-
         $this->broadcast([
             'type' => 'message',
             'player' => $conn->player,

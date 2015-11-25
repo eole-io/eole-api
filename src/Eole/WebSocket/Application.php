@@ -85,21 +85,21 @@ class Application implements WampServerInterface
 
     public function onSubscribe(ConnectionInterface $conn, $topic)
     {
-        echo __METHOD__.PHP_EOL;
+        echo __METHOD__.' '.$topic.PHP_EOL;
 
         $this->topics[$topic]->onSubscribe($conn, $topic);
     }
 
     public function onPublish(ConnectionInterface $conn, $topic, $event, array $exclude, array $eligible)
     {
-        echo __METHOD__.PHP_EOL;
+        echo __METHOD__.' '.$topic.PHP_EOL;
 
         $this->topics[$topic]->onPublish($conn, $topic, $event, $exclude, $eligible);
     }
 
     public function onUnSubscribe(ConnectionInterface $conn, $topic)
     {
-        echo __METHOD__.PHP_EOL;
+        echo __METHOD__.' '.$topic.PHP_EOL;
         $this->topics[$topic]->onUnSubscribe($conn, $topic);
     }
 

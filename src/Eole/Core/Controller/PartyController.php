@@ -3,14 +3,10 @@
 namespace Eole\Core\Controller;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Alcalyn\UserApi\Api\ApiInterface;
 use Eole\Core\Model\Game;
 use Eole\Core\Model\Party;
-use Eole\Core\Repository\GameRepository;
+use Eole\Core\Model\Player;
 use Eole\Core\Repository\PartyRepository;
 
 class PartyController
@@ -26,6 +22,13 @@ class PartyController
     private $om;
 
     /**
+     * Authenticated player
+     *
+     * @var Player|null
+     */
+    private $loggedPlayer;
+
+    /**
      * @param PartyRepository $partyRepository
      * @param ObjectManager $om
      */
@@ -33,6 +36,18 @@ class PartyController
     {
         $this->partyRepository = $partyRepository;
         $this->om = $om;
+    }
+
+    /**
+     * @param Player $player
+     *
+     * @return self
+     */
+    public function setLoggedPlayer(Player $player)
+    {
+        $this->loggedPlayer = $player;
+
+        return $this;
     }
 
     /**
@@ -68,7 +83,10 @@ class PartyController
     {
         $party = new Party();
 
-        $party->setGame($game);
+        $party
+            ->setGame($game)
+            ->setHost($this->loggedPlayer)
+        ;
 
         $this->om->persist($party);
         $this->om->flush();

@@ -19,10 +19,15 @@ $silexApp = new SilexApplication(array(
 ));
 
 $silexApp['eole.websocket_topic.chat'] = function () {
-    return new Eole\WebSocket\Chat('eole/core/chat');
+    return new Eole\WebSocket\ApplicationTopic\Chat('eole/core/chat');
+};
+
+$silexApp['eole.websocket_topic.game_parties'] = function () {
+    return new Eole\WebSocket\ApplicationTopic\GameParties('eole/core/parties');
 };
 
 $silexApp->tagService('websocket.topic', 'eole.websocket_topic.chat');
+$silexApp->tagService('websocket.topic', 'eole.websocket_topic.game_parties');
 
 // Create Eole websocket application
 $wsApp = new WebSocketApplication($silexApp);

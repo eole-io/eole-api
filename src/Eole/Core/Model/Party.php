@@ -15,6 +15,11 @@ class Party implements \JsonSerializable
     private $game;
 
     /**
+     * @var Player
+     */
+    private $host;
+
+    /**
      * @var Slot[]
      */
     private $slots;
@@ -56,6 +61,26 @@ class Party implements \JsonSerializable
     }
 
     /**
+     * @return Player
+     */
+    public function getHost()
+    {
+        return $this->host;
+    }
+
+    /**
+     * @param Player $player
+     *
+     * @return self
+     */
+    public function setHost(Player $player)
+    {
+        $this->host = $player;
+
+        return $this;
+    }
+
+    /**
      * @return Slot[]
      */
     public function getSlots()
@@ -71,6 +96,7 @@ class Party implements \JsonSerializable
         return array(
             'id' => $this->getId(),
             'game' => $this->getGame()->jsonSerialize(),
+            'host' => $this->getHost()->jsonSerialize(),
             'slots' => $this->getSlots(),
         );
     }
