@@ -190,6 +190,10 @@ class Application extends BaseApplication
             );
         };
 
+        $this['eole.party_manager'] = function () {
+            return new \Eole\Core\Service\PartyManager($this['dispatcher']);
+        };
+
         $this['eole.converter.game'] = function () {
             return new \Eole\Core\Converter\GameConverter(
                 $this['orm.em']->getRepository('Eole:Game')
@@ -212,7 +216,8 @@ class Application extends BaseApplication
         $this['eole.controller.party'] = function () {
             return new \Eole\Core\Controller\PartyController(
                 $this['orm.em']->getRepository('Eole:Party'),
-                $this['orm.em']
+                $this['orm.em'],
+                $this['eole.party_manager']
             );
         };
 

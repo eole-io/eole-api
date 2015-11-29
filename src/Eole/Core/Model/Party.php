@@ -95,8 +95,8 @@ class Party implements \JsonSerializable
     {
         return array(
             'id' => $this->getId(),
-            'game' => $this->getGame()->jsonSerialize(),
-            'host' => $this->getHost()->jsonSerialize(),
+            'game' => $this->getGame(),
+            'host' => $this->getHost(),
             'slots' => $this->getSlots(),
         );
     }

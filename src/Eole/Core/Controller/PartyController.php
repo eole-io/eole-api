@@ -8,6 +8,7 @@ use Eole\Core\Model\Game;
 use Eole\Core\Model\Party;
 use Eole\Core\Model\Player;
 use Eole\Core\Repository\PartyRepository;
+use Eole\Core\Service\PartyManager;
 
 class PartyController
 {
@@ -22,6 +23,11 @@ class PartyController
     private $om;
 
     /**
+     * @var PartyManager
+     */
+    private $partyManager;
+
+    /**
      * Authenticated player
      *
      * @var Player|null
@@ -31,11 +37,13 @@ class PartyController
     /**
      * @param PartyRepository $partyRepository
      * @param ObjectManager $om
+     * @param PartyManager $partyManager
      */
-    public function __construct(PartyRepository $partyRepository, ObjectManager $om)
+    public function __construct(PartyRepository $partyRepository, ObjectManager $om, PartyManager $partyManager)
     {
         $this->partyRepository = $partyRepository;
         $this->om = $om;
+        $this->partyManager = $partyManager;
     }
 
     /**
@@ -81,12 +89,7 @@ class PartyController
      */
     public function createParty(Game $game)
     {
-        $party = new Party();
-
-        $party
-            ->setGame($game)
-            ->setHost($this->loggedPlayer)
-        ;
+        $party = $this->partyManager->createParty($game, $this->loggedPlayer);
 
         $this->om->persist($party);
         $this->om->flush();

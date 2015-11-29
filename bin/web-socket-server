@@ -18,26 +18,15 @@ $silexApp = new SilexApplication(array(
     'debug' => true,
 ));
 
-$silexApp['eole.websocket_topic.chat'] = function () {
-    return new Eole\WebSocket\ApplicationTopic\Chat('eole/core/chat');
-};
-
-$silexApp['eole.websocket_topic.game_parties'] = function () {
-    return new Eole\WebSocket\ApplicationTopic\GameParties('eole/core/parties');
-};
-
-$silexApp->tagService('websocket.topic', 'eole.websocket_topic.chat');
-$silexApp->tagService('websocket.topic', 'eole.websocket_topic.game_parties');
-
 // Create Eole websocket application
 $wsApp = new WebSocketApplication($silexApp);
 
-$address = '0.0.0.0';
-$port = 8080;
+$host = $silexApp['environment']['websocket']['server']['host'];
+$port = $silexApp['environment']['websocket']['server']['port'];
 
 // Create websocket server
-$server = IoServer::factory(new HttpServer(new WsServer(new ServerProtocol($wsApp))), $port, $address);
+$server = IoServer::factory(new HttpServer(new WsServer(new ServerProtocol($wsApp))), $port, $host);
 
-echo 'Running websocket server...'.PHP_EOL;
+echo "Running websocket server on $host:$port".PHP_EOL;
 
 $server->run();
