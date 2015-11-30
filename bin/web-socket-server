@@ -1,15 +1,17 @@
 <?php
 
+echo 'Initialization...'.PHP_EOL;
+
 require_once __DIR__.'/../vendor/autoload.php';
 
+use React\ZMQ\Context;
+use React\Socket\Server;
 use Ratchet\Server\IoServer;
 use Ratchet\Http\HttpServer;
 use Ratchet\WebSocket\WsServer;
 use Ratchet\Wamp\ServerProtocol;
 use Eole\Silex\Application as SilexApplication;
 use Eole\WebSocket\Application as WebSocketApplication;
-
-echo 'Initialization...'.PHP_EOL;
 
 // Create Eole silex application
 $silexApp = new SilexApplication(array(
@@ -18,15 +20,39 @@ $silexApp = new SilexApplication(array(
     'debug' => true,
 ));
 
+$loop = React\EventLoop\Factory::create();
+
+// Create push server
+$pushHost = $silexApp['environment']['push_server']['server']['host'];
+$pushPort = $silexApp['environment']['push_server']['server']['port'];
+
+$context = new Context($loop);
+$pushServer = $context->getSocket(ZMQ::SOCKET_PULL);
+$pushServer->bind("tcp://$pushHost:$pushPort");
+$pushServer->on('message', function ($message) {
+    echo 'PushServer message: '.$message.PHP_EOL;
+});
+
 // Create Eole websocket application
 $wsApp = new WebSocketApplication($silexApp);
 
-$host = $silexApp['environment']['websocket']['server']['host'];
-$port = $silexApp['environment']['websocket']['server']['port'];
+$socketHost = $silexApp['environment']['websocket']['server']['host'];
+$socketPort = $silexApp['environment']['websocket']['server']['port'];
 
-// Create websocket server
-$server = IoServer::factory(new HttpServer(new WsServer(new ServerProtocol($wsApp))), $port, $host);
+$socket = new Server($loop);
+$socket->listen($socketPort, $socketHost);
 
-echo "Running websocket server on $host:$port".PHP_EOL;
+$server = new IoServer(
+    new HttpServer(
+        new WsServer(
+            new ServerProtocol($wsApp)
+        )
+    ),
+    $socket
+);
 
-$server->run();
+// Run servers
+echo "Running websocket server on $socketHost:$socketPort".PHP_EOL;
+echo "Running push server on $pushHost:$pushPort".PHP_EOL;
+
+$loop->run();
