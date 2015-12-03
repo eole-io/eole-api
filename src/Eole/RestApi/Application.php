@@ -50,10 +50,6 @@ class Application extends BaseApplication
             );
         };
 
-        $this['eole.event_serializer'] = function () {
-            return new Service\EventSerializer();
-        };
-
         $this['eole.push_server'] = function () {
             $pushServerPort = $this['environment']['push_server']['server']['port'];
 

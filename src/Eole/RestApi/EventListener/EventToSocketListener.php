@@ -6,7 +6,7 @@ use ZMQSocket;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Eole\Core\Event\Event;
 use Eole\Core\Event\PartyEvent;
-use Eole\RestApi\Service\EventSerializer;
+use Eole\Silex\Service\EventSerializer;
 
 class EventToSocketListener implements EventSubscriberInterface
 {

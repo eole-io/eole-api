@@ -10,34 +10,19 @@ use Ratchet\Server\IoServer;
 use Ratchet\Http\HttpServer;
 use Ratchet\WebSocket\WsServer;
 use Ratchet\Wamp\ServerProtocol;
-use Eole\RestApi\Application as SilexApplication;
+use Eole\Silex\Application as SilexApplication;
 use Eole\WebSocket\Application as WebSocketApplication;
 
-// Create Eole silex application
+$loop = React\EventLoop\Factory::create();
+
+
+// Create Eole websocket application
 $silexApp = new SilexApplication(array(
     'project.root' => dirname(__DIR__),
     'env' => 'dev',
     'debug' => true,
 ));
 
-$loop = React\EventLoop\Factory::create();
-
-// Create push server
-$pushHost = $silexApp['environment']['push_server']['server']['host'];
-$pushPort = $silexApp['environment']['push_server']['server']['port'];
-
-$context = new Context($loop);
-$pushServer = $context->getSocket(ZMQ::SOCKET_PULL);
-$pushServer->bind("tcp://$pushHost:$pushPort");
-$pushServer->on('message', function ($message) use ($silexApp) {
-    echo 'PushServer message: '.$message.PHP_EOL;
-
-    $data = $silexApp['eole.event_serializer']->deserializeEvent($message);
-
-    $silexApp['dispatcher']->dispatch($data['name'], $data['event']);
-});
-
-// Create Eole websocket application
 $wsApp = new WebSocketApplication($silexApp);
 
 $socketHost = $silexApp['environment']['websocket']['server']['host'];
@@ -54,6 +39,22 @@ $server = new IoServer(
     ),
     $socket
 );
+
+
+// Create push server
+$pushHost = $silexApp['environment']['push_server']['server']['host'];
+$pushPort = $silexApp['environment']['push_server']['server']['port'];
+
+$context = new Context($loop);
+$pushServer = $context->getSocket(ZMQ::SOCKET_PULL);
+$pushServer->bind("tcp://$pushHost:$pushPort");
+$pushServer->on('message', function ($message) use ($silexApp) {
+    $data = $silexApp['eole.event_serializer']->deserializeEvent($message);
+
+    echo 'PushServer message event: '.$data['name'].PHP_EOL;
+
+    $silexApp['dispatcher']->dispatch($data['name'], $data['event']);
+});
 
 // Run servers
 echo "Running websocket server on $socketHost:$socketPort".PHP_EOL;

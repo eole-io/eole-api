@@ -28,7 +28,32 @@ class Application implements WampServerInterface
         $this->topics = array();
 
         $this->registerApplicationTopics();
+        $this->registerListeners();
         $this->mountApplicationTopics();
+    }
+
+    /**
+     * Register base application topics
+     */
+    private function registerApplicationTopics()
+    {
+        $this->silexApp['eole.websocket_topic.chat'] = function () {
+            return new ApplicationTopic\ChatTopic('eole/core/chat');
+        };
+
+        $this->silexApp['eole.websocket_topic.game_parties'] = function () {
+            return new ApplicationTopic\GamePartiesTopic('eole/core/parties');
+        };
+
+        $this->silexApp->tagService('websocket.topic', 'eole.websocket_topic.chat');
+        $this->silexApp->tagService('websocket.topic', 'eole.websocket_topic.game_parties');
+    }
+
+    private function registerListeners()
+    {
+        $this->silexApp['dispatcher']->addSubscriber(new EventListener\PartyListener(
+            $this->silexApp['eole.websocket_topic.game_parties']
+        ));
     }
 
     /**
@@ -40,23 +65,6 @@ class Application implements WampServerInterface
             $topic = $this->silexApp[$serviceId];
             $this->topics[$topic->getId()] = $topic;
         }
-    }
-
-    /**
-     * Register base application topics
-     */
-    private function registerApplicationTopics()
-    {
-        $this->silexApp['eole.websocket_topic.chat'] = function () {
-            return new ApplicationTopic\Chat('eole/core/chat');
-        };
-
-        $this->silexApp['eole.websocket_topic.game_parties'] = function () {
-            return new ApplicationTopic\GameParties('eole/core/parties');
-        };
-
-        $this->silexApp->tagService('websocket.topic', 'eole.websocket_topic.chat');
-        $this->silexApp->tagService('websocket.topic', 'eole.websocket_topic.game_parties');
     }
 
     /**

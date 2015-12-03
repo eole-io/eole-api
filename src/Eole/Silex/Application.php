@@ -193,6 +193,10 @@ class Application extends BaseApplication
             return new \Eole\Core\Service\PartyManager($this['dispatcher']);
         };
 
+        $this['eole.event_serializer'] = function () {
+            return new Service\EventSerializer();
+        };
+
         $this->before(function (\Symfony\Component\HttpFoundation\Request $request, BaseApplication $app) {
             if (null !== $app['user']) {
                 $app['eole.controller.player']->setLoggedUser($app['user']);
