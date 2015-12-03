@@ -27,6 +27,7 @@ class Application extends BaseApplication
         $this->registerWsseSecurity();
         $this->registerDoctrine();
         $this->registerServices();
+        $this->registerEventListeners();
         $this->mountApi();
     }
 
@@ -221,12 +222,34 @@ class Application extends BaseApplication
             );
         };
 
+        $this['eole.event_serializer'] = function () {
+            return new Service\EventSerializer();
+        };
+
+        $this['eole.push_server'] = function () {
+            $pushServerPort = $this['environment']['push_server']['server']['port'];
+
+            $context = new \ZMQContext();
+            $socket = $context->getSocket(\ZMQ::SOCKET_PUSH);
+            $socket->connect('tcp://127.0.0.1:'.$pushServerPort);
+
+            return $socket;
+        };
+
         $this->before(function (\Symfony\Component\HttpFoundation\Request $request, BaseApplication $app) {
             if (null !== $app['user']) {
                 $app['eole.controller.player']->setLoggedUser($app['user']);
                 $app['eole.controller.party']->setLoggedPlayer($app['user']);
             }
         });
+    }
+
+    private function registerEventListeners()
+    {
+        $this['dispatcher']->addSubscriber(new EventListener\EventToSocketListener(
+            $this['eole.push_server'],
+            $this['eole.event_serializer']
+        ));
     }
 
     /**

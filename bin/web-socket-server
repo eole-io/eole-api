@@ -29,8 +29,12 @@ $pushPort = $silexApp['environment']['push_server']['server']['port'];
 $context = new Context($loop);
 $pushServer = $context->getSocket(ZMQ::SOCKET_PULL);
 $pushServer->bind("tcp://$pushHost:$pushPort");
-$pushServer->on('message', function ($message) {
+$pushServer->on('message', function ($message) use ($silexApp) {
     echo 'PushServer message: '.$message.PHP_EOL;
+
+    $data = $silexApp['eole.event_serializer']->deserializeEvent($message);
+
+    $silexApp['dispatcher']->dispatch($data['name'], $data['event']);
 });
 
 // Create Eole websocket application
