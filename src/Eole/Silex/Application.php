@@ -190,7 +190,7 @@ class Application extends BaseApplication
         };
 
         $this['eole.party_manager'] = function () {
-            return new \Eole\Core\Service\PartyManager($this['dispatcher']);
+            return new \Eole\Core\Service\PartyManager();
         };
 
         $this['eole.event_serializer'] = function () {

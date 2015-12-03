@@ -46,7 +46,8 @@ class Application extends BaseApplication
             return new \Eole\Core\Controller\PartyController(
                 $this['orm.em']->getRepository('Eole:Party'),
                 $this['orm.em'],
-                $this['eole.party_manager']
+                $this['eole.party_manager'],
+                $this['dispatcher']
             );
         };
 

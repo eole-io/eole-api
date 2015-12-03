@@ -9,7 +9,12 @@ class PartyEvent extends Event
     /**
      * @var string
      */
-    const CREATE = 'eole.core.event.party.create';
+    const CREATE_BEFORE = 'eole.core.event.party.create_before';
+
+    /**
+     * @var string
+     */
+    const CREATE_AFTER = 'eole.core.event.party.create_after';
 
     /**
      * @var Party

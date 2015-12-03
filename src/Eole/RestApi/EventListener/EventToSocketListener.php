@@ -36,7 +36,7 @@ class EventToSocketListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            PartyEvent::CREATE => array(
+            PartyEvent::CREATE_AFTER => array(
                 array('sendEventToSocket'),
             ),
         );
