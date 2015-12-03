@@ -1,6 +1,6 @@
 <?php
 
-namespace Eole\Silex\ControllerProvider;
+namespace Eole\RestApi\ControllerProvider;
 
 use Silex\Api\ControllerProviderInterface;
 use Silex\Application;

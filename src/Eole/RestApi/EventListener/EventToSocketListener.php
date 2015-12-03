@@ -1,12 +1,12 @@
 <?php
 
-namespace Eole\Silex\EventListener;
+namespace Eole\RestApi\EventListener;
 
 use ZMQSocket;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Eole\Core\Event\Event;
 use Eole\Core\Event\PartyEvent;
-use Eole\Silex\Service\EventSerializer;
+use Eole\RestApi\Service\EventSerializer;
 
 class EventToSocketListener implements EventSubscriberInterface
 {

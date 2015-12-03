@@ -7,7 +7,7 @@ use Silex\WebTestCase;
 use Eole\Core\Model\Player;
 use Eole\Core\Model\Game;
 use Eole\Core\Service\PlayerManager;
-use Eole\Silex\Application;
+use Eole\RestApi\Application;
 
 class ApplicationTest extends WebTestCase
 {

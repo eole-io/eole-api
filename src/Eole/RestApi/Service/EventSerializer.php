@@ -1,6 +1,6 @@
 <?php
 
-namespace Eole\Silex\Service;
+namespace Eole\RestApi\Service;
 
 use Eole\Core\Event\Event;
 

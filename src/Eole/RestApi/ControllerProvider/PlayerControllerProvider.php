@@ -1,8 +1,7 @@
 <?php
 
-namespace Eole\Silex\ControllerProvider;
+namespace Eole\RestApi\ControllerProvider;
 
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
 

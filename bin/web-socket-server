@@ -10,7 +10,7 @@ use Ratchet\Server\IoServer;
 use Ratchet\Http\HttpServer;
 use Ratchet\WebSocket\WsServer;
 use Ratchet\Wamp\ServerProtocol;
-use Eole\Silex\Application as SilexApplication;
+use Eole\RestApi\Application as SilexApplication;
 use Eole\WebSocket\Application as WebSocketApplication;
 
 // Create Eole silex application
