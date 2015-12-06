@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Eole\Core\Model\Game;
 use Eole\Core\Model\Player;
+use Eole\Core\Model\Party;
 use Eole\Core\Repository\PartyRepository;
 use Eole\Core\Event\PartyEvent;
 use Eole\Core\Service\PartyManager;
@@ -110,6 +111,16 @@ class PartyController
 
         $this->dispatcher->dispatch(PartyEvent::CREATE_AFTER, new PartyEvent($party));
 
+        return new JsonResponse($party);
+    }
+
+    /**
+     * @param Party $party
+     *
+     * @return JsonResponse
+     */
+    public function getParty(Party $party)
+    {
         return new JsonResponse($party);
     }
 }

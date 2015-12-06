@@ -22,28 +22,24 @@ class GameConverter
     }
 
     /**
-     * @param int|string|null $gameNameOrId
+     * @param int|null $gameName
      *
      * @return Game|null
      *
      * @throws NotFoundHttpException
      */
-    public function convert($gameNameOrId = null)
+    public function convert($gameName = null)
     {
-        if (null === $gameNameOrId) {
+        if (null === $gameName) {
             return null;
         }
 
-        if (is_numeric($gameNameOrId)) {
-            $game = $this->gameRepository->find($gameNameOrId);
-        } else {
-            $game = $this->gameRepository->findOneBy(array(
-                'name' => $gameNameOrId,
-            ));
-        }
+        $game = $this->gameRepository->findOneBy(array(
+            'name' => $gameName,
+        ));
 
         if (null === $game) {
-            throw new NotFoundHttpException(sprintf('Game "%s" not found.', $gameNameOrId));
+            throw new NotFoundHttpException(sprintf('Game name "%s" not found.', $gameName));
         }
 
         return $game;

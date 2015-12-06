@@ -29,6 +29,12 @@ class Application extends BaseApplication
             );
         };
 
+        $this['eole.converter.party'] = function () {
+            return new \Eole\Core\Converter\PartyConverter(
+                $this['orm.em']->getRepository('Eole:Party')
+            );
+        };
+
         $this['eole.controller.player'] = function () {
             return new \Eole\Core\Controller\PlayerController(
                 $this['eole.player_api'],
