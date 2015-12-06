@@ -57,7 +57,7 @@ $pushServer->on('message', function ($message) use ($silexApp) {
 });
 
 // Run servers
-echo "Running websocket server on $socketHost:$socketPort".PHP_EOL;
-echo "Running push server on $pushHost:$pushPort".PHP_EOL;
+echo "Bind websocket server to $socketHost:$socketPort".PHP_EOL;
+echo "Bind push server to $pushHost:$pushPort".PHP_EOL;
 
 $loop->run();
