@@ -25,7 +25,7 @@ class Party implements \JsonSerializable
     private $slots;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -86,6 +86,30 @@ class Party implements \JsonSerializable
     public function getSlots()
     {
         return $this->slots;
+    }
+
+    /**
+     * @param Slot[] $slots
+     *
+     * @return self
+     */
+    public function setSlots(array $slots)
+    {
+        $this->slots = $slots;
+
+        return $this;
+    }
+
+    /**
+     * @param Slot $slot
+     *
+     * @return self
+     */
+    public function addSlot(Slot $slot)
+    {
+        $this->slots []= $slot;
+
+        return $this;
     }
 
     /**

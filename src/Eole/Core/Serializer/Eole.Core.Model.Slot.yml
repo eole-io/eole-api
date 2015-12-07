@@ -1,0 +1,9 @@
+Eole\Core\Model\Slot:
+    exclusion_policy: NONE
+    properties:
+        id:
+            type: integer
+        player:
+            type: Eole\Core\Model\Player
+        party:
+            type: Eole\Core\Model\Party

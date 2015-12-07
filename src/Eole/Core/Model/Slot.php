@@ -2,6 +2,9 @@
 
 namespace Eole\Core\Model;
 
+use Eole\Core\Model\Player;
+use Eole\Core\Model\Party;
+
 class Slot implements \JsonSerializable
 {
     /**
@@ -18,6 +21,16 @@ class Slot implements \JsonSerializable
      * @var Party
      */
     private $party;
+
+    /**
+     * @param Party $party
+     * @param Player $player
+     */
+    public function __construct(Party $party = null, Player $player = null)
+    {
+        $this->party = $party;
+        $this->player = $player;
+    }
 
     /**
      * Get id

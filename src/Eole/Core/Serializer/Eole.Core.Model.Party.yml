@@ -1,0 +1,11 @@
+Eole\Core\Model\Party:
+    exclusion_policy: NONE
+    properties:
+        id:
+            type: integer
+        game:
+            type: Eole\Core\Model\Game
+        host:
+            type: Eole\Core\Model\Player
+        slots:
+            type: array<Eole\Core\Model\Slot>

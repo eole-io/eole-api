@@ -25,6 +25,7 @@
         "symfony/http-foundation": "~2.0",
         "symfony/console": "~2.0",
         "silex/silex": "~2.0@dev",
+        "jms/serializer": "~1.0",
         "alcalyn/symfony-wsse": "1.0.x",
         "alcalyn/silex-wsse": "1.0.x",
         "alcalyn/doctrine-user-api": "1.0.x",

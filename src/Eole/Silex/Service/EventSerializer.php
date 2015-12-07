@@ -2,10 +2,24 @@
 
 namespace Eole\Silex\Service;
 
+use JMS\Serializer\SerializerInterface;
 use Eole\Core\Event\Event;
 
 class EventSerializer
 {
+    /**
+     * @var SerializerInterface
+     */
+    private $serializer;
+
+    /**
+     * @param SerializerInterface $serializer
+     */
+    public function __construct(SerializerInterface $serializer)
+    {
+        $this->serializer = $serializer;
+    }
+
     /**
      * @param string $name
      * @param Event $event
@@ -16,7 +30,8 @@ class EventSerializer
     {
         return json_encode(array(
             'name' => $name,
-            'event' => serialize($event),
+            'class' => get_class($event),
+            'event' => $this->serializer->serialize($event, 'json'),
         ));
     }
 
@@ -31,7 +46,8 @@ class EventSerializer
 
         return array(
             'name' => $data['name'],
-            'event' => unserialize($data['event']),
+            'class' => $data['class'],
+            'event' => $this->serializer->deserialize($data['event'], $data['class'], 'json'),
         );
     }
 }

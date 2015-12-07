@@ -1,0 +1,7 @@
+Eole\Core\Model\Game:
+    exclusion_policy: NONE
+    properties:
+        id:
+            type: integer
+        name:
+            type: string

@@ -1,0 +1,27 @@
+Alcalyn\UserApi\Model\User:
+    exclusion_policy: NONE
+    properties:
+        id:
+            type: integer
+        username:
+            type: string
+        passwordHash:
+            type: string
+        passwordSalt:
+            type: string
+        email:
+            type: string
+        emailVerificationToken:
+            type: string
+        emailVerified:
+            type: boolean
+        enabled:
+            type: boolean
+        locked:
+            type: boolean
+        expiresAt:
+            type: DateTime
+        credentialsExpiresAt:
+            type: DateTime
+        dateCreated:
+            type: DateTime

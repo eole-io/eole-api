@@ -16,3 +16,5 @@ Eole\Core\Model\Party:
         slots:
             targetEntity: Eole\Core\Model\Slot
             mappedBy: party
+            cascade:
+                - all

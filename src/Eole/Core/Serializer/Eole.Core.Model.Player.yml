@@ -1,0 +1,5 @@
+Eole\Core\Model\Player:
+    exclusion_policy: NONE
+    properties:
+        guest:
+            type: boolean

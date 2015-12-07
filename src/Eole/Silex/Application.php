@@ -179,6 +179,16 @@ class Application extends BaseApplication
      */
     private function registerServices()
     {
+        $this['serializer'] = function () {
+            return
+                \JMS\Serializer\SerializerBuilder::create()
+                ->addMetadataDir($this['project.root'].'/src/Eole/Core/Serializer')
+                ->setCacheDir($this['project.root'].'/var/cache/serializer')
+                ->setDebug($this['debug'])
+                ->build()
+            ;
+        };
+
         $this['eole.player_manager'] = function () {
             $encoderFactory = $this['security.encoder_factory'];
             $userClass = \Eole\Core\Model\Player::class;
@@ -194,7 +204,7 @@ class Application extends BaseApplication
         };
 
         $this['eole.event_serializer'] = function () {
-            return new Service\EventSerializer();
+            return new Service\EventSerializer($this['serializer']);
         };
 
         $this->before(function (\Symfony\Component\HttpFoundation\Request $request, BaseApplication $app) {

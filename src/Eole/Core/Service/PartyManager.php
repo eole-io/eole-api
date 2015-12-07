@@ -5,6 +5,7 @@ namespace Eole\Core\Service;
 use Eole\Core\Model\Game;
 use Eole\Core\Model\Player;
 use Eole\Core\Model\Party;
+use Eole\Core\Model\Slot;
 
 class PartyManager
 {
@@ -21,6 +22,8 @@ class PartyManager
         $party
             ->setGame($game)
             ->setHost($host)
+            ->addSlot(new Slot($party, $host))
+            ->addSlot(new Slot($party))
         ;
 
         return $party;
