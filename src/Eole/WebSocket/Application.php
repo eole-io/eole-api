@@ -95,6 +95,10 @@ class Application implements WampServerInterface
 
         $player = $userProvider->loadUserByUsername($wsseTokenObject->username);
 
+        if (null === $player) {
+            throw new \Exception(sprintf('Could not retrieve player "%s".', $wsseTokenObject->username));
+        }
+
         $tokenValidator->validateDigest($wsseToken, $player);
 
         return $player;
