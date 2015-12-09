@@ -63,6 +63,10 @@ class Application implements WampServerInterface
     {
         foreach ($this->silexApp->findTaggedServiceIds('websocket.topic') as $serviceId) {
             $topic = $this->silexApp[$serviceId];
+            $topic
+                ->setContextFactory($this->silexApp['serializer.context_factory'])
+                ->setSerializer($this->silexApp['serializer'])
+            ;
             $this->topics[$topic->getId()] = $topic;
         }
     }

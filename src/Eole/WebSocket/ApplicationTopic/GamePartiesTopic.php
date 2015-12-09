@@ -25,7 +25,7 @@ class GamePartiesTopic extends ApplicationTopic
     {
         $this->broadcast([
             'type' => 'created',
-            'party' => $party,
+            'party' => $this->normalize($party),
         ]);
     }
 
@@ -36,7 +36,7 @@ class GamePartiesTopic extends ApplicationTopic
     {
         $this->broadcast([
             'type' => 'gone',
-            'party' => $party,
+            'party' => $this->normalize($party),
         ]);
     }
 

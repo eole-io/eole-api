@@ -7,21 +7,32 @@ Alcalyn\UserApi\Model\User:
             type: string
         passwordHash:
             type: string
+            exclude: true
         passwordSalt:
             type: string
         email:
             type: string
         emailVerificationToken:
             type: string
+            exclude: true
         emailVerified:
             type: boolean
+            exclude: true
         enabled:
             type: boolean
+            exclude: true
         locked:
             type: boolean
+            exclude: true
         expiresAt:
             type: DateTime
+            exclude: true
         credentialsExpiresAt:
             type: DateTime
+            exclude: true
         dateCreated:
             type: DateTime
+    virtual_properties:
+        getRoles:
+            type: array<string>
+            serialized_name: roles

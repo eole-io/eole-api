@@ -2,11 +2,7 @@
 
 namespace Eole\Core\Controller;
 
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Alcalyn\UserApi\Api\ApiInterface;
+use Eole\Core\ApiResponse;
 use Eole\Core\Repository\GameRepository;
 
 class GameController
@@ -25,17 +21,17 @@ class GameController
     }
 
     /**
-     * @return JsonResponse
+     * @return ApiResponse
      */
     public function getGames()
     {
         $games = $this->gameRepository->findAll();
 
-        return new JsonResponse($games);
+        return new ApiResponse($games);
     }
 
     /**
-     * @return JsonResponse
+     * @return ApiResponse
      */
     public function getGameByName($name)
     {
@@ -43,6 +39,6 @@ class GameController
             'name' => $name,
         ));
 
-        return new JsonResponse($game);
+        return new ApiResponse($game);
     }
 }

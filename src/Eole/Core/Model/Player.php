@@ -2,7 +2,6 @@
 
 namespace Eole\Core\Model;
 
-use Symfony\Component\Security\Core\Role\Role;
 use Alcalyn\UserApi\Model\User;
 
 class Player extends User
@@ -59,9 +58,7 @@ class Player extends User
      */
     public function getRoles()
     {
-        return array(
-            new Role('ROLE_PLAYER'),
-        );
+        return array('ROLE_PLAYER');
     }
 
     /**

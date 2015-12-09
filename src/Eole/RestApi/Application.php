@@ -23,6 +23,13 @@ class Application extends BaseApplication
      */
     private function registerServices()
     {
+        $this['eole.listener.api_response_filter'] = function () {
+            return new \Eole\Core\EventListener\ApiResponseFilterListener(
+                $this['serializer'],
+                $this['serializer.context_factory']
+            );
+        };
+
         $this['eole.converter.game'] = function () {
             return new \Eole\Core\Converter\GameConverter(
                 $this['orm.em']->getRepository('Eole:Game')
@@ -70,6 +77,10 @@ class Application extends BaseApplication
 
     private function registerEventListeners()
     {
+        $this->on(\Symfony\Component\HttpKernel\KernelEvents::VIEW, function ($event) {
+            $this['eole.listener.api_response_filter']->onKernelView($event);
+        });
+
         $this['dispatcher']->addSubscriber(new EventListener\EventToSocketListener(
             $this['eole.push_server'],
             $this['eole.event_serializer']

@@ -179,6 +179,12 @@ class Application extends BaseApplication
      */
     private function registerServices()
     {
+        $this['serializer.context_factory'] = $this->protect(function () {
+            return \JMS\Serializer\SerializationContext::create()
+                ->setSerializeNull(true)
+            ;
+        });
+
         $this['serializer'] = function () {
             return
                 \JMS\Serializer\SerializerBuilder::create()

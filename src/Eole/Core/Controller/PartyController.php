@@ -3,8 +3,8 @@
 namespace Eole\Core\Controller;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Eole\Core\ApiResponse;
 use Eole\Core\Model\Game;
 use Eole\Core\Model\Player;
 use Eole\Core\Model\Party;
@@ -72,19 +72,19 @@ class PartyController
     }
 
     /**
-     * @return JsonResponse
+     * @return ApiResponse
      */
     public function getParties()
     {
         $parties = $this->partyRepository->findAll();
 
-        return new JsonResponse($parties);
+        return new ApiResponse($parties);
     }
 
     /**
      * @param Game $game
      *
-     * @return JsonResponse
+     * @return ApiResponse
      */
     public function getPartiesForGame(Game $game)
     {
@@ -92,13 +92,13 @@ class PartyController
             'game' => $game,
         ));
 
-        return new JsonResponse($parties);
+        return new ApiResponse($parties);
     }
 
     /**
      * @param Game $game
      *
-     * @return JsonResponse
+     * @return ApiResponse
      */
     public function createParty(Game $game)
     {
@@ -111,16 +111,16 @@ class PartyController
 
         $this->dispatcher->dispatch(PartyEvent::CREATE_AFTER, new PartyEvent($party));
 
-        return new JsonResponse($party);
+        return new ApiResponse($party);
     }
 
     /**
      * @param Party $party
      *
-     * @return JsonResponse
+     * @return ApiResponse
      */
     public function getParty(Party $party)
     {
-        return new JsonResponse($party);
+        return new ApiResponse($party);
     }
 }
