@@ -4,9 +4,9 @@ namespace Eole\WebSocket;
 
 use JMS\Serializer\SerializerInterface;
 use Ratchet\Wamp\WampConnection;
-use Ratchet\Wamp\Topic;
+use Ratchet\Wamp\Topic as BaseTopic;
 
-abstract class ApplicationTopic extends Topic
+class Topic extends BaseTopic
 {
     /**
      * @var SerializerInterface
@@ -18,13 +18,44 @@ abstract class ApplicationTopic extends Topic
      */
     private $contextFactory;
 
+    /**
+     * @var array
+     */
+    protected $arguments;
+
+    /**
+     * @param string $topicPath
+     * @param array $arguments
+     */
+    public function __construct($topicPath, array $arguments = array())
+    {
+        parent::__construct($topicPath);
+
+        $this->arguments = $arguments;
+    }
+
+    /**
+     * @param WampConnection $conn
+     * @param string $topic
+     */
     public function onSubscribe(WampConnection $conn, $topic)
     {
         $this->add($conn);
     }
 
-    abstract public function onPublish(WampConnection $conn, $topic, $event);
+    /**
+     * @param WampConnection $conn
+     * @param string $topic
+     * @param string $event
+     */
+    public function onPublish(WampConnection $conn, $topic, $event)
+    {
+    }
 
+    /**
+     * @param WampConnection $conn
+     * @param string $topic
+     */
     public function onUnSubscribe(WampConnection $conn, $topic)
     {
         $this->remove($conn);

@@ -1,12 +1,15 @@
 <?php
 
-namespace Eole\WebSocket\ApplicationTopic;
+namespace Eole\WebSocket\Topic;
 
 use Ratchet\Wamp\WampConnection;
-use Eole\WebSocket\ApplicationTopic;
+use Eole\WebSocket\Topic;
 
-class ChatTopic extends ApplicationTopic
+class ChatTopic extends Topic
 {
+    /**
+     * {@InheritDoc}
+     */
     public function onSubscribe(WampConnection $conn, $topic)
     {
         parent::onSubscribe($conn, $topic);
@@ -17,6 +20,9 @@ class ChatTopic extends ApplicationTopic
         ]);
     }
 
+    /**
+     * {@InheritDoc}
+     */
     public function onPublish(WampConnection $conn, $topic, $event)
     {
         $this->broadcast([
@@ -26,6 +32,9 @@ class ChatTopic extends ApplicationTopic
         ]);
     }
 
+    /**
+     * {@InheritDoc}
+     */
     public function onUnSubscribe(WampConnection $conn, $topic)
     {
         $this->broadcast([

@@ -2,10 +2,12 @@
 
 namespace Eole\WebSocket;
 
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Alcalyn\Wsse\Security\Authentication\Token\WsseUserToken;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\WampServerInterface;
 use Eole\Silex\Application as SilexApplication;
+use Eole\WebSocket\Routing\TopicRoute;
 
 class Application implements WampServerInterface
 {
@@ -15,7 +17,7 @@ class Application implements WampServerInterface
     private $silexApp;
 
     /**
-     * @var ApplicationTopic[]
+     * @var Topic[]
      */
     private $topics;
 
@@ -27,48 +29,47 @@ class Application implements WampServerInterface
         $this->silexApp = $silexApp;
         $this->topics = array();
 
-        $this->registerApplicationTopics();
-        $this->registerListeners();
-        $this->mountApplicationTopics();
+        $this->registerServices();
+        $this->registerTopics();
     }
 
     /**
-     * Register base application topics
+     * Register Eole Websocket services.
      */
-    private function registerApplicationTopics()
+    private function registerServices()
     {
+        $this->silexApp->register(new ServiceProvider\TopicRoutingProvider());
+
         $this->silexApp['eole.websocket_topic.chat'] = function () {
-            return new ApplicationTopic\ChatTopic('eole/core/chat');
+            return new Topic\ChatTopic('eole/core/chat');
         };
 
         $this->silexApp['eole.websocket_topic.game_parties'] = function () {
-            return new ApplicationTopic\GamePartiesTopic('eole/core/parties');
+            return new Topic\PartiesTopic('eole/core/parties', array('game_name' => null));
         };
-
-        $this->silexApp->tagService('websocket.topic', 'eole.websocket_topic.chat');
-        $this->silexApp->tagService('websocket.topic', 'eole.websocket_topic.game_parties');
-    }
-
-    private function registerListeners()
-    {
-        $this->silexApp['dispatcher']->addSubscriber(new EventListener\PartyListener(
-            $this->silexApp['eole.websocket_topic.game_parties']
-        ));
     }
 
     /**
-     * Mount application topics
+     * Register base application topics.
      */
-    private function mountApplicationTopics()
+    private function registerTopics()
     {
-        foreach ($this->silexApp->findTaggedServiceIds('websocket.topic') as $serviceId) {
-            $topic = $this->silexApp[$serviceId];
-            $topic
-                ->setContextFactory($this->silexApp['serializer.context_factory'])
-                ->setSerializer($this->silexApp['serializer'])
-            ;
-            $this->topics[$topic->getId()] = $topic;
-        }
+        $this->silexApp['eole.websocket.routes']->add('eole_core_chat', new TopicRoute(
+            $this->silexApp['eole.websocket_topic.chat']->getId(),
+            $this->silexApp['eole.websocket_topic.chat']
+        ));
+
+        $this->silexApp['eole.websocket.routes']->add('eole_core_parties', new TopicRoute(
+            $this->silexApp['eole.websocket_topic.game_parties']->getId(),
+            $this->silexApp['eole.websocket_topic.game_parties']
+        ));
+
+        $this->silexApp['eole.websocket.routes']->add('eole_core_game_parties', new TopicRoute(
+            'eole/core/game/{game_name}/parties',
+            Topic\PartiesTopic::class,
+            array(),
+            array('game_name' => '^[a-z0-9_\-]+$')
+        ));
     }
 
     /**
@@ -125,11 +126,41 @@ class Application implements WampServerInterface
         $conn->player = $player;
     }
 
+    private function getTopic($topicPath)
+    {
+        if (!isset($this->topics[$topicPath])) {
+            $this->topics[$topicPath] = $this->loadTopic($topicPath);
+        }
+
+        return $this->topics[$topicPath];
+    }
+
+    /**
+     * @param string $topicPath
+     *
+     * @return Topic
+     */
+    private function loadTopic($topicPath)
+    {
+        $topic = $this->silexApp['eole.websocket.router']->loadTopic($topicPath);
+
+        $topic
+            ->setContextFactory($this->silexApp['serializer.context_factory'])
+            ->setSerializer($this->silexApp['serializer'])
+        ;
+
+        if ($topic instanceof EventSubscriberInterface) {
+            $this->silexApp['dispatcher']->addSubscriber($topic);
+        }
+
+        return $topic;
+    }
+
     public function onSubscribe(ConnectionInterface $conn, $topic)
     {
         echo __METHOD__.' '.$topic.PHP_EOL;
 
-        $this->topics[$topic]->onSubscribe($conn, $topic);
+        $this->getTopic($topic)->onSubscribe($conn, $topic);
     }
 
     public function onPublish(ConnectionInterface $conn, $topic, $event, array $exclude, array $eligible)
