@@ -4,21 +4,21 @@ namespace Eole\WebSocket\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Eole\Core\Event\PartyEvent;
-use Eole\WebSocket\Topic\GamePartiesTopic;
+use Eole\WebSocket\Topic\PartiesTopic;
 
 class PartyListener implements EventSubscriberInterface
 {
     /**
-     * @var GamePartiesTopic
+     * @var PartiesTopic
      */
-    private $gamePartiesTopic;
+    private $partiesTopic;
 
     /**
-     * @param GamePartiesTopic $gamePartiesTopic
+     * @param PartiesTopic $partiesTopic
      */
-    public function __construct(GamePartiesTopic $gamePartiesTopic)
+    public function __construct(PartiesTopic $partiesTopic)
     {
-        $this->gamePartiesTopic = $gamePartiesTopic;
+        $this->partiesTopic = $partiesTopic;
     }
 
     /**
@@ -38,6 +38,6 @@ class PartyListener implements EventSubscriberInterface
      */
     public function onPartyCreate(PartyEvent $event)
     {
-        $this->gamePartiesTopic->onPartyCreated($event->getParty());
+        $this->partiesTopic->onPartyCreated($event->getParty());
     }
 }

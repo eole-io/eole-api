@@ -6,7 +6,7 @@ use Ratchet\Wamp\WampConnection;
 use Eole\Core\Model\Party;
 use Eole\WebSocket\Topic;
 
-class GamePartiesTopic extends Topic
+class PartiesTopic extends Topic
 {
     public function onSubscribe(WampConnection $conn, $topic)
     {

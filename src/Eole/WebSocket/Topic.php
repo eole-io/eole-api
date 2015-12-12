@@ -6,7 +6,7 @@ use JMS\Serializer\SerializerInterface;
 use Ratchet\Wamp\WampConnection;
 use Ratchet\Wamp\Topic as BaseTopic;
 
-abstract class Topic extends BaseTopic
+class Topic extends BaseTopic
 {
     /**
      * @var SerializerInterface
@@ -18,12 +18,30 @@ abstract class Topic extends BaseTopic
      */
     private $contextFactory;
 
+    /**
+     * @var array
+     */
+    protected $arguments;
+
+    /**
+     * @param string $topicPath
+     * @param array $arguments
+     */
+    public function __construct($topicPath, array $arguments = array())
+    {
+        parent::__construct($topicPath);
+
+        $this->arguments = $arguments;
+    }
+
     public function onSubscribe(WampConnection $conn, $topic)
     {
         $this->add($conn);
     }
 
-    abstract public function onPublish(WampConnection $conn, $topic, $event);
+    public function onPublish(WampConnection $conn, $topic, $event)
+    {
+    }
 
     public function onUnSubscribe(WampConnection $conn, $topic)
     {
