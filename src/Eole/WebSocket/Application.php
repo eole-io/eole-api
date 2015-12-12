@@ -15,7 +15,7 @@ class Application implements WampServerInterface
     private $silexApp;
 
     /**
-     * @var ApplicationTopic[]
+     * @var Topic[]
      */
     private $topics;
 
@@ -27,22 +27,22 @@ class Application implements WampServerInterface
         $this->silexApp = $silexApp;
         $this->topics = array();
 
-        $this->registerApplicationTopics();
+        $this->registerTopics();
         $this->registerListeners();
-        $this->mountApplicationTopics();
+        $this->mountTopics();
     }
 
     /**
      * Register base application topics
      */
-    private function registerApplicationTopics()
+    private function registerTopics()
     {
         $this->silexApp['eole.websocket_topic.chat'] = function () {
-            return new ApplicationTopic\ChatTopic('eole/core/chat');
+            return new Topic\ChatTopic('eole/core/chat');
         };
 
         $this->silexApp['eole.websocket_topic.game_parties'] = function () {
-            return new ApplicationTopic\GamePartiesTopic('eole/core/parties');
+            return new Topic\GamePartiesTopic('eole/core/parties');
         };
 
         $this->silexApp->tagService('websocket.topic', 'eole.websocket_topic.chat');
@@ -59,7 +59,7 @@ class Application implements WampServerInterface
     /**
      * Mount application topics
      */
-    private function mountApplicationTopics()
+    private function mountTopics()
     {
         foreach ($this->silexApp->findTaggedServiceIds('websocket.topic') as $serviceId) {
             $topic = $this->silexApp[$serviceId];

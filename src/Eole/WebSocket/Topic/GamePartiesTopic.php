@@ -1,12 +1,12 @@
 <?php
 
-namespace Eole\WebSocket\ApplicationTopic;
+namespace Eole\WebSocket\Topic;
 
 use Ratchet\Wamp\WampConnection;
 use Eole\Core\Model\Party;
-use Eole\WebSocket\ApplicationTopic;
+use Eole\WebSocket\Topic;
 
-class GamePartiesTopic extends ApplicationTopic
+class GamePartiesTopic extends Topic
 {
     public function onSubscribe(WampConnection $conn, $topic)
     {

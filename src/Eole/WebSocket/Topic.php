@@ -4,9 +4,9 @@ namespace Eole\WebSocket;
 
 use JMS\Serializer\SerializerInterface;
 use Ratchet\Wamp\WampConnection;
-use Ratchet\Wamp\Topic;
+use Ratchet\Wamp\Topic as BaseTopic;
 
-abstract class ApplicationTopic extends Topic
+abstract class Topic extends BaseTopic
 {
     /**
      * @var SerializerInterface

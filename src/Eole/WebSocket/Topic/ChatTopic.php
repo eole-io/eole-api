@@ -1,11 +1,11 @@
 <?php
 
-namespace Eole\WebSocket\ApplicationTopic;
+namespace Eole\WebSocket\Topic;
 
 use Ratchet\Wamp\WampConnection;
-use Eole\WebSocket\ApplicationTopic;
+use Eole\WebSocket\Topic;
 
-class ChatTopic extends ApplicationTopic
+class ChatTopic extends Topic
 {
     public function onSubscribe(WampConnection $conn, $topic)
     {

@@ -4,7 +4,7 @@ namespace Eole\WebSocket\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Eole\Core\Event\PartyEvent;
-use Eole\WebSocket\ApplicationTopic\GamePartiesTopic;
+use Eole\WebSocket\Topic\GamePartiesTopic;
 
 class PartyListener implements EventSubscriberInterface
 {
