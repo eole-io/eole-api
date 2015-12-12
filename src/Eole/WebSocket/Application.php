@@ -2,6 +2,7 @@
 
 namespace Eole\WebSocket;
 
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Alcalyn\Wsse\Security\Authentication\Token\WsseUserToken;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\WampServerInterface;
@@ -30,7 +31,6 @@ class Application implements WampServerInterface
 
         $this->registerServices();
         $this->registerTopics();
-        $this->registerListeners();
     }
 
     /**
@@ -45,7 +45,7 @@ class Application implements WampServerInterface
         };
 
         $this->silexApp['eole.websocket_topic.game_parties'] = function () {
-            return new Topic\PartiesTopic('eole/core/parties');
+            return new Topic\PartiesTopic('eole/core/parties', array('game_name' => null));
         };
     }
 
@@ -63,15 +63,12 @@ class Application implements WampServerInterface
             $this->silexApp['eole.websocket_topic.game_parties']->getId(),
             $this->silexApp['eole.websocket_topic.game_parties']
         ));
-    }
 
-    /**
-     * Register listeners.
-     */
-    private function registerListeners()
-    {
-        $this->silexApp['dispatcher']->addSubscriber(new EventListener\PartyListener(
-            $this->silexApp['eole.websocket_topic.game_parties']
+        $this->silexApp['eole.websocket.routes']->add('eole_core_game_parties', new TopicRoute(
+            'eole/core/game/{game_name}/parties',
+            Topic\PartiesTopic::class,
+            array(),
+            array('game_name' => '^[a-z0-9_\-]+$')
         ));
     }
 
@@ -151,6 +148,10 @@ class Application implements WampServerInterface
             ->setContextFactory($this->silexApp['serializer.context_factory'])
             ->setSerializer($this->silexApp['serializer'])
         ;
+
+        if ($topic instanceof EventSubscriberInterface) {
+            $this->silexApp['dispatcher']->addSubscriber($topic);
+        }
 
         return $topic;
     }

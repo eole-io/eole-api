@@ -34,15 +34,28 @@ class Topic extends BaseTopic
         $this->arguments = $arguments;
     }
 
+    /**
+     * @param WampConnection $conn
+     * @param string $topic
+     */
     public function onSubscribe(WampConnection $conn, $topic)
     {
         $this->add($conn);
     }
 
+    /**
+     * @param WampConnection $conn
+     * @param string $topic
+     * @param string $event
+     */
     public function onPublish(WampConnection $conn, $topic, $event)
     {
     }
 
+    /**
+     * @param WampConnection $conn
+     * @param string $topic
+     */
     public function onUnSubscribe(WampConnection $conn, $topic)
     {
         $this->remove($conn);

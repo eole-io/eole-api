@@ -7,6 +7,9 @@ use Eole\WebSocket\Topic;
 
 class ChatTopic extends Topic
 {
+    /**
+     * {@InheritDoc}
+     */
     public function onSubscribe(WampConnection $conn, $topic)
     {
         parent::onSubscribe($conn, $topic);
@@ -17,6 +20,9 @@ class ChatTopic extends Topic
         ]);
     }
 
+    /**
+     * {@InheritDoc}
+     */
     public function onPublish(WampConnection $conn, $topic, $event)
     {
         $this->broadcast([
@@ -26,6 +32,9 @@ class ChatTopic extends Topic
         ]);
     }
 
+    /**
+     * {@InheritDoc}
+     */
     public function onUnSubscribe(WampConnection $conn, $topic)
     {
         $this->broadcast([
