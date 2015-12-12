@@ -4,7 +4,6 @@ namespace Eole\WebSocket;
 
 use Ratchet\Wamp\WampConnection;
 use Ratchet\Wamp\Topic as BaseTopic;
-use Eole\Silex\Application as SilexApplication;
 use Eole\WebSocket\Service\Normalizer;
 
 class Topic extends BaseTopic
