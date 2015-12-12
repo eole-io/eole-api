@@ -182,14 +182,17 @@ class Application extends BaseApplication
             ;
         });
 
-        $this['serializer'] = function () {
+        $this['serializer.builder'] = function () {
             return
                 \JMS\Serializer\SerializerBuilder::create()
                 ->addMetadataDir($this['project.root'].'/src/Eole/Core/Serializer')
                 ->setCacheDir($this['project.root'].'/var/cache/serializer')
                 ->setDebug($this['debug'])
-                ->build()
             ;
+        };
+
+        $this['serializer'] = function () {
+            return $this['serializer.builder']->build();
         };
 
         $this['eole.player_manager'] = function () {
