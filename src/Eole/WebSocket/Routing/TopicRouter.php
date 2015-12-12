@@ -2,22 +2,22 @@
 
 namespace Eole\WebSocket\Routing;
 
-use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 use Eole\WebSocket\Topic;
+use Eole\Silex\Application;
 
 class TopicRouter
 {
     /**
-     * @var UrlMatcherInterface
+     * @var Application
      */
-    private $urlMatcher;
+    private $silexApp;
 
     /**
-     * @param UrlMatcherInterface $urlMatcher
+     * @param Application $silexApp
      */
-    public function __construct(UrlMatcherInterface $urlMatcher)
+    public function __construct(Application $silexApp)
     {
-        $this->urlMatcher = $urlMatcher;
+        $this->silexApp = $silexApp;
     }
 
     /**
@@ -29,14 +29,21 @@ class TopicRouter
      */
     public function loadTopic($topicPath)
     {
-        $match = $this->urlMatcher->match('/'.$topicPath);
-        $topic = $match['_topic'];
+        $urlMatcher = $this->silexApp['eole.websocket.url_matcher'];
+        $arguments = $urlMatcher->match('/'.$topicPath);
+        $topic = $arguments['_topic'];
         $topicInstance = null;
 
         if ($topic instanceof Topic) {
             $topicInstance = $topic;
         } elseif (is_string($topic)) {
-            $topicInstance = new $topic($topicPath, $match);
+            $topicFactory = $this->silexApp[$topic];
+
+            if (!is_callable($topicFactory)) {
+                throw new \LogicException(sprintf('Service "%s" is not a factory callback.', $topic));
+            }
+
+            $topicInstance = $topicFactory($topicPath, $arguments);
         }
 
         if (null === $topicInstance) {

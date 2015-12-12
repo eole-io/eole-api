@@ -16,7 +16,7 @@ class ChatTopic extends Topic
 
         $this->broadcast([
             'type' => 'join',
-            'player' => $this->normalize($conn->player),
+            'player' => $this->normalizer->normalize($conn->player),
         ]);
     }
 
@@ -27,7 +27,7 @@ class ChatTopic extends Topic
     {
         $this->broadcast([
             'type' => 'message',
-            'player' => $this->normalize($conn->player),
+            'player' => $this->normalizer->normalize($conn->player),
             'message' => $event,
         ]);
     }
@@ -39,7 +39,7 @@ class ChatTopic extends Topic
     {
         $this->broadcast([
             'type' => 'leave',
-            'player' => $this->normalize($conn->player),
+            'player' => $this->normalizer->normalize($conn->player),
         ]);
 
         parent::onUnSubscribe($conn, $topic);

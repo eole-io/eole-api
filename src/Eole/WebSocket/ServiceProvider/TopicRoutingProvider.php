@@ -25,7 +25,7 @@ class TopicRoutingProvider implements ServiceProviderInterface
         };
 
         $app['eole.websocket.router'] = function () use ($app) {
-            return new TopicRouter($app['eole.websocket.url_matcher']);
+            return new TopicRouter($app);
         };
     }
 }

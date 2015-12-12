@@ -55,7 +55,7 @@ class PartiesTopic extends Topic implements EventSubscriberInterface
 
         $this->broadcast([
             'type' => 'created',
-            'party' => $this->normalize($party),
+            'party' => $this->normalizer->normalize($party),
         ]);
     }
 
@@ -72,7 +72,7 @@ class PartiesTopic extends Topic implements EventSubscriberInterface
 
         $this->broadcast([
             'type' => 'gone',
-            'party' => $this->normalize($party),
+            'party' => $this->normalizer->normalize($party),
         ]);
     }
 

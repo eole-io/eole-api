@@ -2,26 +2,22 @@
 
 namespace Eole\WebSocket;
 
-use JMS\Serializer\SerializerInterface;
 use Ratchet\Wamp\WampConnection;
 use Ratchet\Wamp\Topic as BaseTopic;
+use Eole\Silex\Application as SilexApplication;
+use Eole\WebSocket\Service\Normalizer;
 
 class Topic extends BaseTopic
 {
     /**
-     * @var SerializerInterface
-     */
-    private $serializer;
-
-    /**
-     * @var callable
-     */
-    private $contextFactory;
-
-    /**
      * @var array
      */
     protected $arguments;
+
+    /**
+     * @var Normalizer
+     */
+    protected $normalizer;
 
     /**
      * @param string $topicPath
@@ -32,6 +28,18 @@ class Topic extends BaseTopic
         parent::__construct($topicPath);
 
         $this->arguments = $arguments;
+    }
+
+    /**
+     * @param Normalizer $normalizer
+     *
+     * @return self
+     */
+    public function setNormalizer(Normalizer $normalizer)
+    {
+        $this->normalizer = $normalizer;
+
+        return $this;
     }
 
     /**
@@ -59,41 +67,5 @@ class Topic extends BaseTopic
     public function onUnSubscribe(WampConnection $conn, $topic)
     {
         $this->remove($conn);
-    }
-
-    /**
-     * @param SerializerInterface $serializer
-     *
-     * @return self
-     */
-    public function setSerializer(SerializerInterface $serializer)
-    {
-        $this->serializer = $serializer;
-
-        return $this;
-    }
-
-    /**
-     * @param callable $contextFactory
-     *
-     * @return self
-     */
-    public function setContextFactory(callable $contextFactory)
-    {
-        $this->contextFactory = $contextFactory;
-
-        return $this;
-    }
-
-    /**
-     * @param mixed $data
-     *
-     * @return string
-     */
-    public function normalize($data)
-    {
-        $contextFactory = $this->contextFactory;
-
-        return json_decode($this->serializer->serialize($data, 'json', $contextFactory()));
     }
 }
