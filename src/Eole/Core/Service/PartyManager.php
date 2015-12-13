@@ -28,4 +28,92 @@ class PartyManager
 
         return $party;
     }
+
+    /**
+     * @param Party $party
+     * @param Player $player
+     *
+     * @return int|null player position or null if player is not in party.
+     */
+    public function getPlayerPosition(Party $party, Player $player)
+    {
+        foreach ($party->getSlots() as $position => $slot) {
+            if ($slot->hasPlayer() && ($slot->getPlayer() === $player)) {
+                return $position;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Check if player is in party.
+     *
+     * @param Party $party
+     * @param Player $player
+     *
+     * @return bool
+     */
+    public function hasPlayer(Party $party, Player $player)
+    {
+        return null !== $this->getPlayerPosition($party, $player);
+    }
+
+    /**
+     * @param Party $party
+     *
+     * @return int
+     */
+    public function getFreeSlotsCount(Party $party)
+    {
+        $freeSlots = 0;
+
+        foreach ($party->getSlots() as $slot) {
+            if ($slot->isFree()) {
+                $freeSlots++;
+            }
+        }
+
+        return $freeSlots;
+    }
+
+    /**
+     * @param Party $party
+     *
+     * @return boolean
+     */
+    public function hasFreeSlot(Party $party)
+    {
+        $slots = $party->getSlots();
+        $slotsCount = count($slots);
+
+        for ($i = $slotsCount - 1; $i >= 0; $i--) {
+            if ($slots[$i]->isFree()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param Party $party
+     * @param Player $player
+     *
+     * @return int position of new player.
+     *
+     * @throws \OverflowException
+     */
+    public function addPlayer(Party $party, Player $player)
+    {
+        foreach ($party->getSlots() as $position => $slot) {
+            if ($slot->isFree()) {
+                $slot->setPlayer($player);
+
+                return $position;
+            }
+        }
+
+        throw new \OverflowException('Party is full, cannot add player.');
+    }
 }

@@ -1,0 +1,7 @@
+Alcalyn\TicTacToe\TicTacToe:
+    exclusion_policy: NONE
+    properties:
+        grid:
+            type: string
+        lastMove:
+            type: string

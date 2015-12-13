@@ -2,7 +2,7 @@
 
 namespace Alcalyn\TicTacToe\Exception;
 
-class UnknownSymbolException extends \OutOfBoundsException
+class UnknownSymbolException extends TicTacToeException
 {
     /**
      * @param string $symbol
@@ -10,6 +10,6 @@ class UnknownSymbolException extends \OutOfBoundsException
      */
     public function __construct($symbol, $previous = null)
     {
-        parent::__construct(sprintf('Unknown symbol: "%"', $symbol), 0, $previous);
+        parent::__construct(sprintf('Unknown symbol: "%s"', $symbol), $previous);
     }
 }

@@ -2,14 +2,6 @@
 
 namespace Alcalyn\TicTacToe\Exception;
 
-class InvalidMoveException extends \LogicException
+class InvalidMoveException extends TicTacToeException
 {
-    /**
-     * @param string $reason
-     * @param \Exception $previous
-     */
-    public function __construct($reason, $previous = null)
-    {
-        parent::__construct($reason, 0, $previous);
-    }
 }

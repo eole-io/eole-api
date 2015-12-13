@@ -25,11 +25,22 @@ class TicTacToe
     private $grid;
 
     /**
-     * Constructor.
+     * @var string|null
      */
-    public function __construct()
+    private $lastMove;
+
+    /**
+     * Constructor.
+     *
+     * @param string $firstPlayer
+     */
+    public function __construct($firstPlayer = null)
     {
         $this->clearGrid();
+
+        if (null !== $firstPlayer) {
+            $this->setCurrentPlayer($firstPlayer);
+        }
     }
 
     /**
@@ -43,11 +54,36 @@ class TicTacToe
     }
 
     /**
+     * @param string $symbol
+     *
+     * @return self
+     *
+     * @throws Exception\UnknownSymbolException
+     */
+    public function setCurrentPlayer($symbol)
+    {
+        $this->checkSymbol($symbol);
+
+        if (TicTacToe::X === $symbol) {
+            $this->lastMove = TicTacToe::O;
+        }
+
+        if (TicTacToe::O === $symbol) {
+            $this->lastMove = TicTacToe::X;
+        }
+
+        return $this;
+    }
+
+    /**
      * @param int $col
      * @param int $row
      * @param string $symbol
      *
      * @return self
+     *
+     * @throws Exception\InvalidCoordsException
+     * @throws Exception\UnknownSymbolException
      */
     public function set($col, $row, $symbol)
     {
@@ -64,6 +100,8 @@ class TicTacToe
      * @param string $row
      *
      * @return string
+     *
+     * @throws Exception\InvalidCoordsException
      */
     public function get($col, $row)
     {
@@ -77,6 +115,8 @@ class TicTacToe
      * @param string $row
      *
      * @return bool
+     *
+     * @throws Exception\InvalidCoordsException
      */
     public function isEmpty($col, $row)
     {
@@ -92,6 +132,8 @@ class TicTacToe
      *
      * @return self
      *
+     * @throws Exception\InvalidCoordsException
+     * @throws Exception\UnknownSymbolException
      * @throws Exception\InvalidMoveException
      */
     public function play($col, $row, $symbol)
@@ -103,6 +145,10 @@ class TicTacToe
             throw new Exception\InvalidMoveException('Game already finnished.');
         }
 
+        if ($symbol === $this->lastMove) {
+            throw new Exception\PlayingTwiceException();
+        }
+
         if (!$this->isEmpty($col, $row)) {
             throw new Exception\InvalidMoveException(sprintf(
                 'Case already filled by %s.',
@@ -111,6 +157,7 @@ class TicTacToe
         }
 
         $this->set($col, $row, $symbol);
+        $this->lastMove = $symbol;
 
         return $this;
     }
@@ -153,6 +200,8 @@ class TicTacToe
      * @param int $row
      *
      * @return string
+     *
+     * @throws Exception\InvalidCoordsException
      */
     private function toIndex($col, $row)
     {

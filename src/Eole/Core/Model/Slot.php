@@ -51,6 +51,22 @@ class Slot implements \JsonSerializable
     }
 
     /**
+     * @return bool
+     */
+    public function hasPlayer()
+    {
+        return null !== $this->player;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFree()
+    {
+        return null === $this->player;
+    }
+
+    /**
      * @param Player $player
      *
      * @return self

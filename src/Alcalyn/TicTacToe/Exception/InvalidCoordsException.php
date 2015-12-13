@@ -2,7 +2,7 @@
 
 namespace Alcalyn\TicTacToe\Exception;
 
-class InvalidCoordsException extends \RangeException
+class InvalidCoordsException extends TicTacToeException
 {
     /**
      * @param string $name 'col' or 'row'
@@ -13,7 +13,6 @@ class InvalidCoordsException extends \RangeException
     {
         parent::__construct(
             sprintf('Invalid range for %s, must be in [0,2], got "%d".', $name, $coords),
-            0,
             $previous
         );
     }

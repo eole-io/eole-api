@@ -11,13 +11,18 @@ class TicTacToeProvider implements ServiceProviderInterface
 {
     public function register(Container $app)
     {
-        $partyRepository = $app['orm.em']->getRepository('Eole:Party');
+        $app['serializer.builder']->addMetadataDir(
+            __DIR__.'/serializer',
+            'Alcalyn\\TicTacToe'
+        );
 
-        $tictactoePartiesFactory = function ($topicPath, array $arguments) use ($partyRepository) {
+        $tictactoePartiesFactory = function ($topicPath, array $arguments) use ($app) {
             $partyId = $arguments['party_id'];
+            $partyRepository = $app['orm.em']->getRepository('Eole:Party');
             $party = $partyRepository->findFullPartyById($partyId, 'tictactoe');
+            $partyManager = $app['eole.party_manager'];
 
-            return new Topic($topicPath, $party);
+            return new Topic($topicPath, $party, $partyManager, $app['orm.em']);
         };
 
         $app['eole.games.tictactoe.topic.factory'] = $app->protect($tictactoePartiesFactory);
