@@ -133,12 +133,13 @@ class Application implements WampServerInterface
 
     public function onOpen(ConnectionInterface $conn)
     {
-        echo __METHOD__.PHP_EOL;
+        echo __METHOD__.' authentication... ';
 
         try {
             $player = $this->authenticatePlayer($conn);
+            echo sprintf('Player "%s" logged.'.PHP_EOL, $player->getUsername());
         } catch (\Exception $e) {
-            echo $e->getMessage().PHP_EOL;
+            echo 'failed: '.$e->getMessage().PHP_EOL;
             $conn->send(json_encode('Could not authenticate client, closing connection.'));
             $conn->close();
 
