@@ -29,6 +29,7 @@ class Topic extends BaseTopic
     /**
      * @param string $topicPath
      * @param Party $party
+     * @param PartyManager $partyManager
      */
     public function __construct($topicPath, Party $party, PartyManager $partyManager)
     {
@@ -49,13 +50,6 @@ class Topic extends BaseTopic
     public function onSubscribe(WampConnection $conn, $topic)
     {
         parent::onSubscribe($conn, $topic);
-
-        $player = $conn->player;
-        $party = $this->party;
-
-        if ($this->partyManager->hasFreeSlot($party) && !$this->partyManager->hasPlayer($party, $player)) {
-            $this->partyManager->addPlayer($party, $player);
-        }
 
         $conn->event($topic, array(
             'type' => 'init',
