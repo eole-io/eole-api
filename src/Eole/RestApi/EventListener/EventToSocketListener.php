@@ -6,6 +6,7 @@ use ZMQSocket;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Eole\Core\Event\Event;
 use Eole\Core\Event\PartyEvent;
+use Eole\Core\Event\SlotEvent;
 use Eole\Silex\Service\EventSerializer;
 
 class EventToSocketListener implements EventSubscriberInterface
@@ -35,11 +36,20 @@ class EventToSocketListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            PartyEvent::CREATE_AFTER => array(
-                array('sendEventToSocket'),
-            ),
+        $eventsToSerialize = array(
+            PartyEvent::CREATE_AFTER,
+            SlotEvent::JOIN_AFTER,
         );
+
+        $subscribedEvents = array();
+
+        foreach ($eventsToSerialize as $eventName) {
+            $subscribedEvents[$eventName] = array(
+                array('sendEventToSocket'),
+            );
+        }
+
+        return $subscribedEvents;
     }
 
     /**

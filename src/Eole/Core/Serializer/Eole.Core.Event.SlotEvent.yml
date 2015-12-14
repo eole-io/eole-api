@@ -1,0 +1,9 @@
+Eole\Core\Event\SlotEvent:
+    exclusion_policy: NONE
+    properties:
+        party:
+            type: Eole\Core\Model\Party
+        player:
+            type: Eole\Core\Model\Player
+        slot:
+            type: Eole\Core\Model\Slot
