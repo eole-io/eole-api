@@ -89,6 +89,16 @@ class Party implements \JsonSerializable
     }
 
     /**
+     * @param int $position
+     *
+     * @return Slot
+     */
+    public function getSlot($position)
+    {
+        return $this->slots[$position];
+    }
+
+    /**
      * @param Slot[] $slots
      *
      * @return self

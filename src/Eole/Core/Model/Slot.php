@@ -26,7 +26,7 @@ class Slot implements \JsonSerializable
      * @param Party $party
      * @param Player $player
      */
-    public function __construct(Party $party = null, Player $player = null)
+    public function __construct(Party $party, Player $player = null)
     {
         $this->party = $party;
         $this->player = $player;
@@ -71,7 +71,7 @@ class Slot implements \JsonSerializable
      *
      * @return self
      */
-    public function setPlayer(Player $player = null)
+    public function setPlayer(Player $player)
     {
         $this->player = $player;
 

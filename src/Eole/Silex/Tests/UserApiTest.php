@@ -3,75 +3,9 @@
 namespace Eole\Silex\Tests;
 
 use Symfony\Component\HttpFoundation\Response;
-use Silex\WebTestCase;
-use Eole\Core\Model\Player;
-use Eole\Core\Model\Game;
-use Eole\Core\Service\PlayerManager;
-use Eole\RestApi\Application;
 
-class ApplicationTest extends WebTestCase
+class UserApiTest extends AbstractApplicationTest
 {
-    /**
-     * @var PlayerManager
-     */
-    private $playerManager;
-
-    /**
-     * {@InheritDoc}
-     */
-    public function createApplication()
-    {
-        $app = new Application(array(
-            'project.root' => __DIR__.'/../../../..',
-            'env' => 'test',
-            'debug' => true,
-        ));
-
-        $app['security.wsse.token_validator'] = function () {
-            return new WsseTokenValidatorMock();
-        };
-
-        return $app;
-    }
-
-    /**
-     * {@InheritDoc}
-     */
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->playerManager = $this->app['eole.player_manager'];
-
-        $this->app['db']->executeQuery('delete from eole_player');
-        $this->app['db']->executeQuery('delete from eole_game');
-
-        $player = new Player();
-        $player->setUsername('existing-player');
-        $this->playerManager->updatePassword($player, 'good-password');
-
-        $game0 = new Game();
-        $game0->setName('game-0');
-
-        $game1 = new Game();
-        $game1->setName('game-1');
-
-        $this->app['orm.em']->persist($game0);
-        $this->app['orm.em']->persist($game1);
-        $this->app['orm.em']->persist($player);
-        $this->app['orm.em']->flush();
-    }
-
-    /**
-     * {@InheritDoc}
-     */
-    protected function tearDown()
-    {
-        parent::tearDown();
-
-        $this->app['db']->executeQuery('delete from eole_player');
-    }
-
     public function testRootPathIs404()
     {
         $client = $this->createClient();
@@ -106,7 +40,7 @@ class ApplicationTest extends WebTestCase
         $client = $this->createClient();
 
         $client->request('GET', '/api/auth/me', [], [], array(
-            'HTTP_X_WSSE' => $this->createWsseToken('existing-player'),
+            'HTTP_X_WSSE' => self::createWsseToken('existing-player'),
         ));
 
         $this->assertTrue($client->getResponse()->isSuccessful());
@@ -123,7 +57,7 @@ class ApplicationTest extends WebTestCase
         $client = $this->createClient();
 
         $client->request('GET', '/api/auth/me', [], [], array(
-            'HTTP_X_WSSE' => $this->createWsseToken('non-existing-player'),
+            'HTTP_X_WSSE' => self::createWsseToken('non-existing-player'),
         ));
 
         $this->assertEquals(Response::HTTP_UNAUTHORIZED, $client->getResponse()->getStatusCode());
@@ -262,7 +196,7 @@ class ApplicationTest extends WebTestCase
         $guest = json_decode($client->getResponse()->getContent());
 
         $client->request('GET', '/api/auth/me', [], [], array(
-            'HTTP_X_WSSE' => $this->createWsseToken($guest->username),
+            'HTTP_X_WSSE' => self::createWsseToken($guest->username),
         ));
 
         $this->assertTrue($client->getResponse()->isSuccessful());
@@ -319,7 +253,7 @@ class ApplicationTest extends WebTestCase
             'username' => 'Killer60',
             'password' => 'myPassword'
         ), [], array(
-            'HTTP_X_WSSE' => $this->createWsseToken($guest->username),
+            'HTTP_X_WSSE' => self::createWsseToken($guest->username),
         ));
         $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
 
@@ -351,7 +285,7 @@ class ApplicationTest extends WebTestCase
             'username' => 'Killer60',
             'password' => 'myPassword'
         ), [], array(
-            'HTTP_X_WSSE' => $this->createWsseToken('existing-player'),
+            'HTTP_X_WSSE' => self::createWsseToken('existing-player'),
         ));
 
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $client->getResponse()->getStatusCode());
@@ -393,15 +327,5 @@ class ApplicationTest extends WebTestCase
     public function testChangePassword()
     {
         $client = $this->createClient();
-    }
-
-    /**
-     * @param string $username
-     *
-     * @return string
-     */
-    private function createWsseToken($username)
-    {
-        return 'UsernameToken Username="'.$username.'", PasswordDigest="good-password", Nonce="nonce", Created="timestamp"';
     }
 }

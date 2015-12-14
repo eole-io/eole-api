@@ -37,7 +37,11 @@ class PartyConverter
             return null;
         }
 
-        $gameName = $request->query->get('game');
+        $gameName = $request->attributes->get('game')->getName();
+
+        if (null === $gameName) {
+            throw new BadRequestHttpException("Game invalid.");
+        }
 
         if (is_numeric($partyId)) {
             $party = $this->partyRepository->findFullPartyById($partyId, $gameName);

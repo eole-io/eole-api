@@ -20,6 +20,7 @@ class PartyControllerProvider implements ControllerProviderInterface
         $controllers->get('/games/{game}/parties', $partyController.':getPartiesForGame');
         $controllers->post('/games/{game}/parties', $partyController.':createParty');
         $controllers->get('/games/{game}/parties/{party}', $partyController.':getParty');
+        $controllers->patch('/games/{game}/parties/{party}/join', $partyController.':joinParty');
 
         $controllers->convert('game', 'eole.converter.game:convert');
         $controllers->convert('party', 'eole.converter.party:convert');
