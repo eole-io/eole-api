@@ -30,6 +30,13 @@ class Application extends BaseApplication
             );
         };
 
+        $this['eole.listener.event_to_socket'] = function () {
+            return new EventListener\EventToSocketListener(
+                $this['eole.push_server'],
+                $this['eole.event_serializer']
+            );
+        };
+
         $this['eole.converter.game'] = function () {
             return new \Eole\Core\Converter\GameConverter(
                 $this['orm.em']->getRepository('Eole:Game')
@@ -81,10 +88,7 @@ class Application extends BaseApplication
             $this['eole.listener.api_response_filter']->onKernelView($event);
         });
 
-        $this['dispatcher']->addSubscriber(new EventListener\EventToSocketListener(
-            $this['eole.push_server'],
-            $this['eole.event_serializer']
-        ));
+        $this['dispatcher']->addSubscriber($this['eole.listener.event_to_socket']);
     }
 
     /**
