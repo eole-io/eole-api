@@ -70,18 +70,35 @@ class Topic extends BaseTopic implements EventSubscriberInterface
     public function onSubscribe(WampConnection $conn, $topic)
     {
         parent::onSubscribe($conn, $topic);
-
-        $conn->event($topic, array(
-            'type' => 'init',
-            'tictactoe' => $this->normalizer->normalize($this->tictactoe),
-            'party' => $this->normalizer->normalize($this->party),
-        ));
     }
 
     /**
      * {@InheritDoc}
      */
     public function onPublish(WampConnection $conn, $topic, $event)
+    {
+        switch ($event['type']) {
+            case 'move':
+                $this->onMove($conn, $topic, $event);
+                break;
+
+            case 'need-refresh':
+                $this->sendAll($conn, $topic);
+                break;
+
+            default:
+                echo 'Oops, strange event type: "'.$event['type'].'"'.PHP_EOL;
+        }
+    }
+
+    /**
+     * Perform a move a broadcast all clients.
+     *
+     * @param WampConnection $conn
+     * @param string $topic
+     * @param array $event
+     */
+    private function onMove(WampConnection $conn, $topic, $event)
     {
         $player = $conn->player;
         $playerPosition = $this->partyManager->getPlayerPosition($this->party, $player);
@@ -109,6 +126,18 @@ class Topic extends BaseTopic implements EventSubscriberInterface
         } catch (TicTacToeException $e) {
             echo 'Argh! Invalid move: '.$e->getMessage().PHP_EOL;
         }
+    }
+
+    /**
+     * Send all data about current party to one client.
+     */
+    private function sendAll(WampConnection $conn, $topic)
+    {
+        $conn->event($topic, array(
+            'type' => 'init',
+            'tictactoe' => $this->normalizer->normalize($this->tictactoe),
+            'party' => $this->normalizer->normalize($this->party),
+        ));
     }
 
     /**

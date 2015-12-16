@@ -207,7 +207,7 @@ class TicTacToe
     {
         $this->checkCoords($col, $row);
 
-        return ($col * 3) + ($row % 3);
+        return ($col % 3) + ($row * 3);
     }
 
     /**
