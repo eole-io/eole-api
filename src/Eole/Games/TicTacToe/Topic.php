@@ -2,14 +2,16 @@
 
 namespace Eole\Games\TicTacToe;
 
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Alcalyn\TicTacToe\Exception\TicTacToeException;
 use Alcalyn\TicTacToe\TicTacToe;
 use Ratchet\Wamp\WampConnection;
 use Eole\Core\Model\Party;
+use Eole\Core\Event\SlotEvent;
 use Eole\Core\Service\PartyManager;
 use Eole\WebSocket\Topic as BaseTopic;
 
-class Topic extends BaseTopic
+class Topic extends BaseTopic implements EventSubscriberInterface
 {
     /**
      * @var Party
@@ -42,6 +44,24 @@ class Topic extends BaseTopic
         $randomSymbol = [TicTacToe::X, TicTacToe::O][mt_rand() % 2];
 
         $this->tictactoe->setCurrentPlayer($randomSymbol);
+    }
+
+    /**
+     * @param SlotEvent $event
+     */
+    public function onPlayerJoin(SlotEvent $event)
+    {
+        if ($event->getParty()->getId() !== $this->party->getId()) {
+            return;
+        }
+
+        $this->party = $event->getParty();
+
+        $this->broadcast(array(
+            'type' => 'join',
+            'player' => $this->normalizer->normalize($event->getPlayer()),
+            'position' => $this->partyManager->getPlayerPosition($event->getParty(), $event->getPlayer()),
+        ));
     }
 
     /**
@@ -97,5 +117,17 @@ class Topic extends BaseTopic
     public function onUnSubscribe(WampConnection $conn, $topic)
     {
         parent::onUnSubscribe($conn, $topic);
+    }
+
+    /**
+     * {@InheritDoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return array(
+            SlotEvent::JOIN_AFTER => array(
+                array('onPlayerJoin'),
+            ),
+        );
     }
 }

@@ -38,7 +38,7 @@ class PartyManager
     public function getPlayerPosition(Party $party, Player $player)
     {
         foreach ($party->getSlots() as $position => $slot) {
-            if ($slot->hasPlayer() && ($slot->getPlayer() === $player)) {
+            if ($slot->hasPlayer() && ($slot->getPlayer()->getId() === $player->getId())) {
                 return $position;
             }
         }
