@@ -45,7 +45,7 @@ class PartiesTopic extends Topic implements EventSubscriberInterface
     /**
      * @param PartyEvent $event
      */
-    public function onPartyCreated(PartyEvent $event)
+    public function onPartyAvailable(PartyEvent $event)
     {
         $party = $event->getParty();
 
@@ -107,7 +107,7 @@ class PartiesTopic extends Topic implements EventSubscriberInterface
     {
         return array(
             PartyEvent::CREATE_AFTER => array(
-                array('onPartyCreated'),
+                array('onPartyAvailable'),
             ),
         );
     }
