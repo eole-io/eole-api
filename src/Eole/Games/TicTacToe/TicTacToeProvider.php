@@ -22,7 +22,7 @@ class TicTacToeProvider implements ServiceProviderInterface
             $party = $partyRepository->findFullPartyById($partyId, 'tictactoe');
             $partyManager = $app['eole.party_manager'];
 
-            return new Topic($topicPath, $party, $partyManager, $app['orm.em']);
+            return new Topic($topicPath, $party, $partyManager, $partyRepository);
         };
 
         $app['eole.games.tictactoe.topic.factory'] = $app->protect($tictactoePartiesFactory);

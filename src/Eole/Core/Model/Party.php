@@ -7,6 +7,21 @@ class Party implements \JsonSerializable
     /**
      * @var int
      */
+    const PREPARATION = 0;
+
+    /**
+     * @var int
+     */
+    const ACTIVE = 1;
+
+    /**
+     * @var int
+     */
+    const ENDED = 2;
+
+    /**
+     * @var int
+     */
     private $id;
 
     /**
@@ -20,6 +35,11 @@ class Party implements \JsonSerializable
     private $host;
 
     /**
+     * @var int
+     */
+    private $state;
+
+    /**
      * @var Slot[]
      */
     private $slots;
@@ -30,6 +50,7 @@ class Party implements \JsonSerializable
     public function __construct()
     {
         $this->slots = array();
+        $this->state = Party::PREPARATION;
     }
 
     /**
@@ -76,6 +97,26 @@ class Party implements \JsonSerializable
     public function setHost(Player $player)
     {
         $this->host = $player;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    /**
+     * @param int $state
+     *
+     * @return self
+     */
+    public function setState($state)
+    {
+        $this->state = $state;
 
         return $this;
     }

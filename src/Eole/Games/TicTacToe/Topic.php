@@ -3,12 +3,14 @@
 namespace Eole\Games\TicTacToe;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Doctrine\Common\Persistence\ObjectManager;
 use Alcalyn\TicTacToe\Exception\TicTacToeException;
 use Alcalyn\TicTacToe\TicTacToe;
 use Ratchet\Wamp\WampConnection;
 use Eole\Core\Model\Party;
 use Eole\Core\Event\SlotEvent;
 use Eole\Core\Service\PartyManager;
+use Eole\Core\Repository\PartyRepository;
 use Eole\WebSocket\Topic as BaseTopic;
 
 class Topic extends BaseTopic implements EventSubscriberInterface
@@ -24,6 +26,11 @@ class Topic extends BaseTopic implements EventSubscriberInterface
     private $partyManager;
 
     /**
+     * @var PartyRepository
+     */
+    private $partyRepository;
+
+    /**
      * @var TicTacToe
      */
     private $tictactoe;
@@ -33,12 +40,14 @@ class Topic extends BaseTopic implements EventSubscriberInterface
      * @param Party $party
      * @param PartyManager $partyManager
      */
-    public function __construct($topicPath, Party $party, PartyManager $partyManager)
+    public function __construct($topicPath, Party $party, PartyManager $partyManager, PartyRepository $partyRepository)
     {
         parent::__construct($topicPath);
 
         $this->party = $party;
         $this->partyManager = $partyManager;
+        $this->partyRepository = $partyRepository;
+
         $this->tictactoe = new TicTacToe();
 
         $randomSymbol = [TicTacToe::X, TicTacToe::O][mt_rand() % 2];
@@ -62,6 +71,9 @@ class Topic extends BaseTopic implements EventSubscriberInterface
             'player' => $this->normalizer->normalize($event->getPlayer()),
             'position' => $this->partyManager->getPlayerPosition($event->getParty(), $event->getPlayer()),
         ));
+
+        $this->partyManager->startParty($this->party);
+        $this->partyRepository->updateState($this->party);
     }
 
     /**
@@ -123,6 +135,11 @@ class Topic extends BaseTopic implements EventSubscriberInterface
                     'symbol' => $symbol,
                 ),
             ));
+
+            if (null !== $this->tictactoe->getWinner()) {
+                $this->partyManager->endParty($this->party);
+                $this->partyRepository->updateState($this->party);
+            }
         } catch (TicTacToeException $e) {
             echo 'Argh! Invalid move: '.$e->getMessage().PHP_EOL;
         }

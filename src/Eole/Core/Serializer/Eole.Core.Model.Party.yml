@@ -3,6 +3,8 @@ Eole\Core\Model\Party:
     properties:
         id:
             type: integer
+        state:
+            type: integer
         game:
             type: Eole\Core\Model\Game
         host:

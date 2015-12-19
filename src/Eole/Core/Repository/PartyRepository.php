@@ -36,4 +36,19 @@ class PartyRepository extends EntityRepository
             ->getOneOrNullResult()
         ;
     }
+
+    /**
+     * @param Party $party
+     */
+    public function updateState(Party $party)
+    {
+        $this->_em->createQueryBuilder()
+            ->update('Eole:Party', 'p')
+            ->set('p.state', $party->getState())
+            ->where('p.id = :id')
+            ->setParameter('id', $party->getId())
+            ->getQuery()
+            ->execute()
+        ;
+    }
 }

@@ -116,4 +116,32 @@ class PartyManager
 
         throw new \OverflowException('Party is full, cannot add player.');
     }
+
+    /**
+     * @param Party $party
+     *
+     * @throws \RuntimeException
+     */
+    public function startParty(Party $party)
+    {
+        if (Party::PREPARATION !== $party->getState()) {
+            throw new \RuntimeException('Party already started');
+        }
+
+        $party->setState(Party::ACTIVE);
+    }
+
+    /**
+     * @param Party $party
+     *
+     * @throws \RuntimeException
+     */
+    public function endParty(Party $party)
+    {
+        if (Party::ACTIVE !== $party->getState()) {
+            throw new \RuntimeException('Party is not active');
+        }
+
+        $party->setState(Party::ENDED);
+    }
 }
