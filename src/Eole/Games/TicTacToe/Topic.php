@@ -136,7 +136,13 @@ class Topic extends BaseTopic implements EventSubscriberInterface
                 ),
             ));
 
-            if (null !== $this->tictactoe->getWinner()) {
+            if (null !== $winner = $this->tictactoe->getWinner()) {
+                $this->broadcast(array(
+                    'type' => 'end',
+                    'winner' => $winner,
+                    'brochette' => $this->tictactoe->getBrochette(),
+                ));
+
                 $this->partyManager->endParty($this->party);
                 $this->partyRepository->updateState($this->party);
             }
