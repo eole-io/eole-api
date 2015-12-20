@@ -163,13 +163,9 @@ class TicTacToe
     }
 
     /**
-     * @return string|null Possible values:
-     *             'X'  => X won
-     *             'O'  => O won
-     *             '-'  => draw
-     *             null => party not finished
+     * @return array|null array with coords, or null if no brochette.
      */
-    public function getWinner()
+    public function getBrochette()
     {
         $possibleRows = array(
             [0, 1, 2],
@@ -184,8 +180,26 @@ class TicTacToe
 
         foreach ($possibleRows as $row) {
             if ($this->isBrochette($row[0], $row[1], $row[2])) {
-                return $row[0];
+                return $row;
             }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return string|null Possible values:
+     *             'X'  => X won
+     *             'O'  => O won
+     *             '-'  => draw
+     *             null => party not finished
+     */
+    public function getWinner()
+    {
+        $brochette = $this->getBrochette();
+
+        if (null !== $brochette) {
+            return $this->grid[$brochette[0]];
         }
 
         if (false === strpos($this->grid, self::NONE)) {
@@ -193,6 +207,21 @@ class TicTacToe
         }
 
         return null;
+    }
+
+    /**
+     * @param integer $a
+     * @param integer $b
+     * @param integer $c
+     *
+     * @return bool
+     */
+    private function isBrochette($a, $b, $c)
+    {
+        return
+            $this->grid[$a] !== self::NONE &&
+            $this->grid[$a] === $this->grid[$b] &&
+            $this->grid[$a] === $this->grid[$c] ;
     }
 
     /**
@@ -237,20 +266,5 @@ class TicTacToe
         if ($row < 0 || $row > 2) {
             throw new Exception\InvalidCoordsException('row', $row);
         }
-    }
-
-    /**
-     * @param integer $a
-     * @param integer $b
-     * @param integer $c
-     *
-     * @return bool
-     */
-    private function isBrochette($a, $b, $c)
-    {
-        return
-            $this->grid[$a] !== self::NONE &&
-            $this->grid[$a] === $this->grid[$b] &&
-            $this->grid[$a] === $this->grid[$c] ;
     }
 }
