@@ -16,6 +16,11 @@ use Eole\WebSocket\Topic as BaseTopic;
 class Topic extends BaseTopic implements EventSubscriberInterface
 {
     /**
+     * @var bool
+     */
+    const INFINITE_MODE_ENABLED = true;
+
+    /**
      * @var Party
      */
     private $party;
@@ -144,8 +149,13 @@ class Topic extends BaseTopic implements EventSubscriberInterface
                     'brochette' => $this->tictactoe->getBrochette(),
                 ));
 
-                $this->partyManager->endParty($this->party);
-                $this->partyRepository->updateState($this->party);
+                if (self::INFINITE_MODE_ENABLED) {
+                    $this->tictactoe->clearGrid();
+                    $this->sendRestartParty();
+                } else {
+                    $this->partyManager->endParty($this->party);
+                    $this->partyRepository->updateState($this->party);
+                }
             }
         } catch (TicTacToeException $e) {
             echo 'Argh! Invalid move: '.$e->getMessage().PHP_EOL;
@@ -154,11 +164,26 @@ class Topic extends BaseTopic implements EventSubscriberInterface
 
     /**
      * Send all data about current party to one client.
+     *
+     * @param WampConnection $conn
+     * @param string $topic
      */
     private function sendAll(WampConnection $conn, $topic)
     {
         $conn->event($topic, array(
             'type' => 'init',
+            'tictactoe' => $this->normalizer->normalize($this->tictactoe),
+            'party' => $this->normalizer->normalize($this->party),
+        ));
+    }
+
+    /**
+     * Send restart notification to all subscribers.
+     */
+    private function sendRestartParty()
+    {
+        $this->broadcast(array(
+            'type' => 'restart',
             'tictactoe' => $this->normalizer->normalize($this->tictactoe),
             'party' => $this->normalizer->normalize($this->party),
         ));
