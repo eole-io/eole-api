@@ -54,6 +54,22 @@ class TicTacToe
     }
 
     /**
+     * @return string
+     */
+    public function getCurrentPlayer()
+    {
+        if (TicTacToe::X === $this->lastMove) {
+            return TicTacToe::O;
+        }
+
+        if (TicTacToe::O === $this->lastMove) {
+            return TicTacToe::X;
+        }
+
+        return null;
+    }
+
+    /**
      * @param string $symbol
      *
      * @return self

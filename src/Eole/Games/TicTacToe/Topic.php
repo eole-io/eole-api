@@ -134,6 +134,7 @@ class Topic extends BaseTopic implements EventSubscriberInterface
                     'row' => $row,
                     'symbol' => $symbol,
                 ),
+                'current_player' => $this->tictactoe->getCurrentPlayer(),
             ));
 
             if (null !== $winner = $this->tictactoe->getWinner()) {

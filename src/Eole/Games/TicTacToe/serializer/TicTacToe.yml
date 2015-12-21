@@ -5,3 +5,7 @@ Alcalyn\TicTacToe\TicTacToe:
             type: string
         lastMove:
             type: string
+    virtual_properties:
+        getCurrentPlayer:
+            type: string
+            serialized_name: current_player
