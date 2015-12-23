@@ -16,11 +16,6 @@ class ApiResponseFilterListener
     private $serializer;
 
     /**
-     * @var callable
-     */
-    private $contextFactory;
-
-    /**
      * @var string
      */
     private $defaultResponseFormat;
@@ -32,22 +27,10 @@ class ApiResponseFilterListener
      */
     public function __construct(
         SerializerInterface $serializer,
-        callable $contextFactory,
         $defaultResponseFormat = 'json'
     ) {
         $this->serializer = $serializer;
-        $this->contextFactory = $contextFactory;
         $this->defaultResponseFormat = $defaultResponseFormat;
-    }
-
-    /**
-     * @return SerializationContext
-     */
-    private function createContext()
-    {
-        $contextFactory = $this->contextFactory;
-
-        return $contextFactory();
     }
 
     /**
@@ -66,7 +49,7 @@ class ApiResponseFilterListener
         }
 
         $format = $event->getRequest()->getRequestFormat($this->defaultResponseFormat);
-        $serialized = $this->serializer->serialize($apiResponse->getData(), $format, self::createContext());
+        $serialized = $this->serializer->serialize($apiResponse->getData(), $format);
         $response = new Response($serialized, $apiResponse->getStatusCode());
 
         $response->headers->set('Content-Type', $event->getRequest()->getMimeType($format));

@@ -176,15 +176,12 @@ class Application extends BaseApplication
      */
     private function registerServices()
     {
-        $this['serializer.context_factory'] = $this->protect(function () {
-            return \JMS\Serializer\SerializationContext::create()
-                ->setSerializeNull(true)
-            ;
-        });
-
         $this['serializer.builder'] = function () {
+            $serializationContextFactory = new Service\SerializationContextFactory();
+
             return
                 \JMS\Serializer\SerializerBuilder::create()
+                ->setDefaultSerializationContextFactory($serializationContextFactory)
                 ->addMetadataDir($this['project.root'].'/src/Eole/Core/Serializer')
                 ->setCacheDir($this['project.root'].'/var/cache/serializer')
                 ->setDebug($this['debug'])

@@ -25,8 +25,7 @@ class Application extends BaseApplication
     {
         $this['eole.listener.api_response_filter'] = function () {
             return new \Eole\Core\EventListener\ApiResponseFilterListener(
-                $this['serializer'],
-                $this['serializer.context_factory']
+                $this['serializer']
             );
         };
 

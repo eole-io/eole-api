@@ -14,18 +14,12 @@ class Normalizer
     private $serializer;
 
     /**
-     * @var \Closure
-     */
-    private $contextFactory;
-
-    /**
      * @param Serializer $serializer
      * @param \Closure $contextFactory
      */
-    public function __construct(Serializer $serializer, \Closure $contextFactory)
+    public function __construct(Serializer $serializer)
     {
         $this->serializer = $serializer;
-        $this->contextFactory = $contextFactory;
     }
 
     /**
@@ -35,8 +29,6 @@ class Normalizer
      */
     public function normalize($data)
     {
-        $contextFactory = $this->contextFactory;
-
-        return $this->serializer->toArray($data, $contextFactory());
+        return $this->serializer->toArray($data);
     }
 }

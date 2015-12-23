@@ -45,6 +45,7 @@
     },
     "autoload": {
         "psr-4": {
+            "JMS\\Serializer\\": "ext/serializer/src/JMS/Serializer",
             "Eole\\": "src/Eole",
             "Alcalyn\\Wsse\\": "ext/symfony-wsse",
             "Alcalyn\\SilexWsse\\": "ext/silex-wsse",
@@ -79,6 +80,10 @@
                     "type": "file"
                 }
             }
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:alcalyn/serializer.git"
         }
     ]
 }
