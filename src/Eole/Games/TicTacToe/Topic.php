@@ -131,34 +131,41 @@ class Topic extends BaseTopic implements EventSubscriberInterface
 
         try {
             $this->tictactoe->play($col, $row, $symbol);
-
-            $this->broadcast(array(
-                'type' => 'move',
-                'move' => array(
-                    'col' => $col,
-                    'row' => $row,
-                    'symbol' => $symbol,
-                ),
-                'current_player' => $this->tictactoe->getCurrentPlayer(),
-            ));
-
-            if (null !== $winner = $this->tictactoe->getWinner()) {
-                $this->broadcast(array(
-                    'type' => 'end',
-                    'winner' => $winner,
-                    'brochette' => $this->tictactoe->getBrochette(),
-                ));
-
-                if (self::INFINITE_MODE_ENABLED) {
-                    $this->tictactoe->clearGrid();
-                    $this->sendRestartParty();
-                } else {
-                    $this->partyManager->endParty($this->party);
-                    $this->partyRepository->updateState($this->party);
-                }
-            }
         } catch (TicTacToeException $e) {
             echo 'Argh! Invalid move: '.$e->getMessage().PHP_EOL;
+            return;
+        }
+
+        $this->broadcast(array(
+            'type' => 'move',
+            'move' => array(
+                'col' => $col,
+                'row' => $row,
+                'symbol' => $symbol,
+            ),
+            'current_player' => $this->tictactoe->getCurrentPlayer(),
+        ));
+
+        if (null !== $winner = $this->tictactoe->getWinner()) {
+            if (TicTacToe::NONE !== $winner) {
+                $slot = $this->party->getSlot((TicTacToe::X === $winner) ? 0 : 1);
+                $slot->incrementScore();
+                $this->partyRepository->updateScore($slot);
+            }
+
+            $this->broadcast(array(
+                'type' => 'end',
+                'winner' => $winner,
+                'brochette' => $this->tictactoe->getBrochette(),
+            ));
+
+            if (self::INFINITE_MODE_ENABLED) {
+                $this->tictactoe->clearGrid();
+                $this->sendRestartParty();
+            } else {
+                $this->partyManager->endParty($this->party);
+                $this->partyRepository->updateState($this->party);
+            }
         }
     }
 
