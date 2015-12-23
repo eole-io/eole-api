@@ -7,3 +7,5 @@ Eole\Core\Model\Slot:
             type: Eole\Core\Model\Player
         party:
             type: Eole\Core\Model\Party
+        score:
+            type: double

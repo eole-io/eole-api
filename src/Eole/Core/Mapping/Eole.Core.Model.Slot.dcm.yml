@@ -7,6 +7,9 @@ Eole\Core\Model\Slot:
             type: integer
             generator:
                 strategy: AUTO
+    fields:
+        score:
+            type: float
     manyToOne:
         player:
             targetEntity: Eole\Core\Model\Player

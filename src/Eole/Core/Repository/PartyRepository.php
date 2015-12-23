@@ -4,6 +4,7 @@ namespace Eole\Core\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Eole\Core\Model\Party;
+use Eole\Core\Model\Slot;
 
 class PartyRepository extends EntityRepository
 {
@@ -47,6 +48,21 @@ class PartyRepository extends EntityRepository
             ->set('p.state', $party->getState())
             ->where('p.id = :id')
             ->setParameter('id', $party->getId())
+            ->getQuery()
+            ->execute()
+        ;
+    }
+
+    /**
+     * @param Slot $slot
+     */
+    public function updateScore(Slot $slot)
+    {
+        $this->_em->createQueryBuilder()
+            ->update('Eole:Slot', 's')
+            ->set('s.score', $slot->getScore())
+            ->where('s.id = :id')
+            ->setParameter('id', $slot->getId())
             ->getQuery()
             ->execute()
         ;
