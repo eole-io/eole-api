@@ -29,6 +29,7 @@
         "jms/serializer": "~1.0",
         "alcalyn/symfony-wsse": "1.0.x",
         "alcalyn/silex-wsse": "1.0.x",
+        "alcalyn/user-api": "^1.1.1",
         "alcalyn/doctrine-user-api": "1.0.x",
         "saxulum/saxulum-doctrine-orm-manager-registry-provider": "~3.0",
         "react/zmq": "0.2.*|0.3.*",

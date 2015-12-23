@@ -37,6 +37,10 @@ class PartyManager
      */
     public function getPlayerPosition(Party $party, Player $player)
     {
+        if (null === $player->getId()) {
+            throw new \RuntimeException('Player id is null.');
+        }
+
         foreach ($party->getSlots() as $position => $slot) {
             if ($slot->hasPlayer() && ($slot->getPlayer()->getId() === $player->getId())) {
                 return $position;
