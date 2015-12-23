@@ -2,7 +2,7 @@
 
 namespace Eole\Core\Model;
 
-class Party implements \JsonSerializable
+class Party
 {
     /**
      * @var int
@@ -161,18 +161,5 @@ class Party implements \JsonSerializable
         $this->slots []= $slot;
 
         return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function jsonSerialize()
-    {
-        return array(
-            'id' => $this->getId(),
-            'game' => $this->getGame(),
-            'host' => $this->getHost(),
-            'slots' => $this->getSlots(),
-        );
     }
 }

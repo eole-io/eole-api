@@ -5,7 +5,7 @@ namespace Eole\Core\Model;
 use Eole\Core\Model\Player;
 use Eole\Core\Model\Party;
 
-class Slot implements \JsonSerializable
+class Slot
 {
     /**
      * @var int
@@ -96,16 +96,5 @@ class Slot implements \JsonSerializable
         $this->party = $party;
 
         return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function jsonSerialize()
-    {
-        return array(
-            'id' => $this->getId(),
-            'player' => $this->getPlayer(),
-        );
     }
 }

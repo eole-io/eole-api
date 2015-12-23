@@ -60,16 +60,4 @@ class Player extends User
     {
         return array('ROLE_PLAYER');
     }
-
-    /**
-     * {@InheritDoc}
-     */
-    public function jsonSerialize()
-    {
-        $array = parent::jsonSerialize();
-
-        $array['guest'] = $this->getGuest();
-
-        return $array;
-    }
 }

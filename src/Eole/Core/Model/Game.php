@@ -2,7 +2,7 @@
 
 namespace Eole\Core\Model;
 
-class Game implements \JsonSerializable
+class Game
 {
     /**
      * @var int
@@ -40,16 +40,5 @@ class Game implements \JsonSerializable
         $this->name = $name;
 
         return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function jsonSerialize()
-    {
-        return array(
-            'id' => $this->getId(),
-            'name' => $this->getName(),
-        );
     }
 }
