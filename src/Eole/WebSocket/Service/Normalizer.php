@@ -2,12 +2,14 @@
 
 namespace Eole\WebSocket\Service;
 
-use JMS\Serializer\SerializerInterface;
+use JMS\Serializer\Serializer;
 
 class Normalizer
 {
     /**
-     * @var SerializerInterface
+     * Waiting for https://github.com/schmittjoh/serializer/issues/537 to use NormalizerInterface
+     *
+     * @var Serializer
      */
     private $serializer;
 
@@ -17,10 +19,10 @@ class Normalizer
     private $contextFactory;
 
     /**
-     * @param SerializerInterface $serializer
+     * @param Serializer $serializer
      * @param \Closure $contextFactory
      */
-    public function __construct(SerializerInterface $serializer, \Closure $contextFactory)
+    public function __construct(Serializer $serializer, \Closure $contextFactory)
     {
         $this->serializer = $serializer;
         $this->contextFactory = $contextFactory;
@@ -29,12 +31,12 @@ class Normalizer
     /**
      * @param mixed $data
      *
-     * @return string
+     * @return array
      */
     public function normalize($data)
     {
         $contextFactory = $this->contextFactory;
 
-        return json_decode($this->serializer->serialize($data, 'json', $contextFactory()));
+        return $this->serializer->toArray($data, $contextFactory());
     }
 }
