@@ -3,7 +3,6 @@
 namespace Eole\Core\EventListener;
 
 use JMS\Serializer\SerializerInterface;
-use JMS\Serializer\SerializationContext;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 use Eole\Core\ApiResponse;
