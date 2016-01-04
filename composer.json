@@ -14,7 +14,6 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=5.5",
-        "cube/composer-dist-installer": "~1.0@beta",
         "alcalyn/elo": "~1.0.0",
         "doctrine/dbal": "~2.0",
         "doctrine/orm": "~2.0",
@@ -52,21 +51,6 @@
             "Alcalyn\\DoctrineUserApi\\": "ext/doctrine-user-api",
             "Alcalyn\\": "src/Alcalyn"
         }
-    },
-    "scripts": {
-        "dump-dist": [
-            "Cube\\ComposerDistInstaller\\Bootstrap::install"
-        ]
-    },
-    "extra": {
-        "dist-installer-params": [
-            {
-                "file": "config/environment.yml"
-            },
-            {
-                "file": "config/environment_test.yml"
-            }
-        ]
     },
     "repositories": [
         {
