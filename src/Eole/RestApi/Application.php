@@ -100,4 +100,51 @@ class Application extends BaseApplication
         $this->mount('api', new ControllerProvider\GameControllerProvider());
         $this->mount('api', new ControllerProvider\PartyControllerProvider());
     }
+
+    /**
+     * Mount a game controller provider.
+     * If the provider also implements ServiceProviderInterface, it is registered.
+     *
+     * @param string $gameName
+     *
+     * @return self
+     */
+    private function mountGame($gameName)
+    {
+        $gameConfig = $this['environment']['games'][$gameName];
+
+        if (isset($gameConfig['controller_provider'])) {
+            $controllerProviderClass = $gameConfig['controller_provider'];
+            $controllerProvider = new $controllerProviderClass();
+
+            if ($controllerProvider instanceof \Pimple\ServiceProviderInterface) {
+                $this->register($controllerProvider);
+            }
+
+            if (!$controllerProvider instanceof \Silex\Api\ControllerProviderInterface) {
+                throw new \LogicException(sprintf(
+                    'Game controller provider class (%s) for game %s must implement %s.',
+                    $controllerProviderClass,
+                    $gameName,
+                    'Pimple\\ServiceProviderInterface'
+                ));
+            }
+
+            $this->mount('api/games/'.$gameName, $controllerProvider);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $gameName
+     */
+    public function loadGame($gameName)
+    {
+        parent::loadGame($gameName);
+
+        $this->mountGame($gameName);
+
+        return $this;
+    }
 }

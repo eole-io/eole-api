@@ -24,6 +24,7 @@ class Application extends BaseApplication
         $this->registerWsseSecurity();
         $this->registerDoctrine();
         $this->registerServices();
+        $this->loadAllGames();
     }
 
     /**
@@ -247,5 +248,61 @@ class Application extends BaseApplication
                 ));
             }
         });
+    }
+
+    /**
+     * Register a game service provider.
+     *
+     * @param string $gameName
+     *
+     * @return self
+     */
+    private function registerGame($gameName)
+    {
+        $gameConfig = $this['environment']['games'][$gameName];
+
+        if (isset($gameConfig['service_provider'])) {
+            $serviceProviderClass = $gameConfig['service_provider'];
+            $serviceProvider = new $serviceProviderClass();
+
+            if (!$serviceProvider instanceof \Pimple\ServiceProviderInterface) {
+                throw new \LogicException(sprintf(
+                    'Game service provider class (%s) for game %s must implement %s.',
+                    $serviceProviderClass,
+                    $gameName,
+                    'Pimple\\ServiceProviderInterface'
+                ));
+            }
+
+            $this->register($serviceProvider);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $gameName
+     *
+     * @return self
+     */
+    public function loadGame($gameName)
+    {
+        $this->registerGame($gameName);
+
+        return $this;
+    }
+
+    /**
+     * @return self
+     */
+    public function loadAllGames()
+    {
+        $games = $this['environment']['games'];
+
+        foreach ($games as $gameName => $config) {
+            $this->loadGame($gameName);
+        }
+
+        return $this;
     }
 }
