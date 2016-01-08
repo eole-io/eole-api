@@ -22,9 +22,9 @@ class Application extends BaseApplication
         $this->registerSilexProviders();
         $this->registerSecurity();
         $this->registerWsseSecurity();
-        $this->registerDoctrine();
         $this->registerServices();
         $this->loadAllGames();
+        $this->registerDoctrine();
     }
 
     /**
@@ -155,19 +155,7 @@ class Application extends BaseApplication
         $this->register(new \Dflydev\Provider\DoctrineOrm\DoctrineOrmServiceProvider(), array(
             'orm.proxies_dir' => $this['project.root'].'/var/cache/doctrine/proxies',
             'orm.em.options' => array(
-                'mappings' => array(
-                    array(
-                        'type' => 'yml',
-                        'namespace' => 'Alcalyn\UserApi\Model',
-                        'path' => $this['project.root'].'/vendor/alcalyn/doctrine-user-api/Mapping',
-                    ),
-                    array(
-                        'type' => 'yml',
-                        'namespace' => 'Eole\Core\Model',
-                        'path' => $this['project.root'].'/src/Eole/Core/Mapping',
-                        'alias' => 'Eole',
-                    ),
-                ),
+                'mappings' => $this['eole.mappings'],
             ),
         ));
     }
@@ -194,6 +182,25 @@ class Application extends BaseApplication
 
         $this['serializer'] = function () {
             return $this['serializer.builder']->build();
+        };
+
+        $this['eole.mappings'] = function () {
+            $mappings = array();
+
+            $mappings []= array(
+                'type' => 'yml',
+                'namespace' => 'Alcalyn\UserApi\Model',
+                'path' => $this['project.root'].'/vendor/alcalyn/doctrine-user-api/Mapping',
+            );
+
+            $mappings []= array(
+                'type' => 'yml',
+                'namespace' => 'Eole\Core\Model',
+                'path' => $this['project.root'].'/src/Eole/Core/Mapping',
+                'alias' => 'Eole',
+            );
+
+            return $mappings;
         };
 
         $this['eole.player_manager'] = function () {
