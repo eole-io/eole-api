@@ -1,0 +1,11 @@
+Eole\Games\Awale\Model\AwaleParty:
+    type: entity
+    table: eole_games_awale_party
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    oneToOne:
+        party:
+            targetEntity: Eole\Core\Model\Party

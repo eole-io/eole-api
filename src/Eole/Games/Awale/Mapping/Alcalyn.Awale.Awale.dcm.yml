@@ -1,0 +1,9 @@
+Alcalyn\Awale\Awale:
+    type: mappedSuperclass
+    fields:
+        grid:
+            type: json_array
+        seedsPerContainer:
+            type: smallint
+        currentPlayer:
+            type: smallint
