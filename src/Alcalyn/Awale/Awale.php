@@ -7,12 +7,12 @@ class Awale
     /**
      * @var int
      */
-    const WIN_0 = 0;
+    const PLAYER_0 = 0;
 
     /**
      * @var int
      */
-    const WIN_1 = 1;
+    const PLAYER_1 = 1;
 
     /**
      * @var int
@@ -30,24 +30,9 @@ class Awale
     private $seedsPerContainer;
 
     /**
-     * @return int
+     * @var int
      */
-    public function getSeedsPerContainer()
-    {
-        return $this->seedsPerContainer;
-    }
-
-    /**
-     * @param int $seedsPerContainer
-     *
-     * @return self
-     */
-    public function setSeedsPerContainer($seedsPerContainer)
-    {
-        $this->seedsPerContainer = $seedsPerContainer;
-
-        return $this;
-    }
+    private $currentPlayer;
 
     /**
      * @return array
@@ -70,11 +55,51 @@ class Awale
     }
 
     /**
+     * @return int
+     */
+    public function getSeedsPerContainer()
+    {
+        return $this->seedsPerContainer;
+    }
+
+    /**
+     * @param int $seedsPerContainer
+     *
+     * @return self
+     */
+    public function setSeedsPerContainer($seedsPerContainer)
+    {
+        $this->seedsPerContainer = $seedsPerContainer;
+
+        return $this;
+    }
+
+    /**
      * @return int The score the player must exceed to win
      */
     public function getSeedsNeededToWin()
     {
         return $this->seedsPerContainer * 6;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCurrentPlayer()
+    {
+        return $this->currentPlayer;
+    }
+
+    /**
+     * @param int $currentPlayer
+     *
+     * @return self
+     */
+    public function setCurrentPlayer($currentPlayer)
+    {
+        $this->currentPlayer = $currentPlayer;
+
+        return $this;
     }
 
     /**
@@ -230,18 +255,18 @@ class Awale
     /**
      * Check if a player of the grid has won
      *
-     * @return int|null null for party not ended, or one of them: self::WIN_0, self::WIN_1, self::DRAW.
+     * @return int|null null for party not ended, or one of them: self::PLAYER_0, self::PLAYER_1, self::DRAW.
      */
     public function getWinner()
     {
         $seedsToWin = $this->getSeedsNeededToWin();
 
         if ($this->grid[0]['attic'] > $seedsToWin) {
-            return self::WIN_0;
+            return self::PLAYER_0;
         }
 
         if ($this->grid[1]['attic'] > $seedsToWin) {
-            return self::WIN_1;
+            return self::PLAYER_1;
         }
 
         if (($seedsToWin === $this->grid[0]['attic']) && ($seedsToWin === $this->grid[1]['attic'])) {

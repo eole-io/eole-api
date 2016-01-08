@@ -404,7 +404,7 @@ class AwaleTest extends \PHPUnit_Framework_TestCase
             ),
         ));
 
-        $this->assertSame(Awale::WIN_0, $awale->getWinner());
+        $this->assertSame(Awale::PLAYER_0, $awale->getWinner());
 
         // With 5 seeds per container
         $awale->setSeedsPerContainer(5);
@@ -422,7 +422,7 @@ class AwaleTest extends \PHPUnit_Framework_TestCase
             ),
         ));
 
-        $this->assertSame(Awale::WIN_1, $awale->getWinner());
+        $this->assertSame(Awale::PLAYER_1, $awale->getWinner());
 
         // Drawn game
         $awale->setGrid(array(
