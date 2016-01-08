@@ -44,4 +44,19 @@ class AwaleParty extends Awale
 
         return $this;
     }
+
+    /**
+     * @param int $seedsPerContainer
+     *
+     * @return self
+     */
+    public static function createWithSeedsPerContainer($seedsPerContainer)
+    {
+        $awale = new AwaleParty();
+
+        $awale->seedsPerContainer = $seedsPerContainer;
+        $awale->initGrid();
+
+        return $awale;
+    }
 }

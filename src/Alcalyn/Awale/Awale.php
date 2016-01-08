@@ -34,6 +34,13 @@ class Awale
      */
     private $currentPlayer;
 
+    public function __construct()
+    {
+        $this->grid = array();
+        $this->seedsPerContainer = 3;
+        $this->currentPlayer = self::PLAYER_0;
+    }
+
     /**
      * @return array
      */
