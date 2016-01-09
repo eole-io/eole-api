@@ -20,4 +20,5 @@ push_server:
 games:
     tictactoe: ~
     awale:
+        service_provider: Eole\Games\Awale\ServiceProvider
         controller_provider: Eole\Games\Awale\ControllerProvider
