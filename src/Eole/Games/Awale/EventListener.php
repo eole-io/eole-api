@@ -3,31 +3,31 @@
 namespace Eole\Games\Awale;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\Common\Persistence\ObjectRepository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Eole\Core\Event\PartyEvent;
+use Eole\Core\Event\SlotEvent;
+use Eole\Core\Service\PartyManager;
 use Eole\Games\Awale\Model\AwaleParty;
 
 class EventListener implements EventSubscriberInterface
 {
-    /**
-     * @var ObjectRepository
-     */
-    private $awalePartyRepository;
-
     /**
      * @var ObjectManager
      */
     private $om;
 
     /**
-     * @param ObjectRepository $awalePartyRepository
+     * @var PartyManager
+     */
+    private $partyManager;
+
+    /**
      * @param ObjectManager $om
      */
-    public function __construct(ObjectRepository $awalePartyRepository, ObjectManager $om)
+    public function __construct(ObjectManager $om, PartyManager $partyManager)
     {
-        $this->awalePartyRepository = $awalePartyRepository;
         $this->om = $om;
+        $this->partyManager = $partyManager;
     }
 
     /**
@@ -47,6 +47,21 @@ class EventListener implements EventSubscriberInterface
     }
 
     /**
+     * @param SlotEvent $event
+     */
+    public function onPartyJoin(SlotEvent $event)
+    {
+        if ('awale' !== $event->getParty()->getGame()->getName()) {
+            return;
+        }
+
+        $this->partyManager->startParty($event->getParty());
+
+        $this->om->persist($event->getParty());
+        $this->om->flush();
+    }
+
+    /**
      * {@InheritDoc}
      */
     public static function getSubscribedEvents()
@@ -54,6 +69,9 @@ class EventListener implements EventSubscriberInterface
         return array(
             PartyEvent::CREATE_BEFORE => array(
                 array('onPartyCreate'),
+            ),
+            SlotEvent::JOIN_AFTER => array(
+                array('onPartyJoin'),
             ),
         );
     }

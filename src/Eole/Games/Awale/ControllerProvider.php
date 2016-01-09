@@ -30,8 +30,8 @@ class ControllerProvider implements ServiceProviderInterface, ControllerProvider
             }
 
             $app['dispatcher']->addSubscriber(new EventListener(
-                $app['orm.em']->getRepository('EoleAwale:AwaleParty'),
-                $app['orm.em']
+                $app['orm.em'],
+                $app['eole.party_manager']
             ));
         });
     }
