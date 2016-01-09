@@ -277,7 +277,7 @@ class Application extends BaseApplication
                     'Game service provider class (%s) for game %s must implement %s.',
                     $serviceProviderClass,
                     $gameName,
-                    'Pimple\\ServiceProviderInterface'
+                    \Pimple\ServiceProviderInterface::class
                 ));
             }
 
