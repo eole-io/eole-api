@@ -220,13 +220,6 @@ class Application extends BaseApplication
         $this['eole.event_serializer'] = function () {
             return new Service\EventSerializer($this['serializer']);
         };
-
-        $this->before(function (\Symfony\Component\HttpFoundation\Request $request, BaseApplication $app) {
-            if (null !== $app['user']) {
-                $app['eole.controller.player']->setLoggedUser($app['user']);
-                $app['eole.controller.party']->setLoggedPlayer($app['user']);
-            }
-        });
     }
 
     /**
