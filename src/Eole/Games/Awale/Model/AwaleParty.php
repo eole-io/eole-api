@@ -8,6 +8,8 @@ use Eole\Core\Model\Party;
 class AwaleParty extends Awale
 {
     /**
+     * This id should not be used, but the core party one.
+     *
      * @var int
      */
     private $id;

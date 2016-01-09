@@ -34,6 +34,9 @@ class Awale
      */
     private $currentPlayer;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->grid = array();
@@ -110,6 +113,26 @@ class Awale
     }
 
     /**
+     * @param int $player
+     *
+     * @return bool
+     */
+    public function isPlayerTurn($player)
+    {
+        return $this->currentPlayer === $player;
+    }
+
+    /**
+     * @return self
+     */
+    public function changePlayerTurn()
+    {
+        $this->currentPlayer = 1 - $this->currentPlayer;
+
+        return $this;
+    }
+
+    /**
      * @return self
      */
     public function initGrid()
@@ -129,7 +152,8 @@ class Awale
     }
 
     /**
-     * Play a move naively
+     * Play a move naively.
+     * Do not check player turn.
      *
      * @param int $player
      * @param int $move

@@ -12,6 +12,16 @@ class ServiceProvider implements ServiceProviderInterface
      */
     public function register(Container $app)
     {
+        $app['serializer.builder']->addMetadataDir(
+            __DIR__.'/serializer',
+            'Alcalyn\\Awale'
+        );
+
+        $app['serializer.builder']->addMetadataDir(
+            __DIR__.'/serializer',
+            'Eole\\Games\\Awale\\Model'
+        );
+
         $app->extend('eole.mappings', function ($mappings, $app) {
             $mappings []= array(
                 'type' => 'yml',

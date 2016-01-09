@@ -16,11 +16,19 @@ class ControllerProvider implements ServiceProviderInterface, ControllerProvider
      */
     public function register(Container $app)
     {
-        $app['eole.games.awale.controller'] = function () {
-            return new Controller();
+        $app['eole.games.awale.controller'] = function () use ($app) {
+            return new Controller(
+                $app['orm.em']->getRepository('EoleAwale:AwaleParty'),
+                $app['orm.em'],
+                $app['eole.party_manager']
+            );
         };
 
         $app->before(function () use ($app) {
+            if (null !== $app['user']) {
+                $app['eole.games.awale.controller']->setLoggedPlayer($app['user']);
+            }
+
             $app['dispatcher']->addSubscriber(new EventListener(
                 $app['orm.em']->getRepository('EoleAwale:AwaleParty'),
                 $app['orm.em']
@@ -38,6 +46,8 @@ class ControllerProvider implements ServiceProviderInterface, ControllerProvider
         $awaleController = 'eole.games.awale.controller';
 
         $controllers->get('/test', $awaleController.':getTest');
+        $controllers->get('/find-by-id/{id}', $awaleController.':findById');
+        $controllers->post('/play', $awaleController.':play');
 
         return $controllers;
     }

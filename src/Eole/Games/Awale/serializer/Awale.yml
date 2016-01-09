@@ -1,0 +1,9 @@
+Alcalyn\Awale\Awale:
+    exclusion_policy: NONE
+    properties:
+        grid:
+            type: array
+        seedsPerContainer:
+            type: integer
+        currentPlayer:
+            type: integer

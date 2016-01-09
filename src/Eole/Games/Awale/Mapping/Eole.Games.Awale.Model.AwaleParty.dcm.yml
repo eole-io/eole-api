@@ -1,5 +1,6 @@
 Eole\Games\Awale\Model\AwaleParty:
     type: entity
+    repositoryClass: Eole\Games\Awale\Repository\AwalePartyRepository
     table: eole_games_awale_party
     id:
         id:
