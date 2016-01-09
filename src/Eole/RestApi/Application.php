@@ -80,13 +80,6 @@ class Application extends BaseApplication
 
             return $socket;
         };
-
-        $this->before(function (\Symfony\Component\HttpFoundation\Request $request, BaseApplication $app) {
-            if (null !== $app['user']) {
-                $app['eole.controller.player']->setLoggedUser($app['user']);
-                $app['eole.controller.party']->setLoggedPlayer($app['user']);
-            }
-        });
     }
 
     private function registerEventListeners()
