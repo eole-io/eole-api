@@ -2,6 +2,7 @@
 
 namespace Eole\Games\Awale;
 
+use Alcalyn\Awale\Exception\AwaleException;
 use Alcalyn\Awale\Awale;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -129,7 +130,11 @@ class Controller
             throw new ConflictHttpException('Not your turn to play.');
         }
 
-        $awaleParty->play($player, $move);
+        try {
+            $awaleParty->play($player, $move);
+        } catch (AwaleException $e) {
+            throw new BadRequestHttpException('Invalid move.', $e);
+        }
 
         $this->om->persist($awaleParty);
         $this->om->flush();

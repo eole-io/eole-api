@@ -244,6 +244,10 @@ class Awale
             throw new AwaleException('Not your turn.');
         }
 
+        if (0 === $this->grid[$player]['seeds'][$move]) {
+            throw new AwaleException('This container is empty.');
+        }
+
         return $this
             ->move($player, $move)
             ->changePlayerTurn()
