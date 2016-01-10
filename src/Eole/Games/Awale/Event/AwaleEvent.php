@@ -10,7 +10,7 @@ class AwaleEvent extends Event
     /**
      * @var string
      */
-    const PLAY_AFTER = 'eole.games.awale.play_after';
+    const PLAY = 'eole.games.awale.play';
 
     /**
      * @var AwaleParty

@@ -36,7 +36,7 @@ class ControllerProvider implements ServiceProviderInterface, ControllerProvider
             ));
         });
 
-        $app->forwardEventToPushServer(AwaleEvent::PLAY_AFTER);
+        $app->forwardEventToPushServer(AwaleEvent::PLAY);
     }
 
     /**

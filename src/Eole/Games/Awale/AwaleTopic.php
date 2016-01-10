@@ -34,7 +34,7 @@ class AwaleTopic extends BaseTopic implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            AwaleEvent::PLAY_AFTER => array(
+            AwaleEvent::PLAY => array(
                 array('onPlay'),
             ),
         );

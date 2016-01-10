@@ -146,10 +146,10 @@ class Controller
             throw new BadRequestHttpException('Invalid move.', $e);
         }
 
+        $this->dispatcher->dispatch(AwaleEvent::PLAY, new AwaleEvent($awaleParty));
+
         $this->om->persist($awaleParty);
         $this->om->flush();
-
-        $this->dispatcher->dispatch(AwaleEvent::PLAY_AFTER, new AwaleEvent($awaleParty));
 
         return new ApiResponse(array(
             'valid' => true,
