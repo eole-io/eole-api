@@ -2,6 +2,7 @@
 
 namespace Alcalyn\Awale\Test;
 
+use Alcalyn\Awale\Exception\AwaleException;
 use Alcalyn\Awale\Awale;
 
 class AwaleTest extends \PHPUnit_Framework_TestCase
@@ -50,7 +51,7 @@ class AwaleTest extends \PHPUnit_Framework_TestCase
     {
         $awale = Awale::createWithSeedsPerContainer(3);
 
-        $awale->play(0, 4);
+        $awale->move(0, 4);
 
         $expectedGrid = array(
             array(
@@ -70,7 +71,7 @@ class AwaleTest extends \PHPUnit_Framework_TestCase
     {
         $awale = Awale::createWithSeedsPerContainer(3);
 
-        $awale->play(1, 2);
+        $awale->move(1, 2);
 
         $expectedGrid = array(
             array(
@@ -90,7 +91,7 @@ class AwaleTest extends \PHPUnit_Framework_TestCase
     {
         $awale = Awale::createWithSeedsPerContainer(3);
 
-        $awale->play(0, 1);
+        $awale->move(0, 1);
 
         $expectedGrid = array(
             array(
@@ -120,7 +121,7 @@ class AwaleTest extends \PHPUnit_Framework_TestCase
             ),
         ));
 
-        $awale->play(0, 2);
+        $awale->move(0, 2);
 
         $expectedGrid = array(
             array(
@@ -150,7 +151,7 @@ class AwaleTest extends \PHPUnit_Framework_TestCase
             ),
         ));
 
-        $awale->play(0, 2);
+        $awale->move(0, 2);
 
         $expectedGrid = array(
             array(
@@ -180,7 +181,7 @@ class AwaleTest extends \PHPUnit_Framework_TestCase
             ),
         ));
 
-        $awale->play(0, 2);
+        $awale->move(0, 2);
 
         $expectedGrid = array(
             array(
@@ -210,7 +211,7 @@ class AwaleTest extends \PHPUnit_Framework_TestCase
             ),
         ));
 
-        $awale->play(1, 3);
+        $awale->move(1, 3);
 
         $expectedGrid = array(
             array(
@@ -240,7 +241,7 @@ class AwaleTest extends \PHPUnit_Framework_TestCase
             ),
         ));
 
-        $awale->play(1, 3);
+        $awale->move(1, 3);
 
         $expectedGrid = array(
             array(
@@ -437,5 +438,32 @@ class AwaleTest extends \PHPUnit_Framework_TestCase
         ));
 
         $this->assertSame(Awale::DRAW, $awale->getWinner());
+    }
+
+    public function testPlayChangesPlayerTurn()
+    {
+        $awale = Awale::createWithSeedsPerContainer(3);
+
+        $awale->setCurrentPlayer(Awale::PLAYER_0);
+
+        $awale->play(Awale::PLAYER_0, 1);
+        $this->assertEquals(Awale::PLAYER_1, $awale->getCurrentPlayer());
+        $awale->play(Awale::PLAYER_1, 4);
+        $this->assertEquals(Awale::PLAYER_0, $awale->getCurrentPlayer());
+        $awale->play(Awale::PLAYER_0, 2);
+        $this->assertEquals(Awale::PLAYER_1, $awale->getCurrentPlayer());
+    }
+
+    public function testPlayThrowExceptionOnPlayerTriesToPlayTwice()
+    {
+        $awale = Awale::createWithSeedsPerContainer(3);
+
+        $awale->setCurrentPlayer(Awale::PLAYER_0);
+
+        $awale->play(Awale::PLAYER_0, 1);
+
+        $this->setExpectedException(AwaleException::class);
+
+        $awale->play(Awale::PLAYER_0, 2);
     }
 }

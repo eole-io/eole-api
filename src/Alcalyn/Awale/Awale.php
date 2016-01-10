@@ -2,6 +2,8 @@
 
 namespace Alcalyn\Awale;
 
+use Alcalyn\Awale\Exception\AwaleException;
+
 class Awale
 {
     /**
@@ -159,9 +161,14 @@ class Awale
      * @param int $move
      *
      * @return self
+     *
+     * @throws AwaleException on invalid input value.
      */
-    public function play($player, $move)
+    public function move($player, $move)
     {
+        $this->checkPlayer($player);
+        $this->checkMove($move);
+
         // Take seeds in hand
         $hand = $this->grid[$player]['seeds'][$move];
         $this->grid[$player]['seeds'][$move] = 0;
@@ -219,6 +226,28 @@ class Awale
         }
 
         return $this;
+    }
+
+    /**
+     * Play a turn, check current player turn.
+     *
+     * @param int $player
+     * @param int $move
+     *
+     * @return self
+     *
+     * @throws AwaleException on invalid move.
+     */
+    public function play($player, $move)
+    {
+        if (!$this->isPlayerTurn($player)) {
+            throw new AwaleException('Not your turn.');
+        }
+
+        return $this
+            ->move($player, $move)
+            ->changePlayerTurn()
+        ;
     }
 
     /**
@@ -305,6 +334,38 @@ class Awale
         }
 
         return null;
+    }
+
+    /**
+     * @param int $player
+     *
+     * @return self
+     *
+     * @throws AwaleException
+     */
+    public function checkPlayer($player)
+    {
+        if (!in_array($player, array(self::PLAYER_0, self::PLAYER_1))) {
+            throw new AwaleException('Invalid player value.');
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param int $move
+     *
+     * @return self
+     *
+     * @throws AwaleException
+     */
+    public function checkMove($move)
+    {
+        if (!is_int($move) || $move < 0 || $move > 5) {
+            throw new AwaleException('Invalid move value.');
+        }
+
+        return $this;
     }
 
     /**
