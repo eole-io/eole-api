@@ -140,9 +140,9 @@ class Controller
         $this->om->flush();
 
         return new ApiResponse(array(
-            'move' => $move,
-            'player' => $this->loggedPlayer->getUsername(),
-            'grid_updated' => $awaleParty->getGrid(),
+            'valid' => true,
+            'current_player' => $awaleParty->getCurrentPlayer(),
+            'grid' => $awaleParty->getGrid(),
         ));
     }
 }
