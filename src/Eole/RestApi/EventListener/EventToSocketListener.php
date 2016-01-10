@@ -3,13 +3,12 @@
 namespace Eole\RestApi\EventListener;
 
 use ZMQSocket;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Eole\Core\Event\Event;
 use Eole\Core\Event\PartyEvent;
 use Eole\Core\Event\SlotEvent;
 use Eole\Silex\Service\EventSerializer;
 
-class EventToSocketListener implements EventSubscriberInterface
+class EventToSocketListener
 {
     /**
      * @var ZMQSocket
@@ -29,27 +28,6 @@ class EventToSocketListener implements EventSubscriberInterface
     {
         $this->pushServer = $pushServer;
         $this->eventSerializer = $eventSerializer;
-    }
-
-    /**
-     * {@InheritDoc}
-     */
-    public static function getSubscribedEvents()
-    {
-        $eventsToSerialize = array(
-            PartyEvent::CREATE_AFTER,
-            SlotEvent::JOIN_AFTER,
-        );
-
-        $subscribedEvents = array();
-
-        foreach ($eventsToSerialize as $eventName) {
-            $subscribedEvents[$eventName] = array(
-                array('sendEventToSocket'),
-            );
-        }
-
-        return $subscribedEvents;
     }
 
     /**

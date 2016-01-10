@@ -88,7 +88,25 @@ class Application extends BaseApplication
             $this['eole.listener.api_response_filter']->onKernelView($event);
         });
 
-        $this['dispatcher']->addSubscriber($this['eole.listener.event_to_socket']);
+        $this->forwardEventToPushServer(\Eole\Core\Event\PartyEvent::CREATE_AFTER);
+        $this->forwardEventToPushServer(\Eole\Core\Event\SlotEvent::JOIN_AFTER);
+    }
+
+    /**
+     * Automatically forward rest API event to push server.
+     *
+     * @param string $eventName
+     *
+     * @return self
+     */
+    public function forwardEventToPushServer($eventName)
+    {
+        $this['dispatcher']->addListener(
+            $eventName,
+            array($this['eole.listener.event_to_socket'], 'sendEventToSocket')
+        );
+
+        return $this;
     }
 
     /**
