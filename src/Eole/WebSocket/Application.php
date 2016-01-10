@@ -92,6 +92,7 @@ class Application implements WampServerInterface
     private function registerGames()
     {
         $this->silexApp->register(new \Eole\Games\TicTacToe\TicTacToeProvider());
+        $this->silexApp->register(new \Eole\Games\Awale\WebsocketProvider());
     }
 
     /**

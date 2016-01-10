@@ -7,3 +7,6 @@ Alcalyn\Awale\Awale:
             type: smallint
         currentPlayer:
             type: smallint
+        lastMove:
+            type: json_array
+            nullable: true

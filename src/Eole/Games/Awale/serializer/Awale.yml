@@ -7,3 +7,5 @@ Alcalyn\Awale\Awale:
             type: integer
         currentPlayer:
             type: integer
+        lastMove:
+            type: array

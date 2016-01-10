@@ -37,6 +37,11 @@ class Awale
     private $currentPlayer;
 
     /**
+     * @var array|null with player and move keys.
+     */
+    private $lastMove;
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -130,6 +135,26 @@ class Awale
     public function changePlayerTurn()
     {
         $this->currentPlayer = 1 - $this->currentPlayer;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLastMove()
+    {
+        return $this->lastMove;
+    }
+
+    /**
+     * @param array $lastMove
+     *
+     * @return self
+     */
+    public function setLastMove(array $lastMove)
+    {
+        $this->lastMove = $lastMove;
 
         return $this;
     }
@@ -250,6 +275,10 @@ class Awale
 
         return $this
             ->move($player, $move)
+            ->setLastMove(array(
+                'player' => $player,
+                'move' => $move,
+            ))
             ->changePlayerTurn()
         ;
     }
