@@ -101,10 +101,12 @@ class Application extends BaseApplication
      */
     public function forwardEventToPushServer($eventName)
     {
-        $this['dispatcher']->addListener(
-            $eventName,
-            array($this['eole.listener.event_to_socket'], 'sendEventToSocket')
-        );
+        $this->before(function () use ($eventName) {
+            $this['dispatcher']->addListener(
+                $eventName,
+                array($this['eole.listener.event_to_socket'], 'sendEventToSocket')
+            );
+        });
 
         return $this;
     }

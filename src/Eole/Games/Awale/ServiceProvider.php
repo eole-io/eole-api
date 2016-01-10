@@ -19,7 +19,7 @@ class ServiceProvider implements ServiceProviderInterface
 
         $app['serializer.builder']->addMetadataDir(
             __DIR__.'/serializer',
-            'Eole\\Games\\Awale\\Model'
+            'Eole\\Games\\Awale'
         );
 
         $app->extend('eole.mappings', function ($mappings, $app) {

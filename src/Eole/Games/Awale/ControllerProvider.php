@@ -6,7 +6,7 @@ use Pimple\ServiceProviderInterface;
 use Pimple\Container;
 use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
-use Eole\Core\Event\PartyEvent;
+use Eole\Games\Awale\Event\AwaleEvent;
 use Eole\Games\Awale\EventListener;
 
 class ControllerProvider implements ServiceProviderInterface, ControllerProviderInterface
@@ -35,6 +35,8 @@ class ControllerProvider implements ServiceProviderInterface, ControllerProvider
                 $app['eole.party_manager']
             ));
         });
+
+        $app->forwardEventToPushServer(AwaleEvent::PLAY_AFTER);
     }
 
     /**
