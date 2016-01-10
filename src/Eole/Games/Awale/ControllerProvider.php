@@ -20,7 +20,8 @@ class ControllerProvider implements ServiceProviderInterface, ControllerProvider
             return new Controller(
                 $app['orm.em']->getRepository('EoleAwale:AwaleParty'),
                 $app['orm.em'],
-                $app['eole.party_manager']
+                $app['eole.party_manager'],
+                $app['dispatcher']
             );
         };
 

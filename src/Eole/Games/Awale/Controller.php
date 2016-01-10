@@ -5,6 +5,7 @@ namespace Eole\Games\Awale;
 use Alcalyn\Awale\Exception\AwaleException;
 use Alcalyn\Awale\Awale;
 use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -13,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Eole\Core\ApiResponse;
 use Eole\Core\Service\PartyManager;
 use Eole\Core\Controller\LoggedPlayerTrait;
+use Eole\Games\Awale\Event\AwaleEvent;
 use Eole\Games\Awale\Repository\AwalePartyRepository;
 
 class Controller
@@ -35,18 +37,26 @@ class Controller
     private $partyManager;
 
     /**
+     * @var EventDispatcherInterface
+     */
+    private $dispatcher;
+
+    /**
      * @param AwalePartyRepository $awalePartyRepository
      * @param ObjectManager $om
      * @param PartyManager $partyManager
+     * @param EventDispatcherInterface $dispatcher
      */
     public function __construct(
         AwalePartyRepository $awalePartyRepository,
         ObjectManager $om,
-        PartyManager $partyManager
+        PartyManager $partyManager,
+        EventDispatcherInterface $dispatcher
     ) {
         $this->awalePartyRepository = $awalePartyRepository;
         $this->om = $om;
         $this->partyManager = $partyManager;
+        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -138,6 +148,8 @@ class Controller
 
         $this->om->persist($awaleParty);
         $this->om->flush();
+
+        $this->dispatcher->dispatch(AwaleEvent::PLAY_AFTER, new AwaleEvent($awaleParty));
 
         return new ApiResponse(array(
             'valid' => true,
