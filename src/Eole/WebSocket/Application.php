@@ -31,7 +31,7 @@ class Application implements WampServerInterface
 
         $this->registerServices();
         $this->registerTopics();
-        $this->registerGames();
+        $this->loadAllGames();
     }
 
     /**
@@ -87,12 +87,59 @@ class Application implements WampServerInterface
     }
 
     /**
-     * Register all games.
+     * @param string $gameName
+     *
+     * @return self
+     *
+     * @throws \LogicException
      */
-    private function registerGames()
+    private function registerGame($gameName)
     {
-        $this->silexApp->register(new \Eole\Games\TicTacToe\TicTacToeProvider());
-        $this->silexApp->register(new \Eole\Games\Awale\WebsocketProvider());
+        $gameConfig = $this->silexApp['environment']['games'][$gameName];
+
+        if (isset($gameConfig['websocket_provider'])) {
+            $serviceProviderClass = $gameConfig['websocket_provider'];
+            $serviceProvider = new $serviceProviderClass();
+
+            if (!$serviceProvider instanceof \Pimple\ServiceProviderInterface) {
+                throw new \LogicException(sprintf(
+                    'Websocket provider class (%s) for game %s must implement %s.',
+                    $serviceProviderClass,
+                    $gameName,
+                    \Pimple\ServiceProviderInterface::class
+                ));
+            }
+
+            $this->silexApp->register($serviceProvider);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $gameName
+     *
+     * @return self
+     */
+    public function loadGame($gameName)
+    {
+        $this->registerGame($gameName);
+
+        return $this;
+    }
+
+    /**
+     * @return self
+     */
+    public function loadAllGames()
+    {
+        $games = $this->silexApp['environment']['games'];
+
+        foreach ($games as $gameName => $config) {
+            $this->loadGame($gameName);
+        }
+
+        return $this;
     }
 
     /**
