@@ -12,7 +12,7 @@ class WebsocketProvider implements ServiceProviderInterface
     public function register(Container $app)
     {
         $awaleTopicFactory = function ($topicPath, array $arguments) use ($app) {
-            return new AwaleTopic($topicPath, $arguments['party_id']);
+            return new AwaleTopic($topicPath, intval($arguments['party_id']));
         };
 
         $app['eole.games.awale.topic.factory'] = $app->protect($awaleTopicFactory);
