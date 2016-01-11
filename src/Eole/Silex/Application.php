@@ -66,7 +66,7 @@ class Application extends BaseApplication
 
         if (file_exists($extEnvironmentFile)) {
             $extEnvironment = $parser->parse(file_get_contents($extEnvironmentFile));
-            $environment = array_merge($environment, $extEnvironment);
+            $environment = array_replace_recursive($environment, $extEnvironment);
         }
 
         $this['environment'] = $environment;

@@ -4,8 +4,6 @@ namespace Eole\RestApi\EventListener;
 
 use ZMQSocket;
 use Eole\Core\Event\Event;
-use Eole\Core\Event\PartyEvent;
-use Eole\Core\Event\SlotEvent;
 use Eole\Silex\Service\EventSerializer;
 
 class EventToSocketListener
@@ -21,13 +19,20 @@ class EventToSocketListener
     private $eventSerializer;
 
     /**
+     * @var bool
+     */
+    private $enabled;
+
+    /**
      * @param ZMQSocket $pushServer
      * @param EventSerializer $eventSerializer
+     * @param bool $enabled
      */
-    public function __construct(ZMQSocket $pushServer, EventSerializer $eventSerializer)
+    public function __construct(ZMQSocket $pushServer, EventSerializer $eventSerializer, $enabled = true)
     {
         $this->pushServer = $pushServer;
         $this->eventSerializer = $eventSerializer;
+        $this->enabled = $enabled;
     }
 
     /**
@@ -36,6 +41,10 @@ class EventToSocketListener
      */
     public function sendEventToSocket(Event $event, $name)
     {
+        if (!$this->enabled) {
+            return;
+        }
+
         $this->pushServer->send($this->eventSerializer->serializeEvent($name, $event));
     }
 }

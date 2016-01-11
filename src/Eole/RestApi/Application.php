@@ -33,7 +33,8 @@ class Application extends BaseApplication
         $this['eole.listener.event_to_socket'] = function () {
             return new EventListener\EventToSocketListener(
                 $this['eole.push_server'],
-                $this['eole.event_serializer']
+                $this['eole.event_serializer'],
+                $this['environment']['push_server']['enabled']
             );
         };
 

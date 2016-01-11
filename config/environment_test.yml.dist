@@ -6,3 +6,6 @@ database:
         password:   ~
         memory:     false
         charset:    utf8
+
+push_server:
+    enabled:        false

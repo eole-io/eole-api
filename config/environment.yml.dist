@@ -13,6 +13,7 @@ websocket:
         port:       8080
 
 push_server:
+    enabled:        true
     server:
         host:       127.0.0.1
         port:       5555
