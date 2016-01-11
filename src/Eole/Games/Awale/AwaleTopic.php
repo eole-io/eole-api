@@ -3,17 +3,26 @@
 namespace Eole\Games\Awale;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Eole\Core\Event\SlotEvent;
 use Eole\WebSocket\Topic as BaseTopic;
 use Eole\Games\Awale\Event\AwaleEvent;
 
 class AwaleTopic extends BaseTopic implements EventSubscriberInterface
 {
     /**
-     * @param string $topicPath
+     * @var int
      */
-    public function __construct($topicPath)
+    private $partyId;
+
+    /**
+     * @param string $topicPath
+     * @param int $partyId
+     */
+    public function __construct($topicPath, $partyId)
     {
         parent::__construct($topicPath);
+
+        $this->partyId = $partyId;
     }
 
     /**
@@ -29,11 +38,29 @@ class AwaleTopic extends BaseTopic implements EventSubscriberInterface
     }
 
     /**
+     * @param SlotEvent $event
+     */
+    public function onPlayerJoin(SlotEvent $event)
+    {
+        if ($event->getParty()->getId() !== $this->partyId) {
+            return;
+        }
+
+        $this->broadcast(array(
+            'type' => 'join',
+            'party' => $this->normalizer->normalize($event->getParty()),
+        ));
+    }
+
+    /**
      * {@InheritDoc}
      */
     public static function getSubscribedEvents()
     {
         return array(
+            SlotEvent::JOIN_AFTER => array(
+                array('onPlayerJoin'),
+            ),
             AwaleEvent::PLAY => array(
                 array('onPlay'),
             ),
