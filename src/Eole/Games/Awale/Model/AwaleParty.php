@@ -56,7 +56,7 @@ class AwaleParty extends Awale
     {
         $awale = new AwaleParty();
 
-        $awale->seedsPerContainer = $seedsPerContainer;
+        $awale->setSeedsPerContainer($seedsPerContainer);
         $awale->initGrid();
 
         return $awale;

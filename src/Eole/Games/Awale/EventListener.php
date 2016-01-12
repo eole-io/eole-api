@@ -39,7 +39,7 @@ class EventListener implements EventSubscriberInterface
             return;
         }
 
-        $awaleParty = AwaleParty::createWithSeedsPerContainer(3);
+        $awaleParty = AwaleParty::createWithSeedsPerContainer(4);
 
         $awaleParty->setParty($event->getParty());
 
