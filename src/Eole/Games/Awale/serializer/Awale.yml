@@ -9,3 +9,7 @@ Alcalyn\Awale\Awale:
             type: integer
         lastMove:
             type: array
+    virtual_properties:
+        getWinner:
+            type: integer
+            serialized_name: winner

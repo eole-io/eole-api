@@ -139,9 +139,9 @@ class Controller
         $this->dispatcher->dispatch(AwaleEvent::PLAY, new AwaleEvent($awaleParty));
 
         $winner = $awaleParty->getWinner();
-        $hasWinner = null !== $winner;
+        $partyEnded = null !== $winner;
 
-        if ($hasWinner) {
+        if ($partyEnded) {
             $this->partyManager->endParty($party);
             $this->dispatcher->dispatch(AwaleEvent::PARTY_END, new AwaleEvent($awaleParty, $winner));
         }
@@ -153,7 +153,6 @@ class Controller
             'valid' => true,
             'current_player' => $awaleParty->getCurrentPlayer(),
             'grid' => $awaleParty->getGrid(),
-            'has_winner' => $hasWinner,
             'winner' => $winner,
         ));
     }
