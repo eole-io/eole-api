@@ -12,6 +12,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpFoundation\Request;
 use Eole\Core\ApiResponse;
+use Eole\Core\Model\Party;
 use Eole\Core\Service\PartyManager;
 use Eole\Core\Controller\LoggedPlayerTrait;
 use Eole\Games\Awale\Event\AwaleEvent;
@@ -119,6 +120,10 @@ class Controller
             throw new AccessDeniedHttpException('Observers cannot play.');
         }
 
+        if (Party::ACTIVE !== $party->getState()) {
+            throw new AccessDeniedHttpException('Party is not active.');
+        }
+
         $players = array(
             0 => Awale::PLAYER_0,
             1 => Awale::PLAYER_1,
@@ -135,6 +140,9 @@ class Controller
         } catch (AwaleException $e) {
             throw new BadRequestHttpException('Invalid move.', $e);
         }
+
+        $party->getSlot(0)->setScore($awaleParty->getGrid()[0]['attic']);
+        $party->getSlot(1)->setScore($awaleParty->getGrid()[1]['attic']);
 
         $this->dispatcher->dispatch(AwaleEvent::PLAY, new AwaleEvent($awaleParty));
 
