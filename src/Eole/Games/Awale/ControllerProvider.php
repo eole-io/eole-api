@@ -36,7 +36,10 @@ class ControllerProvider implements ServiceProviderInterface, ControllerProvider
             ));
         });
 
-        $app->forwardEventToPushServer(AwaleEvent::PLAY);
+        $app->forwardEventsToPushServer(array(
+            AwaleEvent::PLAY,
+            AwaleEvent::PARTY_END,
+        ));
     }
 
     /**
@@ -48,7 +51,6 @@ class ControllerProvider implements ServiceProviderInterface, ControllerProvider
 
         $awaleController = 'eole.games.awale.controller';
 
-        $controllers->get('/test', $awaleController.':getTest');
         $controllers->get('/find-by-id/{id}', $awaleController.':findById');
         $controllers->post('/play', $awaleController.':play');
 

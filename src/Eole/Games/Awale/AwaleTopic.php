@@ -53,6 +53,17 @@ class AwaleTopic extends BaseTopic implements EventSubscriberInterface
     }
 
     /**
+     * @param AwaleEvent $event
+     */
+    public function onPartyEnd(AwaleEvent $event)
+    {
+        $this->broadcast(array(
+            'type' => 'party_end',
+            'winner' => $event->getWinner(),
+        ));
+    }
+
+    /**
      * {@InheritDoc}
      */
     public static function getSubscribedEvents()
@@ -63,6 +74,9 @@ class AwaleTopic extends BaseTopic implements EventSubscriberInterface
             ),
             AwaleEvent::PLAY => array(
                 array('onPlay'),
+            ),
+            AwaleEvent::PARTY_END => array(
+                array('onPartyEnd'),
             ),
         );
     }

@@ -113,6 +113,22 @@ class Application extends BaseApplication
     }
 
     /**
+     * Automatically forward rest API events to push server.
+     *
+     * @param string[] $eventsNames
+     *
+     * @return self
+     */
+    public function forwardEventsToPushServer(array $eventsNames)
+    {
+        foreach ($eventsNames as $eventName) {
+            $this->forwardEventToPushServer($eventName);
+        }
+
+        return $this;
+    }
+
+    /**
      * Mount /api
      */
     private function mountApi()

@@ -60,16 +60,6 @@ class Controller
     }
 
     /**
-     * @return ApiResponse
-     */
-    public function getTest()
-    {
-        return new ApiResponse(array(
-            'test' => 'ok',
-        ));
-    }
-
-    /**
      * @param int $id
      *
      * @return ApiResponse
@@ -148,6 +138,14 @@ class Controller
 
         $this->dispatcher->dispatch(AwaleEvent::PLAY, new AwaleEvent($awaleParty));
 
+        $winner = $awaleParty->getWinner();
+        $hasWinner = null !== $winner;
+
+        if ($hasWinner) {
+            $this->partyManager->endParty($party);
+            $this->dispatcher->dispatch(AwaleEvent::PARTY_END, new AwaleEvent($awaleParty, $winner));
+        }
+
         $this->om->persist($awaleParty);
         $this->om->flush();
 
@@ -155,6 +153,8 @@ class Controller
             'valid' => true,
             'current_player' => $awaleParty->getCurrentPlayer(),
             'grid' => $awaleParty->getGrid(),
+            'has_winner' => $hasWinner,
+            'winner' => $winner,
         ));
     }
 }

@@ -13,16 +13,28 @@ class AwaleEvent extends Event
     const PLAY = 'eole.games.awale.play';
 
     /**
+     * @var string
+     */
+    const PARTY_END = 'eole.games.awale.party_end';
+
+    /**
      * @var AwaleParty
      */
     private $awaleParty;
 
     /**
-     * @param AwaleParty $awaleParty
+     * @var int|null
      */
-    public function __construct(AwaleParty $awaleParty)
+    private $winner;
+
+    /**
+     * @param AwaleParty $awaleParty
+     * @param int|null $winner
+     */
+    public function __construct(AwaleParty $awaleParty, $winner = null)
     {
         $this->awaleParty = $awaleParty;
+        $this->winner = $winner;
     }
 
     /**
@@ -31,5 +43,13 @@ class AwaleEvent extends Event
     public function getAwaleParty()
     {
         return $this->awaleParty;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getWinner()
+    {
+        return $this->winner;
     }
 }
