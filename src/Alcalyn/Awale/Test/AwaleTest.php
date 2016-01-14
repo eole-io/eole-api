@@ -167,6 +167,36 @@ class AwaleTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedGrid, $awale->getGrid());
     }
 
+    public function testEatMultipleAgain()
+    {
+        $awale = Awale::createWithSeedsPerContainer(3);
+        $awale->setGrid(array(
+            array(
+                'seeds' => array(4, 0, 8, 3, 3, 3),
+                'attic' => 0,
+            ),
+            array(
+                'seeds' => array(4, 2, 1, 3, 2, 1),
+                'attic' => 0,
+            ),
+        ));
+
+        $awale->move(0, 2);
+
+        $expectedGrid = array(
+            array(
+                'seeds' => array(5, 1, 0, 3, 3, 3),
+                'attic' => 5,
+            ),
+            array(
+                'seeds' => array(5, 3, 2, 4, 0, 0),
+                'attic' => 0,
+            ),
+        );
+
+        $this->assertEquals($expectedGrid, $awale->getGrid());
+    }
+
     public function testEatMultipleToEnd()
     {
         $awale = Awale::createWithSeedsPerContainer(3);
@@ -345,23 +375,23 @@ class AwaleTest extends \PHPUnit_Framework_TestCase
             ),
         ));
 
-        $awale->storeRemainingSeeds();
+        $awale->storeRemainingSeeds(Awale::PLAYER_0);
 
         $expectedGrid = array(
             array(
                 'seeds' => array(0, 0, 0, 0, 0, 0),
-                'attic' => 21,
+                'attic' => 54,
             ),
             array(
                 'seeds' => array(0, 0, 0, 0, 0, 0),
-                'attic' => 35,
+                'attic' => 2,
             ),
         );
 
         $this->assertEquals($expectedGrid, $awale->getGrid());
     }
 
-    public function testHasWinner()
+    public function testGetWinner()
     {
         $awale = Awale::createWithSeedsPerContainer(3);
 
@@ -428,12 +458,12 @@ class AwaleTest extends \PHPUnit_Framework_TestCase
         // Drawn game
         $awale->setGrid(array(
             array(
-                'seeds' => array(4, 0, 6, 3, 4, 3),
-                'attic' => 30,
+                'seeds' => array(1, 0, 0, 0, 0, 0),
+                'attic' => 29,
             ),
             array(
-                'seeds' => array(4, 4, 3, 16, 3, 3),
-                'attic' => 30,
+                'seeds' => array(0, 0, 0, 0, 0, 1),
+                'attic' => 29,
             ),
         ));
 
@@ -465,5 +495,183 @@ class AwaleTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException(AwaleException::class);
 
         $awale->play(Awale::PLAYER_0, 2);
+    }
+
+    public function testPlayCannotStarveOpponentByEatingAllSeeds()
+    {
+        $awale = Awale::createWithSeedsPerContainer(3);
+
+        $awale->setCurrentPlayer(Awale::PLAYER_1);
+        $awale->setGrid(array(
+            array(
+                'seeds' => array(2, 1, 1, 2, 2, 1),
+                'attic' => 0,
+            ),
+            array(
+                'seeds' => array(4, 4, 3, 16, 7, 1),
+                'attic' => 0,
+            ),
+        ));
+
+        $awale->play(Awale::PLAYER_1, 4);
+
+        $expectedGrid = array(
+            array(
+                'seeds' => array(3, 2, 2, 3, 3, 2),
+                'attic' => 0,
+            ),
+            array(
+                'seeds' => array(4, 4, 3, 16, 0, 2),
+                'attic' => 0,
+            ),
+        );
+
+        $this->assertSame($expectedGrid, $awale->getGrid());
+    }
+
+    public function testPlayForcesToFeedOpponent()
+    {
+        $awale = Awale::createWithSeedsPerContainer(3);
+
+        $awale->setCurrentPlayer(Awale::PLAYER_1);
+        $awale->setGrid(array(
+            array(
+                'seeds' => array(0, 0, 0, 0, 0, 0),
+                'attic' => 0,
+            ),
+            array(
+                'seeds' => array(2, 0, 1, 0, 3, 0),
+                'attic' => 0,
+            ),
+        ));
+
+        $this->setExpectedException(AwaleException::class);
+        $awale->play(Awale::PLAYER_1, 2);
+
+        $awale->play(Awale::PLAYER_1, 4);
+    }
+
+    public function testPlayStoresRemainingSeedsWhenPlayerCannotFeedsOpponent()
+    {
+        $awale = Awale::createWithSeedsPerContainer(4);
+
+        $awale->setCurrentPlayer(Awale::PLAYER_0);
+        $awale->setGrid(array(
+            array(
+                'seeds' => array(2, 0, 0, 0, 0, 0),
+                'attic' => 22,
+            ),
+            array(
+                'seeds' => array(1, 0, 0, 1, 0, 0),
+                'attic' => 22,
+            ),
+        ));
+
+        $awale->play(Awale::PLAYER_0, 0);
+
+        $expectedGrid = array(
+            array(
+                'seeds' => array(0, 0, 0, 0, 0, 0),
+                'attic' => 26,
+            ),
+            array(
+                'seeds' => array(0, 0, 0, 0, 0, 0),
+                'attic' => 22,
+            ),
+        );
+
+        $this->assertEquals($expectedGrid, $awale->getGrid());
+        $this->assertTrue($awale->isGameOver(), 'Game is over.');
+    }
+
+    public function testIsGameLoopingIsFalseWhenNotLooping()
+    {
+        $awale = Awale::createWithSeedsPerContainer(3);
+
+        $awale->setGrid(array(
+            array(
+                'seeds' => array(0, 1, 2, 0, 1, 0),
+                'attic' => 20,
+            ),
+            array(
+                'seeds' => array(0, 3, 0, 0, 1, 0),
+                'attic' => 21,
+            ),
+        ));
+
+        $this->assertFalse($awale->isGameLooping(), 'Game is not looping.');
+    }
+
+    public function testIsGameLooping()
+    {
+        $awale = Awale::createWithSeedsPerContainer(3);
+
+        $awale->setGrid(array(
+            array(
+                'seeds' => array(0, 1, 0, 0, 0, 0),
+                'attic' => 23,
+            ),
+            array(
+                'seeds' => array(0, 0, 0, 0, 1, 0),
+                'attic' => 23,
+            ),
+        ));
+
+        $this->assertTrue($awale->isGameLooping(), 'Game is looping.');
+    }
+
+    public function testIsGameOverReturnsTrueWhenThereIsAWinner()
+    {
+        $awale = Awale::createWithSeedsPerContainer(4);
+
+        $awale->setGrid(array(
+            array(
+                'seeds' => array(0, 1, 0, 2, 0, 0),
+                'attic' => 26,
+            ),
+            array(
+                'seeds' => array(0, 0, 0, 0, 1, 0),
+                'attic' => 20,
+            ),
+        ));
+
+        $this->assertTrue($awale->isGameOver(), 'Game is over because there is a winner.');
+    }
+
+    public function testIsGameOverReturnsTrueBecausePlayerCannotFeedsOpponent()
+    {
+        $awale = Awale::createWithSeedsPerContainer(4);
+
+        $awale->setCurrentPlayer(Awale::PLAYER_0);
+        $awale->setGrid(array(
+            array(
+                'seeds' => array(0, 1, 0, 2, 0, 0),
+                'attic' => 21,
+            ),
+            array(
+                'seeds' => array(0, 0, 0, 0, 0, 0),
+                'attic' => 20,
+            ),
+        ));
+
+        $this->assertTrue($awale->isGameOver(), 'Game is over because player cannot feeds opponent.');
+    }
+
+    public function testIsGameOverReturnsTrueBecauseGameIsLooping()
+    {
+        $awale = Awale::createWithSeedsPerContainer(4);
+
+        $awale->setGrid(array(
+            array(
+                'seeds' => array(0, 1, 0, 0, 0, 0),
+                'attic' => 23,
+            ),
+            array(
+                'seeds' => array(0, 0, 0, 0, 1, 0),
+                'attic' => 23,
+            ),
+        ));
+
+        $this->assertTrue($awale->isGameOver(), 'Game is over because game is looping.');
     }
 }

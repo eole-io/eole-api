@@ -227,6 +227,15 @@ class Awale
         }
 
         /**
+         * Anti starve check
+         */
+        if ((0 === $row && 0 === $box) || (1 === $row && 5 === $box)) {
+            if (($row !== $player) && self::allSeedsVulnerable($this->grid[$row]['seeds'])) {
+                return $this;
+            }
+        }
+
+        /**
          * Store opponent seeds
          */
         while (($row !== $player) && in_array($this->grid[$row]['seeds'][$box], array(2, 3))) {
@@ -254,6 +263,23 @@ class Awale
     }
 
     /**
+     * Check whether all seeds can be eaten (2 or 3).
+     *
+     * @param array $seeds
+     *
+     * @return boolean
+     */
+    private static function allSeedsVulnerable(array $seeds) {
+        foreach ($seeds as $seed) {
+            if (2 !== $seed && 3 !== $seed) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Play a turn, check current player turn.
      *
      * @param int $player
@@ -273,7 +299,9 @@ class Awale
             throw new AwaleException('This container is empty.');
         }
 
-        return $this
+        $this->checkMustFeedOpponentRule($player, $move);
+
+        $this
             ->move($player, $move)
             ->setLastMove(array(
                 'player' => $player,
@@ -281,6 +309,12 @@ class Awale
             ))
             ->changePlayerTurn()
         ;
+
+        if (!$this->hasSeeds(1 - $this->currentPlayer) && !$this->canFeedOpponent($this->currentPlayer)) {
+            $this->storeRemainingSeeds($player);
+        }
+
+        return $this;
     }
 
     /**
@@ -328,21 +362,91 @@ class Awale
     }
 
     /**
-     * Store remaining seeds when game stops by impossibility to play.
+     * @param int $player
+     * @param int $move
+     *
+     * @throws AwaleException if player does not feed starved opponent.
+     */
+    public function checkMustFeedOpponentRule($player, $move)
+    {
+        if (
+            !$this->hasSeeds(1 - $player) &&
+            $this->canFeedOpponent($player) &&
+            !$this->isMoveFeedsOpponent($player, $move)
+        ) {
+            throw new AwaleException('You must feed your opponent.');
+        }
+    }
+
+    /**
+     * @param int $player
+     * @param int $move
+     *
+     * @return bool
+     */
+    public function isMoveFeedsOpponent($player, $move)
+    {
+        if (self::PLAYER_0 === $player) {
+            return $this->grid[$player]['seeds'][$move] > $move;
+        } else {
+            return $this->grid[$player]['seeds'][$move] > (5 - $move);
+        }
+    }
+
+    /**
+     * Store remaining seeds in $player attic.
+     *
+     * @param int $player
      *
      * @return self
      */
-    public function storeRemainingSeeds()
+    public function storeRemainingSeeds($player)
     {
         for ($i = 0; $i < 6; $i++) {
-            $this->grid[0]['attic'] += $this->grid[0]['seeds'][$i];
+            $this->grid[$player]['attic'] += $this->grid[0]['seeds'][$i];
             $this->grid[0]['seeds'][$i] = 0;
 
-            $this->grid[1]['attic'] += $this->grid[1]['seeds'][$i];
+            $this->grid[$player]['attic'] += $this->grid[1]['seeds'][$i];
             $this->grid[1]['seeds'][$i] = 0;
         }
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isGameLooping()
+    {
+        $seeds0 = $this->grid[self::PLAYER_0]['seeds'];
+        $seeds1 = $this->grid[self::PLAYER_1]['seeds'];
+
+        if (1 === array_sum($seeds0) && $seeds0 === array_reverse($seeds1)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if a player reached the seeds number to win and returns it.
+     * Or return null.
+     *
+     * @return int|null
+     */
+    private function getPlayerWithMoreThanHalfSeeds()
+    {
+        $seedsToWin = $this->getSeedsNeededToWin();
+
+        if ($this->grid[Awale::PLAYER_0]['attic'] > $seedsToWin) {
+            return self::PLAYER_0;
+        }
+
+        if ($this->grid[Awale::PLAYER_1]['attic'] > $seedsToWin) {
+            return self::PLAYER_1;
+        }
+
+        return null;
     }
 
     /**
@@ -352,21 +456,47 @@ class Awale
      */
     public function getWinner()
     {
-        $seedsToWin = $this->getSeedsNeededToWin();
-
-        if ($this->grid[0]['attic'] > $seedsToWin) {
-            return self::PLAYER_0;
+        if (!$this->isGameOver()) {
+            return null;
         }
 
-        if ($this->grid[1]['attic'] > $seedsToWin) {
-            return self::PLAYER_1;
-        }
+        $player = $this->getPlayerWithMoreThanHalfSeeds();
 
-        if (($seedsToWin === $this->grid[0]['attic']) && ($seedsToWin === $this->grid[1]['attic'])) {
+        if (null === $player) {
             return self::DRAW;
+        } else {
+            return $player;
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isGameOver()
+    {
+        if (null !== $this->getPlayerWithMoreThanHalfSeeds()) {
+            return true;
         }
 
-        return null;
+        if (!$this->hasSeeds(1 - $this->currentPlayer) && !$this->canFeedOpponent($this->currentPlayer)) {
+            return true;
+        }
+
+        if ($this->isGameLooping()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param int $player
+     *
+     * @return int
+     */
+    public function getScore($player)
+    {
+        return $this->grid[$player]['attic'];
     }
 
     /**

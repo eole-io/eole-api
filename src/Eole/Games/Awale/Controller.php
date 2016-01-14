@@ -141,17 +141,16 @@ class Controller
             throw new BadRequestHttpException('Invalid move.', $e);
         }
 
-        $party->getSlot(0)->setScore($awaleParty->getGrid()[0]['attic']);
-        $party->getSlot(1)->setScore($awaleParty->getGrid()[1]['attic']);
+        $party->getSlot(0)->setScore($awaleParty->getScore(Awale::PLAYER_0));
+        $party->getSlot(1)->setScore($awaleParty->getScore(Awale::PLAYER_1));
 
         $this->dispatcher->dispatch(AwaleEvent::PLAY, new AwaleEvent($awaleParty));
 
-        $winner = $awaleParty->getWinner();
-        $partyEnded = null !== $winner;
+        $partyEnded = $awaleParty->isGameOver();
 
         if ($partyEnded) {
             $this->partyManager->endParty($party);
-            $this->dispatcher->dispatch(AwaleEvent::PARTY_END, new AwaleEvent($awaleParty, $winner));
+            $this->dispatcher->dispatch(AwaleEvent::PARTY_END, new AwaleEvent($awaleParty, $awaleParty->getWinner()));
         }
 
         $this->om->persist($awaleParty);
@@ -161,7 +160,8 @@ class Controller
             'valid' => true,
             'current_player' => $awaleParty->getCurrentPlayer(),
             'grid' => $awaleParty->getGrid(),
-            'winner' => $winner,
+            'winner' => $awaleParty->getWinner(),
+            'is_party_ended' => $partyEnded,
         ));
     }
 }
