@@ -450,7 +450,7 @@ class Awale
     }
 
     /**
-     * Check if a player of the grid has won
+     * Returns the winner, or null if game not over.
      *
      * @return int|null null for party not ended, or one of them: self::PLAYER_0, self::PLAYER_1, self::DRAW.
      */
@@ -460,12 +460,12 @@ class Awale
             return null;
         }
 
-        $player = $this->getPlayerWithMoreThanHalfSeeds();
-
-        if (null === $player) {
+        if ($this->getScore(self::PLAYER_0) === $this->getScore(self::PLAYER_1)) {
             return self::DRAW;
+        } elseif ($this->getScore(self::PLAYER_0) > $this->getScore(self::PLAYER_1)) {
+            return self::PLAYER_0;
         } else {
-            return $player;
+            return self::PLAYER_1;
         }
     }
 
