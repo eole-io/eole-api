@@ -572,11 +572,11 @@ class AwaleTest extends \PHPUnit_Framework_TestCase
         $expectedGrid = array(
             array(
                 'seeds' => array(0, 0, 0, 0, 0, 0),
-                'attic' => 26,
+                'attic' => 22,
             ),
             array(
                 'seeds' => array(0, 0, 0, 0, 0, 0),
-                'attic' => 22,
+                'attic' => 26,
             ),
         );
 

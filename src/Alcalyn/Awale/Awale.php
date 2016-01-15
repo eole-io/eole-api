@@ -311,7 +311,7 @@ class Awale
         ;
 
         if (!$this->hasSeeds(1 - $this->currentPlayer) && !$this->canFeedOpponent($this->currentPlayer)) {
-            $this->storeRemainingSeeds($player);
+            $this->storeRemainingSeeds($this->currentPlayer);
         }
 
         return $this;
