@@ -22,8 +22,9 @@ class Application extends BaseApplication
         $this->registerSilexProviders();
         $this->registerSecurity();
         $this->registerWsseSecurity();
-        $this->registerDoctrine();
         $this->registerServices();
+        $this->loadAllGames();
+        $this->registerDoctrine();
     }
 
     /**
@@ -65,7 +66,7 @@ class Application extends BaseApplication
 
         if (file_exists($extEnvironmentFile)) {
             $extEnvironment = $parser->parse(file_get_contents($extEnvironmentFile));
-            $environment = array_merge($environment, $extEnvironment);
+            $environment = array_replace_recursive($environment, $extEnvironment);
         }
 
         $this['environment'] = $environment;
@@ -154,19 +155,7 @@ class Application extends BaseApplication
         $this->register(new \Dflydev\Provider\DoctrineOrm\DoctrineOrmServiceProvider(), array(
             'orm.proxies_dir' => $this['project.root'].'/var/cache/doctrine/proxies',
             'orm.em.options' => array(
-                'mappings' => array(
-                    array(
-                        'type' => 'yml',
-                        'namespace' => 'Alcalyn\UserApi\Model',
-                        'path' => $this['project.root'].'/vendor/alcalyn/doctrine-user-api/Mapping',
-                    ),
-                    array(
-                        'type' => 'yml',
-                        'namespace' => 'Eole\Core\Model',
-                        'path' => $this['project.root'].'/src/Eole/Core/Mapping',
-                        'alias' => 'Eole',
-                    ),
-                ),
+                'mappings' => $this['eole.mappings'],
             ),
         ));
     }
@@ -193,6 +182,25 @@ class Application extends BaseApplication
 
         $this['serializer'] = function () {
             return $this['serializer.builder']->build();
+        };
+
+        $this['eole.mappings'] = function () {
+            $mappings = array();
+
+            $mappings []= array(
+                'type' => 'yml',
+                'namespace' => 'Alcalyn\UserApi\Model',
+                'path' => $this['project.root'].'/vendor/alcalyn/doctrine-user-api/Mapping',
+            );
+
+            $mappings []= array(
+                'type' => 'yml',
+                'namespace' => 'Eole\Core\Model',
+                'path' => $this['project.root'].'/src/Eole/Core/Mapping',
+                'alias' => 'Eole',
+            );
+
+            return $mappings;
         };
 
         $this['eole.player_manager'] = function () {
@@ -240,5 +248,61 @@ class Application extends BaseApplication
                 ));
             }
         });
+    }
+
+    /**
+     * Register a game service provider.
+     *
+     * @param string $gameName
+     *
+     * @return self
+     */
+    private function registerGame($gameName)
+    {
+        $gameConfig = $this['environment']['games'][$gameName];
+
+        if (isset($gameConfig['service_provider'])) {
+            $serviceProviderClass = $gameConfig['service_provider'];
+            $serviceProvider = new $serviceProviderClass();
+
+            if (!$serviceProvider instanceof \Pimple\ServiceProviderInterface) {
+                throw new \LogicException(sprintf(
+                    'Game service provider class (%s) for game %s must implement %s.',
+                    $serviceProviderClass,
+                    $gameName,
+                    \Pimple\ServiceProviderInterface::class
+                ));
+            }
+
+            $this->register($serviceProvider);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $gameName
+     *
+     * @return self
+     */
+    public function loadGame($gameName)
+    {
+        $this->registerGame($gameName);
+
+        return $this;
+    }
+
+    /**
+     * @return self
+     */
+    public function loadAllGames()
+    {
+        $games = $this['environment']['games'];
+
+        foreach ($games as $gameName => $config) {
+            $this->loadGame($gameName);
+        }
+
+        return $this;
     }
 }

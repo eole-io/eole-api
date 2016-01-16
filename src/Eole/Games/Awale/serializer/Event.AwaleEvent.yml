@@ -1,0 +1,7 @@
+Eole\Games\Awale\Event\AwaleEvent:
+    exclusion_policy: NONE
+    properties:
+        awaleParty:
+            type: Eole\Games\Awale\Model\AwaleParty
+        winner:
+            type: integer

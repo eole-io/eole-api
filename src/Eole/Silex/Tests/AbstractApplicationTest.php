@@ -55,8 +55,6 @@ abstract class AbstractApplicationTest extends WebTestCase
     {
         parent::setUp();
 
-        $this->app['dispatcher']->removeSubscriber($this->app['eole.listener.event_to_socket']);
-
         $this->playerManager = $this->app['eole.player_manager'];
 
         $this->app['db']->executeQuery('delete from eole_player');

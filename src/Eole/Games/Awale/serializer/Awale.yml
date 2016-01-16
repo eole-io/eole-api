@@ -1,0 +1,15 @@
+Alcalyn\Awale\Awale:
+    exclusion_policy: NONE
+    properties:
+        grid:
+            type: array
+        seedsPerContainer:
+            type: integer
+        currentPlayer:
+            type: integer
+        lastMove:
+            type: array
+    virtual_properties:
+        getWinner:
+            type: integer
+            serialized_name: winner

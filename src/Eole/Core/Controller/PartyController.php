@@ -18,6 +18,8 @@ use Eole\Core\Service\PartyManager;
 
 class PartyController
 {
+    use LoggedPlayerTrait;
+
     /**
      * @var PartyRepository
      */
@@ -39,13 +41,6 @@ class PartyController
     private $dispatcher;
 
     /**
-     * Authenticated player
-     *
-     * @var Player|null
-     */
-    private $loggedPlayer;
-
-    /**
      * @param PartyRepository $partyRepository
      * @param ObjectManager $om
      * @param PartyManager $partyManager
@@ -61,18 +56,6 @@ class PartyController
         $this->om = $om;
         $this->partyManager = $partyManager;
         $this->dispatcher = $dispatcher;
-    }
-
-    /**
-     * @param Player $player
-     *
-     * @return self
-     */
-    public function setLoggedPlayer(Player $player)
-    {
-        $this->loggedPlayer = $player;
-
-        return $this;
     }
 
     /**
@@ -166,15 +149,5 @@ class PartyController
         $this->dispatcher->dispatch(SlotEvent::JOIN_AFTER, SlotEvent::createFromSlot($joinedSlot));
 
         return new ApiResponse($position);
-    }
-
-    /**
-     * @throws HttpException
-     */
-    private function mustBeLogged()
-    {
-        if (null === $this->loggedPlayer) {
-            throw new HttpException(401);
-        }
     }
 }

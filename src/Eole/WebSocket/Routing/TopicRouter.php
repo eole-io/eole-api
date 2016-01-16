@@ -47,7 +47,7 @@ class TopicRouter
         }
 
         if (null === $topicInstance) {
-            throw new \LogicException('Expected Topic or topic class name in _topic.');
+            throw new \LogicException('Expected Topic or topic factory in _topic.');
         }
 
         return $topicInstance;

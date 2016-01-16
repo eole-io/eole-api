@@ -13,6 +13,15 @@ websocket:
         port:       8080
 
 push_server:
+    enabled:        true
     server:
         host:       127.0.0.1
         port:       5555
+
+games:
+    tictactoe:
+        websocket_provider: Eole\Games\TicTacToe\TicTacToeProvider
+    awale:
+        service_provider: Eole\Games\Awale\ServiceProvider
+        controller_provider: Eole\Games\Awale\ControllerProvider
+        websocket_provider: Eole\Games\Awale\WebsocketProvider

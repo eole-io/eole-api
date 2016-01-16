@@ -1,0 +1,8 @@
+Eole\Games\Awale\Model\AwaleParty:
+    exclusion_policy: NONE
+    properties:
+        id:
+            type: integer
+            exclude: true
+        party:
+            type: Eole\Core\Model\Party
