@@ -220,6 +220,8 @@ class Application extends BaseApplication
         $this['eole.event_serializer'] = function () {
             return new Service\EventSerializer($this['serializer']);
         };
+
+        $this->register(new OAuth2\OAuth2ServiceProvider());
     }
 
     /**
