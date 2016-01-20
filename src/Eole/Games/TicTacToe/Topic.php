@@ -73,7 +73,7 @@ class Topic extends BaseTopic implements EventSubscriberInterface
 
         $this->broadcast(array(
             'type' => 'join',
-            'player' => $this->normalizer->normalize($event->getPlayer()),
+            'player' => $event->getPlayer(),
             'position' => $this->partyManager->getPlayerPosition($event->getParty(), $event->getPlayer()),
         ));
 
@@ -179,8 +179,8 @@ class Topic extends BaseTopic implements EventSubscriberInterface
     {
         $conn->event($topic, array(
             'type' => 'init',
-            'tictactoe' => $this->normalizer->normalize($this->tictactoe),
-            'party' => $this->normalizer->normalize($this->party),
+            'tictactoe' => $this->tictactoe,
+            'party' => $this->party,
         ));
     }
 
@@ -191,8 +191,8 @@ class Topic extends BaseTopic implements EventSubscriberInterface
     {
         $this->broadcast(array(
             'type' => 'restart',
-            'tictactoe' => $this->normalizer->normalize($this->tictactoe),
-            'party' => $this->normalizer->normalize($this->party),
+            'tictactoe' => $this->tictactoe,
+            'party' => $this->party,
         ));
     }
 

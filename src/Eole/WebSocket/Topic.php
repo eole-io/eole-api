@@ -42,6 +42,16 @@ class Topic extends BaseTopic
     }
 
     /**
+     * {@InheritDoc}
+     *
+     * And normalize message using the serializer before send.
+     */
+    public function broadcast($msg, array $exclude = array(), array $eligible = array())
+    {
+        parent::broadcast($this->normalizer->normalize($msg), $exclude, $eligible);
+    }
+
+    /**
      * @param WampConnection $conn
      * @param string $topic
      */

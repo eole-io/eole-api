@@ -48,7 +48,7 @@ class AwaleTopic extends BaseTopic implements EventSubscriberInterface
 
         $this->broadcast(array(
             'type' => 'join',
-            'party' => $this->normalizer->normalize($event->getParty()),
+            'party' => $event->getParty(),
         ));
     }
 
