@@ -2,9 +2,9 @@
 
 namespace Eole\RestApi\OAuth2;
 
+use Symfony\Component\HttpFoundation\Request;
 use League\OAuth2\Server\Exception\OAuthException;
 use League\OAuth2\Server\AuthorizationServer;
-use Symfony\Component\HttpFoundation\Request;
 use Eole\Core\ApiResponse;
 
 class OAuth2Controller

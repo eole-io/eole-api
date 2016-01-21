@@ -3,26 +3,26 @@
 namespace Eole\Silex\OAuth2;
 
 use League\OAuth2\Server\Grant\PasswordGrant;
-use League\OAuth2\Server\AuthorizationServer;
+use League\OAuth2\Server\AuthorizationServer as BaseAuthorizationServer;
 use Eole\Silex\OAuth2\Storage\Client;
 use Eole\Silex\OAuth2\Storage\Session;
 use Eole\Silex\OAuth2\Storage\AccessToken;
 
-class EoleOAuth2Server extends AuthorizationServer
+class AuthorizationServer extends BaseAuthorizationServer
 {
     /**
      * @var string
      */
-    private $cacheDir;
+    private $tokensDir;
 
     /**
-     * @param string $cacheDir
+     * @param string $tokensDir
      */
-    public function __construct($cacheDir)
+    public function __construct($tokensDir)
     {
         parent::__construct();
 
-        $this->cacheDir = $cacheDir;
+        $this->tokensDir = $tokensDir;
 
         $this->init();
     }
@@ -32,14 +32,16 @@ class EoleOAuth2Server extends AuthorizationServer
      */
     private function init()
     {
-        if (!is_dir($this->cacheDir)) {
-            mkdir($this->cacheDir, 0777, true);
+        var_dump('init');
+
+        if (!is_dir($this->tokensDir)) {
+            mkdir($this->tokensDir, 0777, true);
         }
 
         $this
             ->setClientStorage(new Client())
             ->setSessionStorage(new Session())
-            ->setAccessTokenStorage(new AccessToken($this->cacheDir))
+            ->setAccessTokenStorage(new AccessToken($this->tokensDir))
             //->setScopeStorage(new ScopeStorage())
         ;
 

@@ -3,8 +3,6 @@
 namespace Eole\Silex;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Alcalyn\Wsse\Security\Authentication\Provider\PasswordDigestValidator;
-use Alcalyn\SilexWsse\Provider\WsseServiceProvider;
 use Silex\Application as BaseApplication;
 
 class Application extends BaseApplication
@@ -21,8 +19,8 @@ class Application extends BaseApplication
         $this->loadEnvironmentParameters();
         $this->registerSilexProviders();
         $this->registerSecurity();
-        $this->registerWsseSecurity();
         $this->registerServices();
+        $this->registerListeners();
         $this->loadAllGames();
         $this->registerDoctrine();
     }
@@ -93,7 +91,6 @@ class Application extends BaseApplication
             'security.firewalls' => array(
                 'api' => array(
                     'pattern' => '^/api',
-                    'wsse' => true,
                     'stateless' => true,
                     'anonymous' => true,
                     'users' => $userProvider,
@@ -113,19 +110,6 @@ class Application extends BaseApplication
         };
 
         $this['eole.user_provider'] = $userProvider;
-    }
-
-    /*
-     * Register SilexWsse Security
-     */
-    private function registerWsseSecurity()
-    {
-        $this['security.wsse.token_validator'] = function () {
-            $wsseCacheDir = $this['project.root'].'/var/cache/wsse-tokens';
-            return new PasswordDigestValidator($wsseCacheDir);
-        };
-
-        $this->register(new WsseServiceProvider('api'));
     }
 
     /**
@@ -222,6 +206,24 @@ class Application extends BaseApplication
         };
 
         $this->register(new OAuth2\OAuth2ServiceProvider());
+    }
+
+    /**
+     * Register events listeners.
+     */
+    private function registerListeners()
+    {
+        $this->on('kernel.request', array(new Listener\AuthorizationHeaderFixListener(), 'onKernelRequest'));
+
+        $this->before(function (\Symfony\Component\HttpFoundation\Request $request) {
+            $this['eole.oauth.resource_server']->setRequest($request);
+
+            try {
+                $this['eole.oauth.resource_server']->isValidRequest();
+            } catch (\League\OAuth2\Server\Exception\InvalidRequestException $e) {
+                throw new \Symfony\Component\HttpKernel\Exception\HttpException(401, $e->getMessage(), $e);
+            }
+        });
     }
 
     /**

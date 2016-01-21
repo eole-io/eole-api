@@ -16,7 +16,7 @@ class OAuth2ControllerProvider implements ControllerProviderInterface, ServicePr
     public function register(Container $app)
     {
         $app['eole.oauth.controller'] = function () use ($app) {
-            return new OAuth2Controller($app['eole.oauth.server']);
+            return new OAuth2Controller($app['eole.oauth.authorization_server']);
         };
     }
 

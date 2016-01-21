@@ -3,7 +3,6 @@
 namespace Eole\WebSocket;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Alcalyn\Wsse\Security\Authentication\Token\WsseUserToken;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\WampServerInterface;
 use Eole\Silex\Application as SilexApplication;

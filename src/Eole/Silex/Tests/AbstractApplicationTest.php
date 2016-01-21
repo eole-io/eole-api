@@ -41,10 +41,6 @@ abstract class AbstractApplicationTest extends WebTestCase
             'debug' => true,
         ));
 
-        $app['security.wsse.token_validator'] = function () {
-            return new WsseTokenValidatorMock();
-        };
-
         return $app;
     }
 
@@ -94,15 +90,5 @@ abstract class AbstractApplicationTest extends WebTestCase
 
         $this->app['db']->executeQuery('delete from eole_player');
         $this->app['db']->executeQuery('delete from eole_game');
-    }
-
-    /**
-     * @param string $username
-     *
-     * @return string
-     */
-    protected static function createWsseToken($username)
-    {
-        return 'UsernameToken Username="'.$username.'", PasswordDigest="good-password", Nonce="nonce", Created="timestamp"';
     }
 }
