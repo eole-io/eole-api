@@ -1,12 +1,12 @@
 <?php
 
-namespace Eole\Silex\OAuth2;
+namespace Eole\OAuth2;
 
 use League\OAuth2\Server\ResourceServer as BaseResourceServer;
-use Eole\Silex\OAuth2\Storage\Client;
-use Eole\Silex\OAuth2\Storage\Session;
-use Eole\Silex\OAuth2\Storage\AccessToken;
-use Eole\Silex\OAuth2\Storage\Scope;
+use Eole\OAuth2\Storage\Client;
+use Eole\OAuth2\Storage\Session;
+use Eole\OAuth2\Storage\AccessToken;
+use Eole\OAuth2\Storage\Scope;
 
 class ResourceServer extends BaseResourceServer
 {

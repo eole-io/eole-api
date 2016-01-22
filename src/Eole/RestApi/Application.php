@@ -82,7 +82,7 @@ class Application extends BaseApplication
             return $socket;
         };
 
-        $this->register(new OAuth2\OAuth2ControllerProvider());
+        $this->register(new \Eole\OAuth2\Silex\OAuth2ControllerProvider());
 
         $this->before(function (\Symfony\Component\HttpFoundation\Request $request, BaseApplication $app) {
             if (null !== $app['user']) {
@@ -146,7 +146,7 @@ class Application extends BaseApplication
         $this->mount('api', new ControllerProvider\GameControllerProvider());
         $this->mount('api', new ControllerProvider\PartyControllerProvider());
 
-        $this->mount('oauth', new OAuth2\OAuth2ControllerProvider());
+        $this->mount('oauth', new \Eole\OAuth2\Silex\OAuth2ControllerProvider());
     }
 
     /**

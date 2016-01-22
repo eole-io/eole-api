@@ -205,7 +205,7 @@ class Application extends BaseApplication
             return new Service\EventSerializer($this['serializer']);
         };
 
-        $this->register(new OAuth2\OAuth2ServiceProvider());
+        $this->register(new \Eole\OAuth2\Silex\OAuth2ServiceProvider());
     }
 
     /**
@@ -213,7 +213,7 @@ class Application extends BaseApplication
      */
     private function registerListeners()
     {
-        $this->on('kernel.request', array(new Listener\AuthorizationHeaderFixListener(), 'onKernelRequest'));
+        $this->register(new \Alcalyn\AuthorizationHeaderFix\SilexServiceProvider());
 
         $this->before(function (\Symfony\Component\HttpFoundation\Request $request) {
             $this['eole.oauth.resource_server']->setRequest($request);
@@ -221,6 +221,8 @@ class Application extends BaseApplication
             try {
                 $this['eole.oauth.resource_server']->isValidRequest();
             } catch (\League\OAuth2\Server\Exception\InvalidRequestException $e) {
+                throw new \Symfony\Component\HttpKernel\Exception\HttpException(400, $e->getMessage(), $e);
+            } catch (\League\OAuth2\Server\Exception\AccessDeniedException $e) {
                 throw new \Symfony\Component\HttpKernel\Exception\HttpException(401, $e->getMessage(), $e);
             }
         });

@@ -1,12 +1,12 @@
 <?php
 
-namespace Eole\RestApi\OAuth2;
+namespace Eole\OAuth2\Silex;
 
 use Pimple\ServiceProviderInterface;
 use Pimple\Container;
 use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
-use Eole\RestApi\OAuth2\OAuth2Controller;
+use Eole\OAuth2\Controller\OAuth2Controller;
 
 class OAuth2ControllerProvider implements ControllerProviderInterface, ServiceProviderInterface
 {

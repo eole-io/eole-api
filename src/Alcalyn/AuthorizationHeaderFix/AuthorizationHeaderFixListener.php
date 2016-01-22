@@ -1,6 +1,6 @@
 <?php
 
-namespace Eole\Silex\Listener;
+namespace Alcalyn\AuthorizationHeaderFix;
 
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;

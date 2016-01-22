@@ -1,11 +1,11 @@
 <?php
 
-namespace Eole\Silex\OAuth2;
+namespace Eole\OAuth2\Silex;
 
 use Pimple\ServiceProviderInterface;
 use Pimple\Container;
-use Eole\Silex\OAuth2\AuthorizationServer;
-use Eole\Silex\OAuth2\ResourceServer;
+use Eole\OAuth2\AuthorizationServer;
+use Eole\OAuth2\ResourceServer;
 
 class OAuth2ServiceProvider implements ServiceProviderInterface
 {

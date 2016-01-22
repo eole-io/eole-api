@@ -1,12 +1,13 @@
 <?php
 
-namespace Eole\Silex\OAuth2;
+namespace Eole\OAuth2;
 
 use League\OAuth2\Server\Grant\PasswordGrant;
 use League\OAuth2\Server\AuthorizationServer as BaseAuthorizationServer;
-use Eole\Silex\OAuth2\Storage\Client;
-use Eole\Silex\OAuth2\Storage\Session;
-use Eole\Silex\OAuth2\Storage\AccessToken;
+use Eole\OAuth2\Storage\Client;
+use Eole\OAuth2\Storage\Session;
+use Eole\OAuth2\Storage\AccessToken;
+use Eole\OAuth2\Storage\Scope;
 
 class AuthorizationServer extends BaseAuthorizationServer
 {
@@ -32,8 +33,6 @@ class AuthorizationServer extends BaseAuthorizationServer
      */
     private function init()
     {
-        var_dump('init');
-
         if (!is_dir($this->tokensDir)) {
             mkdir($this->tokensDir, 0777, true);
         }
@@ -42,7 +41,7 @@ class AuthorizationServer extends BaseAuthorizationServer
             ->setClientStorage(new Client())
             ->setSessionStorage(new Session())
             ->setAccessTokenStorage(new AccessToken($this->tokensDir))
-            //->setScopeStorage(new ScopeStorage())
+            ->setScopeStorage(new Scope())
         ;
 
         $passwordGrant = new PasswordGrant();

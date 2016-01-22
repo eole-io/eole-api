@@ -1,6 +1,6 @@
 <?php
 
-namespace Eole\RestApi\OAuth2;
+namespace Eole\OAuth2\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use League\OAuth2\Server\Exception\OAuthException;

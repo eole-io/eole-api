@@ -1,6 +1,6 @@
 <?php
 
-namespace Eole\Silex\OAuth2\Storage;
+namespace Eole\OAuth2\Storage;
 
 use League\OAuth2\Server\Entity\SessionEntity;
 use League\OAuth2\Server\Entity\ClientEntity;
@@ -34,5 +34,6 @@ class Client extends AbstractStorage implements ClientInterface
      */
     public function getBySession(SessionEntity $session)
     {
+        throw new \Eole\OAuth2\Exception\NotImplementedException();
     }
 }

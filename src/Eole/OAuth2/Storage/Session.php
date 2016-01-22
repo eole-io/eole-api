@@ -1,6 +1,6 @@
 <?php
 
-namespace Eole\Silex\OAuth2\Storage;
+namespace Eole\OAuth2\Storage;
 
 use League\OAuth2\Server\Entity\SessionEntity;
 use League\OAuth2\Server\Entity\AccessTokenEntity;
@@ -16,6 +16,7 @@ class Session extends AbstractStorage implements SessionInterface
      */
     public function getByAccessToken(AccessTokenEntity $accessToken)
     {
+        throw new \Eole\OAuth2\Exception\NotImplementedException();
     }
 
     /**
@@ -23,6 +24,7 @@ class Session extends AbstractStorage implements SessionInterface
      */
     public function getByAuthCode(AuthCodeEntity $authCode)
     {
+        throw new \Eole\OAuth2\Exception\NotImplementedException();
     }
 
     /**
@@ -45,6 +47,7 @@ class Session extends AbstractStorage implements SessionInterface
      */
     public function create($ownerType, $ownerId, $clientId, $clientRedirectUri = null)
     {
+        throw new \Eole\OAuth2\Exception\NotImplementedException();
     }
 
     /**
@@ -52,5 +55,6 @@ class Session extends AbstractStorage implements SessionInterface
      */
     public function associateScope(SessionEntity $session, ScopeEntity $scope)
     {
+        throw new \Eole\OAuth2\Exception\NotImplementedException();
     }
 }

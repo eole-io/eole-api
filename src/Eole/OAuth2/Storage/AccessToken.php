@@ -1,6 +1,6 @@
 <?php
 
-namespace Eole\Silex\OAuth2\Storage;
+namespace Eole\OAuth2\Storage;
 
 use League\OAuth2\Server\Entity\AccessTokenEntity;
 use League\OAuth2\Server\Entity\ScopeEntity;
@@ -12,14 +12,14 @@ class AccessToken extends AbstractStorage implements AccessTokenInterface
     /**
      * @var string
      */
-    private $cacheDir;
+    private $tokensDir;
 
     /**
-     * @param string $cacheDir
+     * @param string $tokensDir
      */
-    public function __construct($cacheDir)
+    public function __construct($tokensDir)
     {
-        $this->cacheDir = $cacheDir;
+        $this->tokensDir = $tokensDir;
     }
 
     /**
@@ -27,6 +27,16 @@ class AccessToken extends AbstractStorage implements AccessTokenInterface
      */
     public function get($token)
     {
+        if (!file_exists($this->tokensDir.'/'.$token)) {
+            return null;
+        }
+
+        $tokenContent = file_get_contents($this->tokensDir.'/'.$token);
+
+        $accessToken = new AccessTokenEntity($this->server);
+        $accessToken->setExpireTime(intval($tokenContent));
+
+        return $accessToken;
     }
 
     /**
@@ -34,6 +44,7 @@ class AccessToken extends AbstractStorage implements AccessTokenInterface
      */
     public function getScopes(AccessTokenEntity $token)
     {
+        throw new \Eole\OAuth2\Exception\NotImplementedException();
     }
 
     /**
@@ -41,7 +52,7 @@ class AccessToken extends AbstractStorage implements AccessTokenInterface
      */
     public function create($token, $expireTime, $sessionId)
     {
-        file_put_contents($this->cacheDir.'/'.$token, $expireTime);
+        file_put_contents($this->tokensDir.'/'.$token, $expireTime);
     }
 
     /**
@@ -49,6 +60,7 @@ class AccessToken extends AbstractStorage implements AccessTokenInterface
      */
     public function associateScope(AccessTokenEntity $token, ScopeEntity $scope)
     {
+        throw new \Eole\OAuth2\Exception\NotImplementedException();
     }
 
     /**
@@ -56,5 +68,8 @@ class AccessToken extends AbstractStorage implements AccessTokenInterface
      */
     public function delete(AccessTokenEntity $token)
     {
+        if (file_exists($this->tokensDir.'/'.$token)) {
+            unlink($this->tokensDir.'/'.$token);
+        }
     }
 }
