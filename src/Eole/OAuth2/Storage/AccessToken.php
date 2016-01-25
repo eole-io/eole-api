@@ -4,6 +4,7 @@ namespace Eole\OAuth2\Storage;
 
 use League\OAuth2\Server\Entity\AccessTokenEntity;
 use League\OAuth2\Server\Entity\ScopeEntity;
+use League\OAuth2\Server\Entity\SessionEntity;
 use League\OAuth2\Server\Storage\AccessTokenInterface;
 use League\OAuth2\Server\Storage\AbstractStorage;
 
@@ -31,10 +32,16 @@ class AccessToken extends AbstractStorage implements AccessTokenInterface
             return null;
         }
 
-        $tokenContent = file_get_contents($this->tokensDir.'/'.$token);
+        $tokenContent = explode('-', file_get_contents($this->tokensDir.'/'.$token));
+        $sessionId = $tokenContent[0];
+        $expireTime = $tokenContent[1];
+
+        $session = new SessionEntity($this->server);
+        $session->setId($sessionId);
 
         $accessToken = new AccessTokenEntity($this->server);
-        $accessToken->setExpireTime(intval($tokenContent));
+        $accessToken->setExpireTime(intval($expireTime));
+        $accessToken->setSession($session);
 
         return $accessToken;
     }
@@ -52,7 +59,7 @@ class AccessToken extends AbstractStorage implements AccessTokenInterface
      */
     public function create($token, $expireTime, $sessionId)
     {
-        file_put_contents($this->tokensDir.'/'.$token, $expireTime);
+        file_put_contents($this->tokensDir.'/'.$token, $sessionId.'-'.$expireTime);
     }
 
     /**
@@ -60,7 +67,7 @@ class AccessToken extends AbstractStorage implements AccessTokenInterface
      */
     public function associateScope(AccessTokenEntity $token, ScopeEntity $scope)
     {
-        throw new \Eole\OAuth2\Exception\NotImplementedException();
+        $token->associateScope($scope);
     }
 
     /**

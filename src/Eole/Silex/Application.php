@@ -19,6 +19,7 @@ class Application extends BaseApplication
         $this->loadEnvironmentParameters();
         $this->registerSilexProviders();
         $this->registerSecurity();
+        $this->registerOAuth2Security();
         $this->registerServices();
         $this->registerListeners();
         $this->loadAllGames();
@@ -91,6 +92,7 @@ class Application extends BaseApplication
             'security.firewalls' => array(
                 'api' => array(
                     'pattern' => '^/api',
+                    'oauth' => true,
                     'stateless' => true,
                     'anonymous' => true,
                     'users' => $userProvider,
@@ -111,6 +113,16 @@ class Application extends BaseApplication
 
         $this['eole.user_provider'] = $userProvider;
     }
+
+    /*
+     * Register OAuth2 Security
+     */
+    private function registerOAuth2Security()
+    {
+        $tokensDir = $this['project.root'].'/var/oauth-tokens';
+
+        $this->register(new \Eole\OAuth2\Silex\OAuth2ServiceProvider('api', $tokensDir));
+   }
 
     /**
      * Register doctrine DBAL and ORM
@@ -204,8 +216,6 @@ class Application extends BaseApplication
         $this['eole.event_serializer'] = function () {
             return new Service\EventSerializer($this['serializer']);
         };
-
-        $this->register(new \Eole\OAuth2\Silex\OAuth2ServiceProvider());
     }
 
     /**
@@ -214,18 +224,6 @@ class Application extends BaseApplication
     private function registerListeners()
     {
         $this->register(new \Alcalyn\AuthorizationHeaderFix\SilexServiceProvider());
-
-        $this->before(function (\Symfony\Component\HttpFoundation\Request $request) {
-            $this['eole.oauth.resource_server']->setRequest($request);
-
-            try {
-                $this['eole.oauth.resource_server']->isValidRequest();
-            } catch (\League\OAuth2\Server\Exception\InvalidRequestException $e) {
-                throw new \Symfony\Component\HttpKernel\Exception\HttpException(400, $e->getMessage(), $e);
-            } catch (\League\OAuth2\Server\Exception\AccessDeniedException $e) {
-                throw new \Symfony\Component\HttpKernel\Exception\HttpException(401, $e->getMessage(), $e);
-            }
-        });
     }
 
     /**

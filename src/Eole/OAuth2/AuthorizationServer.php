@@ -4,6 +4,8 @@ namespace Eole\OAuth2;
 
 use League\OAuth2\Server\Grant\PasswordGrant;
 use League\OAuth2\Server\AuthorizationServer as BaseAuthorizationServer;
+use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Eole\OAuth2\Storage\Client;
 use Eole\OAuth2\Storage\Session;
 use Eole\OAuth2\Storage\AccessToken;
@@ -17,13 +19,30 @@ class AuthorizationServer extends BaseAuthorizationServer
     private $tokensDir;
 
     /**
-     * @param string $tokensDir
+     * @var UserProviderInterface
      */
-    public function __construct($tokensDir)
-    {
+    private $userProvider;
+
+    /**
+     * @var EncoderFactoryInterface
+     */
+    private $encoderFactory;
+
+    /**
+     * @param string $tokensDir
+     * @param UserProviderInterface $userProvider
+     * @param EncoderFactoryInterface $encoderFactory
+     */
+    public function __construct(
+        $tokensDir,
+        UserProviderInterface $userProvider,
+        EncoderFactoryInterface $encoderFactory
+    ) {
         parent::__construct();
 
         $this->tokensDir = $tokensDir;
+        $this->userProvider = $userProvider;
+        $this->encoderFactory = $encoderFactory;
 
         $this->init();
     }
@@ -47,8 +66,15 @@ class AuthorizationServer extends BaseAuthorizationServer
         $passwordGrant = new PasswordGrant();
 
         $passwordGrant->setVerifyCredentialsCallback(function ($username, $password) {
-            var_dump(['VerifyCredentialsCallback' => func_get_args()]);
-            return 5;
+            $user = $this->userProvider->loadUserByUsername($username);
+            $encoder = $this->encoderFactory->getEncoder($user);
+            $isPasswordValid = $encoder->isPasswordValid($user->getPassword(), $password, $user->getSalt());
+
+            if ($isPasswordValid) {
+                return $username;
+            } else {
+                return false;
+            }
         });
 
         $this->addGrantType($passwordGrant);

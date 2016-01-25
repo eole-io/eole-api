@@ -47,7 +47,7 @@ class Session extends AbstractStorage implements SessionInterface
      */
     public function create($ownerType, $ownerId, $clientId, $clientRedirectUri = null)
     {
-        throw new \Eole\OAuth2\Exception\NotImplementedException();
+        return $ownerId;
     }
 
     /**
@@ -55,6 +55,6 @@ class Session extends AbstractStorage implements SessionInterface
      */
     public function associateScope(SessionEntity $session, ScopeEntity $scope)
     {
-        throw new \Eole\OAuth2\Exception\NotImplementedException();
+        $session->associateScope($scope);
     }
 }
