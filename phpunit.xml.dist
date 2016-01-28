@@ -8,11 +8,8 @@
         <testsuite name="Eole Silex test suite">
             <directory suffix="Test.php">./src/Eole/Silex/Tests/</directory>
         </testsuite>
-        <testsuite name="UserApi test suite">
-            <directory suffix="Test.php">./src/Alcalyn/UserApi/Tests/</directory>
-        </testsuite>
-        <testsuite name="TaggedServicesTrait test suite">
-            <directory suffix="Test.php">./src/Alcalyn/Pimple/Tests/</directory>
+        <testsuite name="OAuth2 test suite">
+            <directory suffix="Test.php">./src/Eole/OAuth2/Test/</directory>
         </testsuite>
     </testsuites>
 </phpunit>

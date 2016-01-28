@@ -12,14 +12,14 @@ class OAuth2Controller
     /**
      * @var AuthorizationServer
      */
-    private $oauthServer;
+    private $authorizationServer;
 
     /**
-     * @param AuthorizationServer $oauthServer
+     * @param AuthorizationServer $authorizationServer
      */
-    public function __construct(AuthorizationServer $oauthServer)
+    public function __construct(AuthorizationServer $authorizationServer)
     {
-        $this->oauthServer = $oauthServer;
+        $this->authorizationServer = $authorizationServer;
     }
 
     /**
@@ -29,14 +29,17 @@ class OAuth2Controller
      */
     public function postAccessToken(Request $request)
     {
-        $this->oauthServer->setRequest($request);
+        $this->authorizationServer->setRequest($request);
 
         try {
-            $token = $this->oauthServer->issueAccessToken();
+            $token = $this->authorizationServer->issueAccessToken();
 
             return new ApiResponse($token);
         } catch (OAuthException $e) {
-            return new ApiResponse($e->errorType.' - '.$e->getMessage(), $e->httpStatusCode);
+            return new ApiResponse(array(
+                'type' => $e->errorType,
+                'message' => $e->getMessage(),
+            ), $e->httpStatusCode);
         }
     }
 }

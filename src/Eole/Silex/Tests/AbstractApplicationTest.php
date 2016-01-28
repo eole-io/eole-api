@@ -7,6 +7,7 @@ use Eole\Core\Model\Player;
 use Eole\Core\Model\Game;
 use Eole\Core\Service\PlayerManager;
 use Eole\RestApi\Application;
+use Eole\OAuth2\Test\ResourceServerMock;
 
 abstract class AbstractApplicationTest extends WebTestCase
 {
@@ -40,6 +41,12 @@ abstract class AbstractApplicationTest extends WebTestCase
             'env' => 'test',
             'debug' => true,
         ));
+
+        $app['eole.oauth.resource_server'] = function () use ($app) {
+            $tokensDir = $app['project.root'].'/var/oauth-tokens-test';
+
+            return new ResourceServerMock($tokensDir);
+        };
 
         return $app;
     }
@@ -90,5 +97,15 @@ abstract class AbstractApplicationTest extends WebTestCase
 
         $this->app['db']->executeQuery('delete from eole_player');
         $this->app['db']->executeQuery('delete from eole_game');
+    }
+
+    /**
+     * @param string $username
+     *
+     * @return string
+     */
+    protected static function createOAuth2Token($username)
+    {
+        return 'Bearer goodtoken-'.$username;
     }
 }

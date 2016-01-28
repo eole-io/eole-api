@@ -40,7 +40,7 @@ class UserApiTest extends AbstractApplicationTest
         $client = $this->createClient();
 
         $client->request('GET', '/api/auth/me', [], [], array(
-            'HTTP_X_WSSE' => self::createWsseToken('existing-player'),
+            'HTTP_AUTHORIZATION' => self::createOAuth2Token('existing-player'),
         ));
 
         $this->assertTrue($client->getResponse()->isSuccessful());
@@ -57,7 +57,7 @@ class UserApiTest extends AbstractApplicationTest
         $client = $this->createClient();
 
         $client->request('GET', '/api/auth/me', [], [], array(
-            'HTTP_X_WSSE' => self::createWsseToken('non-existing-player'),
+            'HTTP_AUTHORIZATION' => self::createOAuth2Token('non-existing-player'),
         ));
 
         $this->assertEquals(Response::HTTP_UNAUTHORIZED, $client->getResponse()->getStatusCode());
@@ -196,7 +196,7 @@ class UserApiTest extends AbstractApplicationTest
         $guest = json_decode($client->getResponse()->getContent());
 
         $client->request('GET', '/api/auth/me', [], [], array(
-            'HTTP_X_WSSE' => self::createWsseToken($guest->username),
+            'HTTP_AUTHORIZATION' => self::createOAuth2Token($guest->username),
         ));
 
         $this->assertTrue($client->getResponse()->isSuccessful());
@@ -253,7 +253,7 @@ class UserApiTest extends AbstractApplicationTest
             'username' => 'Killer60',
             'password' => 'myPassword'
         ), [], array(
-            'HTTP_X_WSSE' => self::createWsseToken($guest->username),
+            'HTTP_AUTHORIZATION' => self::createOAuth2Token($guest->username),
         ));
         $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
 
@@ -285,7 +285,7 @@ class UserApiTest extends AbstractApplicationTest
             'username' => 'Killer60',
             'password' => 'myPassword'
         ), [], array(
-            'HTTP_X_WSSE' => self::createWsseToken('existing-player'),
+            'HTTP_AUTHORIZATION' => self::createOAuth2Token('existing-player'),
         ));
 
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $client->getResponse()->getStatusCode());

@@ -67,6 +67,11 @@ class AuthorizationServer extends BaseAuthorizationServer
 
         $passwordGrant->setVerifyCredentialsCallback(function ($username, $password) {
             $user = $this->userProvider->loadUserByUsername($username);
+
+            if (null === $user) {
+                return false;
+            }
+
             $encoder = $this->encoderFactory->getEncoder($user);
             $isPasswordValid = $encoder->isPasswordValid($user->getPassword(), $password, $user->getSalt());
 
