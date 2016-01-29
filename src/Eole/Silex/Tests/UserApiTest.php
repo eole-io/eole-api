@@ -26,7 +26,7 @@ class UserApiTest extends AbstractApplicationTest
         $this->assertTrue(is_array($content) || is_object($content));
     }
 
-    public function testAuthMeIsForbiddenWithoutWsse()
+    public function testAuthMeIsForbiddenWithoutOAuthToken()
     {
         $client = $this->createClient();
 

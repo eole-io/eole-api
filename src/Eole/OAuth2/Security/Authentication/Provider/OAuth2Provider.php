@@ -9,7 +9,6 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
-use Alcalyn\Wsse\Security\Exception\WsseAuthenticationException;
 use Eole\OAuth2\Security\Exception\OAuth2AuthenticationException;
 use Eole\OAuth2\Security\Authentication\Token\OAuth2Token;
 

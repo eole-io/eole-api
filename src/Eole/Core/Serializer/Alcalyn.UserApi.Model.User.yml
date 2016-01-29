@@ -10,8 +10,10 @@ Alcalyn\UserApi\Model\User:
             exclude: true
         passwordSalt:
             type: string
+            exclude: true
         email:
             type: string
+            exclude: true
         emailVerificationToken:
             type: string
             exclude: true
