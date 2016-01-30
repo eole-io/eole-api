@@ -179,8 +179,8 @@ class Topic extends BaseTopic implements EventSubscriberInterface
     {
         $conn->event($topic, array(
             'type' => 'init',
-            'tictactoe' => $this->tictactoe,
-            'party' => $this->party,
+            'tictactoe' => $this->normalizer->normalize($this->tictactoe),
+            'party' => $this->normalizer->normalize($this->party),
         ));
     }
 

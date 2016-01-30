@@ -212,6 +212,10 @@ class Application extends BaseApplication
         $this['eole.event_serializer'] = function () {
             return new Service\EventSerializer($this['serializer']);
         };
+
+        $this['eole.listener.authorization_header_fix'] = function () {
+            return new \Alcalyn\AuthorizationHeaderFix\AuthorizationHeaderFixListener();
+        };
     }
 
     /**
@@ -219,7 +223,14 @@ class Application extends BaseApplication
      */
     private function registerListeners()
     {
-        $this->register(new \Alcalyn\AuthorizationHeaderFix\SilexServiceProvider());
+        $this->on(
+            \Symfony\Component\HttpKernel\KernelEvents::REQUEST,
+            array(
+                $this['eole.listener.authorization_header_fix'],
+                'onKernelRequest'
+            ),
+            10
+        );
     }
 
     /**
