@@ -77,8 +77,6 @@ class UserApiTest extends AbstractApplicationTest
         $player = json_decode($client->getResponse()->getContent());
 
         $this->assertEquals('test-user', $player->username, 'Username is the one I defined.');
-        $this->assertObjectHasAttribute('password_salt', $player, 'Player has salt and is provided through API.');
-        $this->assertNotEmpty($player->password_salt, 'Salt is not empty.');
         $this->assertContains('ROLE_PLAYER', $player->roles, 'Created player has role ROLE_PLAYER.');
     }
 
