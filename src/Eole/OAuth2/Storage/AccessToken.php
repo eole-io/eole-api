@@ -13,14 +13,14 @@ class AccessToken extends AbstractStorage implements AccessTokenInterface
     /**
      * @var string
      */
-    private $tokensDir;
+    private $accessTokensDir;
 
     /**
-     * @param string $tokensDir
+     * @param string $accessTokensDir
      */
-    public function __construct($tokensDir)
+    public function __construct($accessTokensDir)
     {
-        $this->tokensDir = $tokensDir;
+        $this->accessTokensDir = $accessTokensDir;
     }
 
     /**
@@ -28,11 +28,11 @@ class AccessToken extends AbstractStorage implements AccessTokenInterface
      */
     public function get($token)
     {
-        if (!file_exists($this->tokensDir.'/'.$token)) {
+        if (!file_exists($this->accessTokensDir.'/'.$token)) {
             return null;
         }
 
-        $tokenContent = explode('-', file_get_contents($this->tokensDir.'/'.$token));
+        $tokenContent = explode('-', file_get_contents($this->accessTokensDir.'/'.$token));
         $sessionId = $tokenContent[0];
         $expireTime = $tokenContent[1];
 
@@ -40,6 +40,7 @@ class AccessToken extends AbstractStorage implements AccessTokenInterface
         $session->setId($sessionId);
 
         $accessToken = new AccessTokenEntity($this->server);
+        $accessToken->setId($token);
         $accessToken->setExpireTime(intval($expireTime));
         $accessToken->setSession($session);
 
@@ -59,7 +60,7 @@ class AccessToken extends AbstractStorage implements AccessTokenInterface
      */
     public function create($token, $expireTime, $sessionId)
     {
-        file_put_contents($this->tokensDir.'/'.$token, $sessionId.'-'.$expireTime);
+        file_put_contents($this->accessTokensDir.'/'.$token, $sessionId.'-'.$expireTime);
     }
 
     /**
@@ -75,8 +76,8 @@ class AccessToken extends AbstractStorage implements AccessTokenInterface
      */
     public function delete(AccessTokenEntity $token)
     {
-        if (file_exists($this->tokensDir.'/'.$token)) {
-            unlink($this->tokensDir.'/'.$token);
+        if (file_exists($this->accessTokensDir.'/'.$token->getId())) {
+            unlink($this->accessTokensDir.'/'.$token->getId());
         }
     }
 }

@@ -3,6 +3,7 @@
 namespace Eole\OAuth2;
 
 use League\OAuth2\Server\Grant\PasswordGrant;
+use League\OAuth2\Server\Grant\RefreshTokenGrant;
 use League\OAuth2\Server\AuthorizationServer as BaseAuthorizationServer;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
@@ -10,6 +11,7 @@ use Eole\OAuth2\Storage\Client;
 use Eole\OAuth2\Storage\Session;
 use Eole\OAuth2\Storage\AccessToken;
 use Eole\OAuth2\Storage\Scope;
+use Eole\OAuth2\Storage\RefreshToken;
 
 class AuthorizationServer extends BaseAuthorizationServer
 {
@@ -44,25 +46,46 @@ class AuthorizationServer extends BaseAuthorizationServer
         $this->userProvider = $userProvider;
         $this->encoderFactory = $encoderFactory;
 
-        $this->init();
+        $this->touchTokensDir();
+        $this->initServer();
+        $this->addPasswordGrant();
+        $this->addRefreshTokenGrant();
     }
 
     /**
-     * @return self
+     * Check tokens directory exists or create it.
      */
-    private function init()
+    private function touchTokensDir()
     {
-        if (!is_dir($this->tokensDir)) {
-            mkdir($this->tokensDir, 0777, true);
+        if (!is_dir($this->tokensDir.'/access-tokens')) {
+            mkdir($this->tokensDir.'/access-tokens', 0777, true);
         }
 
+        if (!is_dir($this->tokensDir.'/refresh-tokens')) {
+            mkdir($this->tokensDir.'/refresh-tokens', 0777, true);
+        }
+    }
+
+    /**
+     * Init authorization server.
+     */
+    private function initServer()
+    {
         $this
             ->setClientStorage(new Client())
-            ->setSessionStorage(new Session())
-            ->setAccessTokenStorage(new AccessToken($this->tokensDir))
+            ->setSessionStorage(new Session($this->tokensDir.'/access-tokens'))
+            ->setAccessTokenStorage(new AccessToken($this->tokensDir.'/access-tokens'))
             ->setScopeStorage(new Scope())
         ;
 
+        return $this;
+    }
+
+    /**
+     * Allows authorization server to deliver an access token with username/password.
+     */
+    private function addPasswordGrant()
+    {
         $passwordGrant = new PasswordGrant();
 
         $passwordGrant->setVerifyCredentialsCallback(function ($username, $password) {
@@ -83,7 +106,17 @@ class AuthorizationServer extends BaseAuthorizationServer
         });
 
         $this->addGrantType($passwordGrant);
+    }
 
-        return $this;
+    /**
+     * Allows authorization server to deliver a fresh access token with an old one.
+     */
+    private function addRefreshTokenGrant()
+    {
+        $this->setRefreshTokenStorage(new RefreshToken($this->tokensDir.'/refresh-tokens'));
+
+        $refreshTokenGrant = new RefreshTokenGrant();
+
+        $this->addGrantType($refreshTokenGrant);
     }
 }

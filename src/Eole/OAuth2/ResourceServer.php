@@ -16,8 +16,8 @@ class ResourceServer extends BaseResourceServer
     public function __construct($tokensDir)
     {
         parent::__construct(
-            new Session(),
-            new AccessToken($tokensDir),
+            new Session($tokensDir.'/access-tokens'),
+            new AccessToken($tokensDir.'/access-tokens'),
             new Client(),
             new Scope()
         );

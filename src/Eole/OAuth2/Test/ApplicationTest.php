@@ -38,7 +38,51 @@ class ApplicationTest extends AbstractApplicationTest
             'password' => 'wrong-password',
         ));
 
-        $this->assertTrue($client->getResponse()->isClientError());
         $this->assertEquals(401, $client->getResponse()->getStatusCode());
+    }
+
+    public function testRefreshToken()
+    {
+        $client = $this->createClient();
+
+        $client->request('POST', '/oauth/access-token', array(
+            'grant_type' => 'password',
+            'client_id' => 'eole-angular',
+            'client_secret' => 'eole-angular-secret',
+            'username' => 'existing-player',
+            'password' => 'good-password',
+        ));
+
+        $accessToken = json_decode($client->getResponse()->getContent());
+
+        $client->request('POST', '/oauth/access-token', array(
+            'grant_type' => 'refresh_token',
+            'client_id' => 'eole-angular',
+            'client_secret' => 'eole-angular-secret',
+            'refresh_token' => $accessToken->refresh_token,
+        ));
+
+        $this->assertTrue($client->getResponse()->isSuccessful());
+
+        $freshAccessToken = json_decode($client->getResponse()->getContent());
+
+        $this->assertObjectHasAttribute('access_token', $freshAccessToken);
+        $this->assertNotEmpty($freshAccessToken->access_token);
+        $this->assertObjectHasAttribute('refresh_token', $freshAccessToken);
+        $this->assertNotEmpty($freshAccessToken->refresh_token);
+    }
+
+    public function testRefreshTokenReturnsClientErrorOnInvalidRefreshToken()
+    {
+        $client = $this->createClient();
+
+        $client->request('POST', '/oauth/access-token', array(
+            'grant_type' => 'refresh_token',
+            'client_id' => 'eole-angular',
+            'client_secret' => 'eole-angular-secret',
+            'refresh_token' => 'invalidrefreshtoken',
+        ));
+
+        $this->assertTrue($client->getResponse()->isClientError());
     }
 }

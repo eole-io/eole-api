@@ -12,11 +12,34 @@ use League\OAuth2\Server\Storage\SessionInterface;
 class Session extends AbstractStorage implements SessionInterface
 {
     /**
+     * @var string
+     */
+    private $accessTokensDir;
+
+    /**
+     * @param string $accessTokensDir
+     */
+    public function __construct($accessTokensDir)
+    {
+        $this->accessTokensDir = $accessTokensDir;
+    }
+
+    /**
      * {@InheritDoc}
      */
     public function getByAccessToken(AccessTokenEntity $accessToken)
     {
-        throw new \Eole\OAuth2\Exception\NotImplementedException();
+        if (!file_exists($this->accessTokensDir.'/'.$accessToken->getId())) {
+            return null;
+        }
+
+        $tokenContent = explode('-', file_get_contents($this->accessTokensDir.'/'.$accessToken->getId()));
+        $sessionId = $tokenContent[0];
+
+        $session = new SessionEntity($this->server);
+        $session->setId($sessionId);
+
+        return $session;
     }
 
     /**
