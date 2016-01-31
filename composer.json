@@ -1,10 +1,10 @@
 {
     "name":         "eole/eole-api",
-    "license":      "MIT",
+    "license":      "GPL-3.0",
     "type":         "library",
-    "description":  "Eole",
+    "description":  "Eole API.",
     "homepage":     "https://github.com/alcalyn/eole-api",
-    "keywords":     ["silex", "user", "userprovider"],
+    "keywords":     ["silex", "eole", "api"],
     "authors": [
         {
             "name": "Julien Maulny",
@@ -46,10 +46,6 @@
     "autoload": {
         "psr-4": {
             "Eole\\": "src/Eole",
-            "Alcalyn\\Wsse\\": "ext/symfony-wsse",
-            "Alcalyn\\SilexWsse\\": "ext/silex-wsse",
-            "Alcalyn\\UserApi\\": "ext/user-api",
-            "Alcalyn\\DoctrineUserApi\\": "ext/doctrine-user-api",
             "Alcalyn\\": "src/Alcalyn"
         }
     },
