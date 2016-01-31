@@ -2,68 +2,51 @@
 
 namespace Eole\OAuth2;
 
-use League\OAuth2\Server\Grant\PasswordGrant;
-use League\OAuth2\Server\Grant\RefreshTokenGrant;
 use League\OAuth2\Server\AuthorizationServer as BaseAuthorizationServer;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
-use Eole\OAuth2\Storage\Client;
-use Eole\OAuth2\Storage\Session;
-use Eole\OAuth2\Storage\AccessToken;
-use Eole\OAuth2\Storage\Scope;
-use Eole\OAuth2\Storage\RefreshToken;
 
 class AuthorizationServer extends BaseAuthorizationServer
 {
     /**
-     * @var string
+     * @var Grant\Password
      */
-    private $tokensDir;
+    private $passwordGrant;
 
     /**
-     * @var UserProviderInterface
+     * @var Grant\RefreshToken
      */
-    private $userProvider;
+    private $refreshTokenGrant;
 
     /**
-     * @var EncoderFactoryInterface
-     */
-    private $encoderFactory;
-
-    /**
-     * @param string $tokensDir
-     * @param UserProviderInterface $userProvider
-     * @param EncoderFactoryInterface $encoderFactory
+     * @param Storage\Session $sessionStorage
+     * @param Storage\AccessToken $accessTokenStorage
+     * @param Storage\Client $clientStorage
+     * @param Storage\Scope $scopeStorage
+     * @param Storage\RefreshToken $refreshTokenStorage
+     * @param Grant\Password $passwordGrant
+     * @param Grant\RefreshToken $refreshTokenGrant
      */
     public function __construct(
-        $tokensDir,
-        UserProviderInterface $userProvider,
-        EncoderFactoryInterface $encoderFactory
+        Storage\Session $sessionStorage,
+        Storage\AccessToken $accessTokenStorage,
+        Storage\Client $clientStorage,
+        Storage\Scope $scopeStorage,
+        Storage\RefreshToken $refreshTokenStorage,
+        Grant\Password $passwordGrant,
+        Grant\RefreshToken $refreshTokenGrant
     ) {
         parent::__construct();
 
-        $this->tokensDir = $tokensDir;
-        $this->userProvider = $userProvider;
-        $this->encoderFactory = $encoderFactory;
+        $this->sessionStorage = $sessionStorage;
+        $this->accessTokenStorage = $accessTokenStorage;
+        $this->clientStorage = $clientStorage;
+        $this->scopeStorage = $scopeStorage;
+        $this->refreshTokenStorage = $refreshTokenStorage;
+        $this->passwordGrant = $passwordGrant;
+        $this->refreshTokenGrant = $refreshTokenGrant;
 
-        $this->touchTokensDir();
         $this->initServer();
         $this->addPasswordGrant();
         $this->addRefreshTokenGrant();
-    }
-
-    /**
-     * Check tokens directory exists or create it.
-     */
-    private function touchTokensDir()
-    {
-        if (!is_dir($this->tokensDir.'/access-tokens')) {
-            mkdir($this->tokensDir.'/access-tokens', 0777, true);
-        }
-
-        if (!is_dir($this->tokensDir.'/refresh-tokens')) {
-            mkdir($this->tokensDir.'/refresh-tokens', 0777, true);
-        }
     }
 
     /**
@@ -72,13 +55,11 @@ class AuthorizationServer extends BaseAuthorizationServer
     private function initServer()
     {
         $this
-            ->setClientStorage(new Client())
-            ->setSessionStorage(new Session($this->tokensDir.'/access-tokens'))
-            ->setAccessTokenStorage(new AccessToken($this->tokensDir.'/access-tokens'))
-            ->setScopeStorage(new Scope())
+            ->setSessionStorage($this->sessionStorage)
+            ->setAccessTokenStorage($this->accessTokenStorage)
+            ->setClientStorage($this->clientStorage)
+            ->setScopeStorage($this->scopeStorage)
         ;
-
-        return $this;
     }
 
     /**
@@ -86,26 +67,7 @@ class AuthorizationServer extends BaseAuthorizationServer
      */
     private function addPasswordGrant()
     {
-        $passwordGrant = new PasswordGrant();
-
-        $passwordGrant->setVerifyCredentialsCallback(function ($username, $password) {
-            $user = $this->userProvider->loadUserByUsername($username);
-
-            if (null === $user) {
-                return false;
-            }
-
-            $encoder = $this->encoderFactory->getEncoder($user);
-            $isPasswordValid = $encoder->isPasswordValid($user->getPassword(), $password, $user->getSalt());
-
-            if ($isPasswordValid) {
-                return $username;
-            } else {
-                return false;
-            }
-        });
-
-        $this->addGrantType($passwordGrant);
+        $this->addGrantType($this->passwordGrant);
     }
 
     /**
@@ -113,10 +75,9 @@ class AuthorizationServer extends BaseAuthorizationServer
      */
     private function addRefreshTokenGrant()
     {
-        $this->setRefreshTokenStorage(new RefreshToken($this->tokensDir.'/refresh-tokens'));
-
-        $refreshTokenGrant = new RefreshTokenGrant();
-
-        $this->addGrantType($refreshTokenGrant);
+        $this
+            ->setRefreshTokenStorage($this->refreshTokenStorage)
+            ->addGrantType($this->refreshTokenGrant)
+        ;
     }
 }

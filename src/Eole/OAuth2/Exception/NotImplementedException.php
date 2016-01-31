@@ -2,10 +2,17 @@
 
 namespace Eole\OAuth2\Exception;
 
-class NotImplementedException extends \BadMethodCallException
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+
+class NotImplementedException extends HttpException
 {
     public function __construct(\Exception $previous = null)
     {
-        parent::__construct('This part of OAuth2 implementation is not yet implemented.', 0, $previous);
+        parent::__construct(
+            Response::HTTP_NOT_IMPLEMENTED,
+            'This part of OAuth2 implementation is not yet implemented.',
+            $previous
+        );
     }
 }

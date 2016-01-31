@@ -10,20 +10,29 @@ use League\OAuth2\Server\Storage\AbstractStorage;
 class Client extends AbstractStorage implements ClientInterface
 {
     /**
+     * @var array[]
+     */
+    private $clients;
+
+    /**
+     * @param array[] $clients
+     */
+    public function __construct(array $clients)
+    {
+        $this->clients = $clients;
+    }
+
+    /**
      * {@InheritDoc}
      */
     public function get($clientId, $clientSecret = null, $redirectUri = null, $grantType = null)
     {
-        $eoleAngularClient = new ClientEntity($this->server);
+        foreach ($this->clients as $client) {
+            if (($client['id'] === $clientId) && ($client['secret'] === $clientSecret)) {
+                $clientEntity = new ClientEntity($this->server);
 
-        $eoleAngularClient->hydrate(array(
-            'id' => 'eole-angular',
-            'secret' => 'eole-angular-secret',
-            'name' => 'eole-angular-name',
-        ));
-
-        if (($eoleAngularClient->getId() === $clientId) && ($eoleAngularClient->getSecret() === $clientSecret)) {
-            return $eoleAngularClient;
+                return $clientEntity->hydrate($client);
+            }
         }
 
         return null;

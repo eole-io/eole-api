@@ -43,9 +43,12 @@ abstract class AbstractApplicationTest extends WebTestCase
         ));
 
         $app['eole.oauth.resource_server'] = function () use ($app) {
-            $tokensDir = $app['project.root'].'/var/oauth-tokens-test';
-
-            return new ResourceServerMock($tokensDir);
+            return new ResourceServerMock(
+                $app['eole.oauth.storage.session'],
+                $app['eole.oauth.storage.access_token'],
+                $app['eole.oauth.storage.client'],
+                $app['eole.oauth.storage.scope']
+            );
         };
 
         return $app;
