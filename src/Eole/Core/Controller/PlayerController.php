@@ -5,29 +5,11 @@ namespace Eole\Core\Controller;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Alcalyn\UserApi\Api\ApiInterface;
 use Eole\Core\ApiResponse;
 use Eole\Core\Exception\AlreadyAPlayerException;
-use Eole\Core\Service\PlayerManager;
 
 class PlayerController extends DecoratedUserController
 {
-    /**
-     * @var PlayerManager
-     */
-    private $playerManager;
-
-    /**
-     * @param ApiInterface $api
-     * @param PlayerManager $playerManager
-     */
-    public function __construct(ApiInterface $api, PlayerManager $playerManager)
-    {
-        parent::__construct($api);
-
-        $this->playerManager = $playerManager;
-    }
-
     /**
      * Create a new guest.
      *

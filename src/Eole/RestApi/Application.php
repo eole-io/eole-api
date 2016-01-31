@@ -52,8 +52,7 @@ class Application extends BaseApplication
 
         $this['eole.controller.player'] = function () {
             return new \Eole\Core\Controller\PlayerController(
-                $this['eole.player_api'],
-                $this['eole.player_manager']
+                $this['eole.player_api']
             );
         };
 

@@ -11,7 +11,7 @@ class WebsocketProvider implements ServiceProviderInterface
 {
     public function register(Container $app)
     {
-        $awaleTopicFactory = function ($topicPath, array $arguments) use ($app) {
+        $awaleTopicFactory = function ($topicPath, array $arguments) {
             return new AwaleTopic($topicPath, intval($arguments['party_id']));
         };
 

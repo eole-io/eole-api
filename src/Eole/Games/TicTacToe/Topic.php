@@ -3,7 +3,6 @@
 namespace Eole\Games\TicTacToe;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Doctrine\Common\Persistence\ObjectManager;
 use Alcalyn\TicTacToe\Exception\TicTacToeException;
 use Alcalyn\TicTacToe\TicTacToe;
 use Ratchet\Wamp\WampConnection;
