@@ -7,6 +7,7 @@ use Eole\Core\Model\Player;
 use Eole\Core\Model\Game;
 use Eole\Core\Service\PlayerManager;
 use Eole\RestApi\Application;
+use Eole\OAuth2\Test\ResourceServerMock;
 
 abstract class AbstractApplicationTest extends WebTestCase
 {
@@ -41,8 +42,13 @@ abstract class AbstractApplicationTest extends WebTestCase
             'debug' => true,
         ));
 
-        $app['security.wsse.token_validator'] = function () {
-            return new WsseTokenValidatorMock();
+        $app['eole.oauth.resource_server'] = function () use ($app) {
+            return new ResourceServerMock(
+                $app['eole.oauth.storage.session'],
+                $app['eole.oauth.storage.access_token'],
+                $app['eole.oauth.storage.client'],
+                $app['eole.oauth.storage.scope']
+            );
         };
 
         return $app;
@@ -101,8 +107,8 @@ abstract class AbstractApplicationTest extends WebTestCase
      *
      * @return string
      */
-    protected static function createWsseToken($username)
+    protected static function createOAuth2Token($username)
     {
-        return 'UsernameToken Username="'.$username.'", PasswordDigest="good-password", Nonce="nonce", Created="timestamp"';
+        return 'Bearer goodtoken-'.$username;
     }
 }

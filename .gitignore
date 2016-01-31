@@ -11,3 +11,5 @@ var/logs/*
 !var/logs/.gitkeep
 var/cache/*
 !var/cache/.gitkeep
+var/oauth-tokens/*
+!var/oauth-tokens/.gitkeep

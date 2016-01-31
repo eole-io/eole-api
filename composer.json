@@ -14,7 +14,9 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=5.5",
+        "alcalyn/authorization-header-fix": "~1.0.0",
         "alcalyn/elo": "~1.0.0",
+        "league/oauth2-server": "4.1.x",
         "doctrine/dbal": "~2.0",
         "doctrine/orm": "~2.0",
         "symfony/yaml": "~2.0",
@@ -26,8 +28,6 @@
         "symfony/console": "~2.0",
         "silex/silex": "~2.0@dev",
         "jms/serializer": "~1.0",
-        "alcalyn/symfony-wsse": "1.0.x",
-        "alcalyn/silex-wsse": "1.0.x",
         "alcalyn/user-api": "^1.1.1",
         "alcalyn/doctrine-user-api": "1.0.x",
         "saxulum/saxulum-doctrine-orm-manager-registry-provider": "~3.0",

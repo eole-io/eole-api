@@ -3,7 +3,6 @@
 namespace Eole\WebSocket;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Alcalyn\Wsse\Security\Authentication\Token\WsseUserToken;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\WampServerInterface;
 use Eole\Silex\Application as SilexApplication;
@@ -147,36 +146,29 @@ class Application implements WampServerInterface
      *
      * @return \Eole\Core\Model\Player
      *
-     * @throws \Symfony\Component\Security\Core\Exception\AuthenticationException
      * @throws \Exception
      */
     private function authenticatePlayer(ConnectionInterface $conn)
     {
-        $wsseTokenRaw = $conn->WebSocket->request->getQuery()->get('wsse_token');
+        $accessToken = $conn->WebSocket->request->getQuery()->get('access_token');
 
-        if (null === $wsseTokenRaw) {
-            throw new \Exception('Missing Wsse token in query.');
+        if (null === $accessToken) {
+            throw new \Exception('Missing OAuth token in query.');
         }
 
-        $tokenValidator = $this->silexApp['security.wsse.token_validator'];
+        $resourceServer = $this->silexApp['eole.oauth.resource_server'];
         $userProvider = $this->silexApp['eole.user_provider'];
 
-        $wsseTokenObject = json_decode(base64_decode($wsseTokenRaw));
+        $resourceServer->isValidRequest(true, $accessToken);
+        $username = $resourceServer->getAccessToken()->getSession()->getId();
+        $user = $userProvider->loadUserByUsername($username);
+        $isUser = $user instanceof \Symfony\Component\Security\Core\User\UserInterface;
 
-        $wsseToken = new WsseUserToken();
-        $wsseToken->created = $wsseTokenObject->created;
-        $wsseToken->digest = $wsseTokenObject->digest;
-        $wsseToken->nonce = $wsseTokenObject->nonce;
-
-        $player = $userProvider->loadUserByUsername($wsseTokenObject->username);
-
-        if (null === $player) {
-            throw new \Exception(sprintf('Could not retrieve player "%s".', $wsseTokenObject->username));
+        if (!$isUser) {
+            throw new \Exception('User not found.');
         }
 
-        $tokenValidator->validateDigest($wsseToken, $player);
-
-        return $player;
+        return $user;
     }
 
     public function onOpen(ConnectionInterface $conn)

@@ -18,6 +18,13 @@ push_server:
         host:       127.0.0.1
         port:       5555
 
+oauth:
+    clients:
+        eole-angular:
+            name: eole-angular-name
+            id: eole-angular
+            secret: eole-angular-secret
+
 games:
     tictactoe:
         websocket_provider: Eole\Games\TicTacToe\TicTacToeProvider

@@ -145,7 +145,7 @@ class PartyTest extends AbstractApplicationTest
         $gameName = $this->games[0]->getName();
 
         $client->request('POST', "/api/games/$gameName/parties", [], [], array(
-            'HTTP_X_WSSE' => self::createWsseToken('existing-player'),
+            'HTTP_AUTHORIZATION' => self::createOAuth2Token('existing-player'),
         ));
 
         $this->assertEquals(Response::HTTP_CREATED, $client->getResponse()->getStatusCode());
@@ -177,7 +177,7 @@ class PartyTest extends AbstractApplicationTest
         $partyId = $this->party->getId();
 
         $client->request('PATCH', "/api/games/$gameName/parties/$partyId/join", [], [], array(
-            'HTTP_X_WSSE' => self::createWsseToken($this->player2->getUsername()),
+            'HTTP_AUTHORIZATION' => self::createOAuth2Token($this->player2->getUsername()),
         ));
 
         $this->assertTrue($client->getResponse()->isSuccessful());
@@ -202,7 +202,7 @@ class PartyTest extends AbstractApplicationTest
         $partyId = $this->party->getId();
 
         $client->request('PATCH', "/api/games/$gameName/parties/$partyId/join", [], [], array(
-            'HTTP_X_WSSE' => self::createWsseToken('existing-player'),
+            'HTTP_AUTHORIZATION' => self::createOAuth2Token('existing-player'),
         ));
 
         $this->assertEquals(Response::HTTP_CONFLICT, $client->getResponse()->getStatusCode());

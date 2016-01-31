@@ -3,8 +3,6 @@
 namespace Eole\Silex;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Alcalyn\Wsse\Security\Authentication\Provider\PasswordDigestValidator;
-use Alcalyn\SilexWsse\Provider\WsseServiceProvider;
 use Silex\Application as BaseApplication;
 
 class Application extends BaseApplication
@@ -21,8 +19,9 @@ class Application extends BaseApplication
         $this->loadEnvironmentParameters();
         $this->registerSilexProviders();
         $this->registerSecurity();
-        $this->registerWsseSecurity();
+        $this->registerOAuth2Security();
         $this->registerServices();
+        $this->registerListeners();
         $this->loadAllGames();
         $this->registerDoctrine();
     }
@@ -93,17 +92,13 @@ class Application extends BaseApplication
             'security.firewalls' => array(
                 'api' => array(
                     'pattern' => '^/api',
-                    'wsse' => true,
+                    'oauth' => true,
                     'stateless' => true,
                     'anonymous' => true,
                     'users' => $userProvider,
                 ),
             ),
         ));
-
-        $this['security.encoder.digest'] = function () {
-            return new \Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder('sha512', true, 42);
-        };
 
         $this['eole.player_api'] = function () {
             return new \Eole\Core\Service\PlayerApi(
@@ -116,16 +111,14 @@ class Application extends BaseApplication
     }
 
     /*
-     * Register SilexWsse Security
+     * Register OAuth2 Security
      */
-    private function registerWsseSecurity()
+    private function registerOAuth2Security()
     {
-        $this['security.wsse.token_validator'] = function () {
-            $wsseCacheDir = $this['project.root'].'/var/cache/wsse-tokens';
-            return new PasswordDigestValidator($wsseCacheDir);
-        };
+        $tokensDir = $this['project.root'].'/var/oauth-tokens';
+        $clients = $this['environment']['oauth']['clients'];
 
-        $this->register(new WsseServiceProvider('api'));
+        $this->register(new \Eole\OAuth2\Silex\OAuth2ServiceProvider('api', $tokensDir, $clients));
     }
 
     /**
@@ -220,6 +213,25 @@ class Application extends BaseApplication
         $this['eole.event_serializer'] = function () {
             return new Service\EventSerializer($this['serializer']);
         };
+
+        $this['eole.listener.authorization_header_fix'] = function () {
+            return new \Alcalyn\AuthorizationHeaderFix\AuthorizationHeaderFixListener();
+        };
+    }
+
+    /**
+     * Register events listeners.
+     */
+    private function registerListeners()
+    {
+        $this->on(
+            \Symfony\Component\HttpKernel\KernelEvents::REQUEST,
+            array(
+                $this['eole.listener.authorization_header_fix'],
+                'onKernelRequest'
+            ),
+            10
+        );
     }
 
     /**

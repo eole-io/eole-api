@@ -26,7 +26,7 @@ class UserApiTest extends AbstractApplicationTest
         $this->assertTrue(is_array($content) || is_object($content));
     }
 
-    public function testAuthMeIsForbiddenWithoutWsse()
+    public function testAuthMeIsForbiddenWithoutOAuthToken()
     {
         $client = $this->createClient();
 
@@ -40,7 +40,7 @@ class UserApiTest extends AbstractApplicationTest
         $client = $this->createClient();
 
         $client->request('GET', '/api/auth/me', [], [], array(
-            'HTTP_X_WSSE' => self::createWsseToken('existing-player'),
+            'HTTP_AUTHORIZATION' => self::createOAuth2Token('existing-player'),
         ));
 
         $this->assertTrue($client->getResponse()->isSuccessful());
@@ -57,7 +57,7 @@ class UserApiTest extends AbstractApplicationTest
         $client = $this->createClient();
 
         $client->request('GET', '/api/auth/me', [], [], array(
-            'HTTP_X_WSSE' => self::createWsseToken('non-existing-player'),
+            'HTTP_AUTHORIZATION' => self::createOAuth2Token('non-existing-player'),
         ));
 
         $this->assertEquals(Response::HTTP_UNAUTHORIZED, $client->getResponse()->getStatusCode());
@@ -77,8 +77,6 @@ class UserApiTest extends AbstractApplicationTest
         $player = json_decode($client->getResponse()->getContent());
 
         $this->assertEquals('test-user', $player->username, 'Username is the one I defined.');
-        $this->assertObjectHasAttribute('password_salt', $player, 'Player has salt and is provided through API.');
-        $this->assertNotEmpty($player->password_salt, 'Salt is not empty.');
         $this->assertContains('ROLE_PLAYER', $player->roles, 'Created player has role ROLE_PLAYER.');
     }
 
@@ -196,7 +194,7 @@ class UserApiTest extends AbstractApplicationTest
         $guest = json_decode($client->getResponse()->getContent());
 
         $client->request('GET', '/api/auth/me', [], [], array(
-            'HTTP_X_WSSE' => self::createWsseToken($guest->username),
+            'HTTP_AUTHORIZATION' => self::createOAuth2Token($guest->username),
         ));
 
         $this->assertTrue($client->getResponse()->isSuccessful());
@@ -253,7 +251,7 @@ class UserApiTest extends AbstractApplicationTest
             'username' => 'Killer60',
             'password' => 'myPassword'
         ), [], array(
-            'HTTP_X_WSSE' => self::createWsseToken($guest->username),
+            'HTTP_AUTHORIZATION' => self::createOAuth2Token($guest->username),
         ));
         $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
 
@@ -285,7 +283,7 @@ class UserApiTest extends AbstractApplicationTest
             'username' => 'Killer60',
             'password' => 'myPassword'
         ), [], array(
-            'HTTP_X_WSSE' => self::createWsseToken('existing-player'),
+            'HTTP_AUTHORIZATION' => self::createOAuth2Token('existing-player'),
         ));
 
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $client->getResponse()->getStatusCode());

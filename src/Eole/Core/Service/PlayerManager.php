@@ -36,27 +36,6 @@ class PlayerManager extends UserManager
     }
 
     /**
-     * @param Player $player
-     *
-     * @return string
-     */
-    public function generateWsseToken(Player $player)
-    {
-        $nonce = base64_encode(substr(sha1(mt_rand()), -16));
-        $created = (new \DateTime())->format(\DateTime::ATOM);
-        $secret = $player->getPassword();
-        $digest = base64_encode(sha1(base64_decode($nonce).$created.$secret, true));
-
-        return sprintf(
-            'UsernameToken Username="%s", PasswordDigest="%s", Nonce="%s", Created="%s"',
-            $player->getUsername(),
-            $digest,
-            $nonce,
-            $created
-        );
-    }
-
-    /**
      * {@InheritDoc}
      */
     public function generateSalt()
