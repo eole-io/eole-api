@@ -14,7 +14,7 @@ class Application extends BaseApplication
     {
         parent::__construct($values);
 
-        $this->handleProdErrors();
+        $this->logErrors();
         $this->checkConstants();
         $this->loadEnvironmentParameters();
         $this->registerSilexProviders();
@@ -235,30 +235,14 @@ class Application extends BaseApplication
     }
 
     /**
-     * Display json errors in prod environment.
+     * Log errors.
      */
-    private function handleProdErrors()
+    private function logErrors()
     {
         $this->error(function (\Exception $e) {
             $logFile = $this['project.root'].'/var/logs/errors.txt';
             $message = get_class($e).' '.$e->getMessage().PHP_EOL.$e->getTraceAsString().PHP_EOL.PHP_EOL;
             file_put_contents($logFile, $message, FILE_APPEND);
-
-            if (true === $this['debug']) {
-                return;
-            }
-
-            if ($e instanceof \Symfony\Component\HttpKernel\Exception\HttpException) {
-                return new JsonResponse(array(
-                    'statusCode' => $e->getStatusCode(),
-                    'message' => $e->getMessage(),
-                ));
-            } else {
-                return new JsonResponse(array(
-                    'statusCode' => 500,
-                    'message' => 'Internal Server Error.',
-                ));
-            }
         });
     }
 

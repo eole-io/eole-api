@@ -16,6 +16,7 @@ class Application extends BaseApplication
         $this->registerServices();
         $this->registerEventListeners();
         $this->mountApi();
+        $this->handleProdErrors();
     }
 
     /**
@@ -23,18 +24,10 @@ class Application extends BaseApplication
      */
     private function registerServices()
     {
-        $this['eole.listener.api_response_filter'] = function () {
-            return new \Eole\Core\EventListener\ApiResponseFilterListener(
+        $this['eole.api_response_filter'] = function () {
+            return new \Eole\Core\Service\ApiResponseFilter(
                 $this['serializer'],
                 $this['serializer.context_factory']
-            );
-        };
-
-        $this['eole.listener.event_to_socket'] = function () {
-            return new EventListener\EventToSocketListener(
-                $this['eole.push_server'],
-                $this['eole.event_serializer'],
-                $this['environment']['push_server']['enabled']
             );
         };
 
@@ -93,6 +86,20 @@ class Application extends BaseApplication
 
     private function registerEventListeners()
     {
+        $this['eole.listener.api_response_filter'] = function () {
+            return new \Eole\Core\EventListener\ApiResponseFilterListener(
+                $this['eole.api_response_filter']
+            );
+        };
+
+        $this['eole.listener.event_to_socket'] = function () {
+            return new EventListener\EventToSocketListener(
+                $this['eole.push_server'],
+                $this['eole.event_serializer'],
+                $this['environment']['push_server']['enabled']
+            );
+        };
+
         $this->on(\Symfony\Component\HttpKernel\KernelEvents::VIEW, function ($event) {
             $this['eole.listener.api_response_filter']->onKernelView($event);
         });
@@ -193,5 +200,33 @@ class Application extends BaseApplication
         $this->mountGame($gameName);
 
         return $this;
+    }
+
+    /**
+     * Display serialized errors in prod environment.
+     */
+    private function handleProdErrors()
+    {
+        $this->error(function (\Exception $e) {
+            if (true === $this['debug']) {
+                return;
+            }
+
+            $errorData = array();
+
+            if ($e instanceof \Symfony\Component\HttpKernel\Exception\HttpException) {
+                $errorData = array(
+                    'status_code' => $e->getStatusCode(),
+                    'message' => $e->getMessage(),
+                );
+            } else {
+                $errorData = array(
+                    'status_code' => 500,
+                    'message' => 'Internal Server Error.',
+                );
+            }
+
+            return new \Eole\Core\ApiResponse($errorData, $errorData['status_code']);
+        });
     }
 }

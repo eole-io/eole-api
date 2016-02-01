@@ -2,52 +2,23 @@
 
 namespace Eole\Core\EventListener;
 
-use JMS\Serializer\SerializerInterface;
-use JMS\Serializer\SerializationContext;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 use Eole\Core\ApiResponse;
+use Eole\Core\Service\ApiResponseFilter;
 
 class ApiResponseFilterListener
 {
     /**
-     * @var SerializerInterface
+     * @var ApiResponseFilter
      */
-    private $serializer;
+    private $apiResponseFilter;
 
     /**
-     * @var callable
+     * @param ApiResponseFilter $apiResponseFilter
      */
-    private $contextFactory;
-
-    /**
-     * @var string
-     */
-    private $defaultResponseFormat;
-
-    /**
-     * @param SerializerInterface $serializer
-     * @param callable $contextFactory
-     * @param string $defaultResponseFormat
-     */
-    public function __construct(
-        SerializerInterface $serializer,
-        callable $contextFactory,
-        $defaultResponseFormat = 'json'
-    ) {
-        $this->serializer = $serializer;
-        $this->contextFactory = $contextFactory;
-        $this->defaultResponseFormat = $defaultResponseFormat;
-    }
-
-    /**
-     * @return SerializationContext
-     */
-    private function createContext()
+    public function __construct(ApiResponseFilter $apiResponseFilter)
     {
-        $contextFactory = $this->contextFactory;
-
-        return $contextFactory();
+        $this->apiResponseFilter = $apiResponseFilter;
     }
 
     /**
@@ -65,11 +36,7 @@ class ApiResponseFilterListener
             return;
         }
 
-        $format = $event->getRequest()->getRequestFormat($this->defaultResponseFormat);
-        $serialized = $this->serializer->serialize($apiResponse->getData(), $format, self::createContext());
-        $response = new Response($serialized, $apiResponse->getStatusCode());
-
-        $response->headers->set('Content-Type', $event->getRequest()->getMimeType($format));
+        $response = $this->apiResponseFilter->toSymfonyResponse($apiResponse, $event->getRequest());
 
         $event->setResponse($response);
     }
