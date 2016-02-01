@@ -1,5 +1,6 @@
 # Eole API
 
+[![Build Status](https://travis-ci.org/alcalyn/eole-api.svg?branch=dev)](https://travis-ci.org/alcalyn/eole-api)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/alcalyn/eole-api/badges/quality-score.png?b=dev)](https://scrutinizer-ci.com/g/alcalyn/eole-api/?branch=dev)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/8c0ab48f-4dbb-4b89-ab5d-b7acbc926e6d/mini.png)](https://insight.sensiolabs.com/projects/8c0ab48f-4dbb-4b89-ab5d-b7acbc926e6d)
 
