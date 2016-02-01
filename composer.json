@@ -33,7 +33,8 @@
         "saxulum/saxulum-doctrine-orm-manager-registry-provider": "~3.0",
         "react/zmq": "0.2.*|0.3.*",
         "cboden/ratchet": "~0.3",
-        "alcalyn/awale": "1.0.x"
+        "alcalyn/awale": "1.0.x",
+        "alcalyn/tictactoe": "1.0.x"
     },
     "require-dev": {
         "phpunit/phpunit": "4.8.*",

@@ -212,8 +212,6 @@ class Application extends BaseApplication
                 return;
             }
 
-            $errorData = array();
-
             if ($e instanceof \Symfony\Component\HttpKernel\Exception\HttpException) {
                 $errorData = array(
                     'status_code' => $e->getStatusCode(),

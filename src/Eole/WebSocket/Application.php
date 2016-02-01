@@ -171,6 +171,9 @@ class Application implements WampServerInterface
         return $user;
     }
 
+    /**
+     * {@InheritDoc}
+     */
     public function onOpen(ConnectionInterface $conn)
     {
         echo __METHOD__.' authentication... ';
@@ -189,6 +192,9 @@ class Application implements WampServerInterface
         $conn->player = $player;
     }
 
+    /**
+     * {@InheritDoc}
+     */
     private function getTopic($topicPath)
     {
         if (!isset($this->topics[$topicPath])) {
@@ -216,6 +222,9 @@ class Application implements WampServerInterface
         return $topic;
     }
 
+    /**
+     * {@InheritDoc}
+     */
     public function onSubscribe(ConnectionInterface $conn, $topic)
     {
         echo __METHOD__.' '.$topic.PHP_EOL;
@@ -223,29 +232,44 @@ class Application implements WampServerInterface
         $this->getTopic($topic)->onSubscribe($conn, $topic);
     }
 
+    /**
+     * {@InheritDoc}
+     */
     public function onPublish(ConnectionInterface $conn, $topic, $event, array $exclude, array $eligible)
     {
         echo __METHOD__.' '.$topic.PHP_EOL;
 
-        $this->topics[$topic]->onPublish($conn, $topic, $event, $exclude, $eligible);
+        $this->topics[$topic]->onPublish($conn, $topic, $event);
     }
 
+    /**
+     * {@InheritDoc}
+     */
     public function onUnSubscribe(ConnectionInterface $conn, $topic)
     {
         echo __METHOD__.' '.$topic.PHP_EOL;
         $this->topics[$topic]->onUnSubscribe($conn, $topic);
     }
 
+    /**
+     * {@InheritDoc}
+     */
     public function onClose(ConnectionInterface $conn)
     {
         echo __METHOD__.PHP_EOL;
     }
 
+    /**
+     * {@InheritDoc}
+     */
     public function onCall(ConnectionInterface $conn, $id, $topic, array $params)
     {
         echo __METHOD__.PHP_EOL;
     }
 
+    /**
+     * {@InheritDoc}
+     */
     public function onError(ConnectionInterface $conn, \Exception $e)
     {
         echo __METHOD__.' '.$e->getMessage().PHP_EOL;

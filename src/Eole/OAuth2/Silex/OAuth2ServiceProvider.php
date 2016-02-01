@@ -130,7 +130,7 @@ class OAuth2ServiceProvider implements ServiceProviderInterface
         /**
          * Security
          */
-        $app['security.authentication_listener.factory.oauth'] = $app->protect(function ($name, $options) use ($app) {
+        $app['security.authentication_listener.factory.oauth'] = $app->protect(function ($name) use ($app) {
 
             // define the authentication provider object
             $app['security.authentication_provider.'.$name.'.oauth'] = function () use ($app) {

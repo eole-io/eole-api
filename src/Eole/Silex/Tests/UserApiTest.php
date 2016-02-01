@@ -321,9 +321,4 @@ class UserApiTest extends AbstractApplicationTest
         $this->assertObjectHasAttribute('name', $game);
         $this->assertEquals('game-0', $game->name);
     }
-
-    public function testChangePassword()
-    {
-        $client = $this->createClient();
-    }
 }
