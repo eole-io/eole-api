@@ -35,7 +35,7 @@ class Slot
     {
         $this->party = $party;
         $this->player = $player;
-        $this->score = 0;
+        $this->score = 0.0;
     }
 
     /**
@@ -129,7 +129,7 @@ class Slot
      *
      * @return self
      */
-    public function incrementScore($n = 1)
+    public function incrementScore($n = 1.0)
     {
         $this->score += $n;
 

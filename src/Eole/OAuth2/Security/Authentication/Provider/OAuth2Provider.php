@@ -66,7 +66,7 @@ class OAuth2Provider implements AuthenticationProviderInterface
         $this->userChecker->checkPreAuth($user);
         $this->userChecker->checkPostAuth($user);
 
-        $authenticatedToken = new OAuth2Token($user->getRoles());
+        $authenticatedToken = new OAuth2Token($token->getTokenData());
         $authenticatedToken->setUser($user);
 
         return $authenticatedToken;

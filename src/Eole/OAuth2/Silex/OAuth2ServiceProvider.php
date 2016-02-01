@@ -30,7 +30,7 @@ class OAuth2ServiceProvider implements ServiceProviderInterface
     private $tokensDir;
 
     /**
-     * @var \stdClass[]
+     * @var array[]
      */
     private $clientsData;
 
@@ -47,7 +47,7 @@ class OAuth2ServiceProvider implements ServiceProviderInterface
     /**
      * @param string $firewallName
      * @param string $tokensDir
-     * @param \stdClass[] $clientsData
+     * @param array[] $clientsData
      */
     public function __construct($firewallName, $tokensDir, array $clientsData)
     {

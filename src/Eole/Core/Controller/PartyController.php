@@ -119,7 +119,6 @@ class PartyController
      * A player joins a party.
      *
      * @param Party $party
-     * @param Player $player
      *
      * @return ApiResponse with player position
      *
