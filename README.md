@@ -7,6 +7,8 @@
 
 Provides Eole domain, a RestAPI, and a websocket server.
 
+Allows to plug new API endpoints and websocket topics easily for games.
+
 
 ## Installation
 
@@ -47,21 +49,14 @@ php bin/react-server
 ```
 
 
-## Testing
+## Documentation
 
-By default, tests are run in an SQLite database, located in `var/eole-test.sqlite`.
-
-Run tests
-
-``` bash
-php vendor/bin/phpunit -c .
-```
-
-Check PSR2
-
-``` bash
-php vendor/bin/phpcs --standard=phpcs.xml src/
-```
+- [Testing and PSR2 check](doc/testing.md)
+- [API documentation](doc/api-documentation.md)
+- [Creating a game](doc/create-game/index.md)
+    - [Add API endpoints](doc/create-game/controller-provider.md)
+    - [Add websocket topic](doc/create-game/websocket-provider.md)
+    - [Register services or listeners](doc/create-game/service-provider.md)
 
 
 ## License
