@@ -35,7 +35,7 @@ class MyControllerProvider implements ControllerProviderInterface
 }
 ```
 
-The [ApiResponse](../src/Eole/Core/ApiResponse.php) is used to return a Symfony Response agnostic
+The [ApiResponse](../../src/Eole/Core/ApiResponse.php) is used to return a Symfony agnostic response object
 that could be used elsewhere than from the Symfony HTTP loop (i.e in commands).
 
 
@@ -58,7 +58,7 @@ If you want to register services only for the RestAPI stack,
 note that if your ControllerProvider also implements `Pimple\ServiceProviderInterface`,
 it will be registered before mounted.
 
-It is usefull when there is controllers class to declare as services.
+It is usefull when you want to put your controller logic in another class.
 
 Example:
 

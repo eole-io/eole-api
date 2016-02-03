@@ -1,13 +1,13 @@
 # Add websocket topic
 
-A websocket is launched with the Rest API, and is used to send data in real-time
+A **websocket server** is launched in parallel with the **Rest API server**, and is used to send data in real-time
 from server to client.
 
-Also, a push server allows Rest API to send event to websocket,
+Also, an internal **push server** allows **Rest API** to send event to websocket,
 to be forwarded to subscribed clients.
 
-You can easily register a topic to the websocket server, and then allow client
-to subscribe to this topic, and then being notified in real-time from API changes.
+You can easily **register a topic** to the **websocket server**, and then allow clients
+to subscribe to this topic, and being notified in real-time from API changes.
 
 
 ## Creating your topic
@@ -77,13 +77,13 @@ which will send a message to each subscribed clients.
 #### Notify after an API call
 
 You will usually want to notify them from an API call,
-but the websocket server and Rest server are launched in separates processes.
+but the **websocket server** and **Rest server** are launched in separates processes.
 
-That's why the websocket server also launch a push server and is listening to it,
-and then we can send events from Rest API server to a server socket, and the websocket
+That's why the **websocket server** also launch a **push server** and is listening to it,
+and then we can send events from **Rest API server** to a **server socket**, and the **websocket**
 will listen the event.
 
-To simplify the process, all the workflow has been abstracted using the Symfony EventDispatcher component.
+To simplify the process, all the workflow has been abstracted using the [Symfony EventDispatcher](http://symfony.com/doc/current/components/event_dispatcher/introduction.html) component.
 
 Just dispatch an event from your API controller, *say* that this event must be forwarded to websocket server,
 and listen this same event in your topic.
@@ -92,7 +92,7 @@ Example:
 
 - Just dispatch an event from your API controller...
 
-From an example controller:
+From an example controller, add `$app['dispatcher']->dispatch('acme.my_game.my_event', new Event());` here:
 
 ``` php
 // using a simple Symfony event
@@ -107,7 +107,7 @@ use Symfony\Component\EventDispatcher\Event;
         $controllers->get('/something/{id}', function (Application $app, $id) {
 
             // Dispatch an event
-            $$app['dispatcher']->dispatch('acme.my_game.my_event', new Event());
+            $app['dispatcher']->dispatch('acme.my_game.my_event', new Event());
 
             return new ApiResponse(array(
                 'message' => 'ok',
@@ -120,6 +120,8 @@ use Symfony\Component\EventDispatcher\Event;
 ```
 
 - ...*say* that this event must be forwarded to websocket server...
+
+Use `$app->forwardEventToPushServer('acme.my_game.my_event');` to achieve it:
 
 ``` php
 namespace Acme\MyGame;
@@ -171,8 +173,8 @@ class ControllerProvider implements ServiceProviderInterface, ControllerProvider
 
 - ...and listen this same event in your topic.
 
-When the websocket server receives an serialized event from the push server,
-it deserialize it and re-dispatch it through the WebsocketApplication, and topics.
+When the **websocket server** receives an serialized event from the **push server**,
+it deserializes it and re-dispatch it through the WebsocketApplication, and topics.
 
 You now just have to complete your `MyTopic` class.
 
