@@ -248,6 +248,7 @@ class Application implements WampServerInterface
     public function onUnSubscribe(ConnectionInterface $conn, $topic)
     {
         echo __METHOD__.' '.$topic.PHP_EOL;
+
         $this->topics[$topic]->onUnSubscribe($conn, $topic);
     }
 
@@ -257,6 +258,12 @@ class Application implements WampServerInterface
     public function onClose(ConnectionInterface $conn)
     {
         echo __METHOD__.PHP_EOL;
+
+        foreach ($this->topics as $topic) {
+            if ($topic->has($conn)) {
+                $topic->onUnSubscribe($conn, $topic);
+            }
+        }
     }
 
     /**
