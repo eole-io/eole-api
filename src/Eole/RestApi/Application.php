@@ -117,6 +117,10 @@ class Application extends BaseApplication
      */
     public function forwardEventToPushServer($eventName)
     {
+        if (!$this['environment']['push_server']['enabled']) {
+            return $this;
+        }
+
         $this->before(function () use ($eventName) {
             $this['dispatcher']->addListener(
                 $eventName,
