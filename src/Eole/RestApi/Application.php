@@ -86,6 +86,16 @@ class Application extends BaseApplication
 
     private function registerEventListeners()
     {
+        $corsOrigin = $this['environment']['cors']['access_control_allow_origin'];
+
+        if ($corsOrigin) {
+            $this->register(new \JDesrosiers\Silex\Provider\CorsServiceProvider(), array(
+                'cors.allowOrigin' => $corsOrigin,
+            ));
+
+            $this->after($this['cors']);
+        }
+
         $this['eole.listener.api_response_filter'] = function () {
             return new \Eole\Core\EventListener\ApiResponseFilterListener(
                 $this['eole.api_response_filter']
