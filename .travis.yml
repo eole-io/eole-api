@@ -11,3 +11,7 @@ before_script:
     - cp /home/travis/build/alcalyn/eole-api/config/environment.yml.dist /home/travis/build/alcalyn/eole-api/config/environment.yml
     - cp /home/travis/build/alcalyn/eole-api/config/environment_test.yml.dist /home/travis/build/alcalyn/eole-api/config/environment_test.yml
     - php /home/travis/build/alcalyn/eole-api/bin/console-test orm:schema-tool:create
+
+script:
+    - ./vendor/bin/phpcs --standard=phpcs.xml src
+    - phpunit -c .
