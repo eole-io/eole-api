@@ -3,21 +3,18 @@
 A **websocket server** is launched in parallel with the **Rest API server**, and is used to send data in real-time
 from server to client.
 
-Also, an internal **push server** allows **Rest API** to send event to websocket,
-to be forwarded to subscribed clients.
+Also, an internal **push server** allows **Rest API** to send **events** to **websocket server**,
+and then forward these **events** to **subscribing clients**.
 
 You can easily **register a topic** to the **websocket server**, and then allow clients
-to subscribe to this topic, and being notified in real-time from API changes.
+to subscribe to this topic, and notify them in real-time that API state changed.
 
 
 ## Creating your topic
 
 A Topic is a class which implements `Eole\WebSocket\Topic`.
 
-
-### Handle upcomming events
-
-You can then override 3 methods to handle client notifications:
+You can then override 3 methods to handle client upcoming notifications:
 
 ``` php
 namespace Acme\MyGame;
@@ -73,26 +70,41 @@ You can then handle client messages in `onPublish`. If a client send 'hello', `$
 To notify clients, `Eole\WebSocket\Topic` provides a method, `broadcast($msg)`,
 which will send a message to each subscribed clients.
 
+Example from `Eole\WebSocket\Topic\ChatTopic`:
+
+``` php
+    public function onSubscribe(WampConnection $conn, $topic)
+    {
+        parent::onSubscribe($conn, $topic);
+
+        // Notifying all subscribing clients that a new player is subscribing to the chat.
+        $this->broadcast([
+            'type' => 'join',
+            'player' => $conn->player,
+        ]);
+    }
+```
+
 
 #### Notify after an API call
 
-You will usually want to notify them from an API call,
-but the **websocket server** and **Rest server** are launched in separates processes.
+You will usually want to notify them after an API call which has changed the state of the API.
 
-That's why the **websocket server** also launch a **push server** and is listening to it,
-and then we can send events from **Rest API server** to a **server socket**, and the **websocket**
-will listen the event.
+But the **websocket server** and **Rest server** are launched in separates processes.
+
+That's why a **push server** allows them to communicate through a socket.
 
 To simplify the process, all the workflow has been abstracted using the [Symfony EventDispatcher](http://symfony.com/doc/current/components/event_dispatcher/introduction.html) component.
 
-Just dispatch an event from your API controller, *say* that this event must be forwarded to websocket server,
+Just dispatch an event from your API controller,
+*declare* that this event must be forwarded to websocket server through socket,
 and listen this same event in your topic.
 
 Example:
 
 - Just dispatch an event from your API controller...
 
-From an example controller, add `$app['dispatcher']->dispatch('acme.my_game.my_event', new Event());` here:
+In your controller, add `$app['dispatcher']->dispatch('acme.my_game.my_event', new Event());`:
 
 ``` php
 // using a simple Symfony event
@@ -119,7 +131,7 @@ use Symfony\Component\EventDispatcher\Event;
     }
 ```
 
-- ...*say* that this event must be forwarded to websocket server...
+- ...*declare* that this event must be forwarded to websocket server...
 
 Use `$app->forwardEventToPushServer('acme.my_game.my_event');` to achieve it:
 
@@ -214,7 +226,10 @@ class MyTopic extends Topic implements EventSubscriberInterface
      */
     public function onEvent(Event $event)
     {
-        // Do something on event, broadcast...
+        $this->broadcast([
+            'type' => 'my-event',
+            'data' => $event->data,
+        ]);
     }
 }
 ```
