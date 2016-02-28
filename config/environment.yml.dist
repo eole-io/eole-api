@@ -30,9 +30,6 @@ oauth:
 
 games:
     tictactoe:
-        service_provider: Eole\Games\TicTacToe\TicTacToeProvider
-        websocket_provider: Eole\Games\TicTacToe\TicTacToeWebsocketProvider
+        interface: Eole\Games\TicTacToe\TicTacToe
     awale:
-        service_provider: Eole\Games\Awale\ServiceProvider
-        controller_provider: Eole\Games\Awale\ControllerProvider
-        websocket_provider: Eole\Games\Awale\WebsocketProvider
+        interface: Eole\Games\Awale\Awale

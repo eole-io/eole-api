@@ -2,7 +2,6 @@
 
 namespace Eole\Silex;
 
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Silex\Application as BaseApplication;
 
 class Application extends BaseApplication
@@ -247,33 +246,15 @@ class Application extends BaseApplication
     }
 
     /**
-     * Register a game service provider.
-     *
      * @param string $gameName
      *
-     * @return self
+     * @return GameInterface
      */
-    private function registerGame($gameName)
+    public function createGameInterface($gameName)
     {
-        $gameConfig = $this['environment']['games'][$gameName];
+        $gameInterfaceClass = $this['environment']['games'][$gameName]['interface'];
 
-        if (isset($gameConfig['service_provider'])) {
-            $serviceProviderClass = $gameConfig['service_provider'];
-            $serviceProvider = new $serviceProviderClass();
-
-            if (!$serviceProvider instanceof \Pimple\ServiceProviderInterface) {
-                throw new \LogicException(sprintf(
-                    'Game service provider class (%s) for game %s must implement %s.',
-                    $serviceProviderClass,
-                    $gameName,
-                    \Pimple\ServiceProviderInterface::class
-                ));
-            }
-
-            $this->register($serviceProvider);
-        }
-
-        return $this;
+        return new $gameInterfaceClass();
     }
 
     /**
@@ -283,7 +264,21 @@ class Application extends BaseApplication
      */
     public function loadGame($gameName)
     {
-        $this->registerGame($gameName);
+        $gameInterface = $this->createGameInterface($gameName);
+        $serviceProvider = $gameInterface->createServiceProvider();
+
+        if (null !== $serviceProvider) {
+            if (!$serviceProvider instanceof \Pimple\ServiceProviderInterface) {
+                throw new \LogicException(sprintf(
+                    'Game service provider class (%s) for game %s must implement %s.',
+                    get_class($serviceProvider),
+                    $gameName,
+                    \Pimple\ServiceProviderInterface::class
+                ));
+            }
+
+            $this->register($serviceProvider);
+        }
 
         return $this;
     }

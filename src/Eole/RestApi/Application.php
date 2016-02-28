@@ -179,12 +179,10 @@ class Application extends BaseApplication
      */
     private function mountGame($gameName)
     {
-        $gameConfig = $this['environment']['games'][$gameName];
+        $gameInterface = $this->createGameInterface($gameName);
+        $controllerProvider = $gameInterface->createControllerProvider();
 
-        if (isset($gameConfig['controller_provider'])) {
-            $controllerProviderClass = $gameConfig['controller_provider'];
-            $controllerProvider = new $controllerProviderClass();
-
+        if (null !== $controllerProvider) {
             if ($controllerProvider instanceof \Pimple\ServiceProviderInterface) {
                 $this->register($controllerProvider);
             }
@@ -192,9 +190,9 @@ class Application extends BaseApplication
             if (!$controllerProvider instanceof \Silex\Api\ControllerProviderInterface) {
                 throw new \LogicException(sprintf(
                     'Game controller provider class (%s) for game %s must implement %s.',
-                    $controllerProviderClass,
+                    get_class($controllerProvider),
                     $gameName,
-                    'Pimple\\ServiceProviderInterface'
+                    \Silex\Api\ControllerProviderInterface::class
                 ));
             }
 
