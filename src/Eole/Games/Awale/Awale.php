@@ -2,6 +2,7 @@
 
 namespace Eole\Games\Awale;
 
+use Eole\Core\Model\Game;
 use Eole\Silex\GameInterface;
 
 class Awale implements GameInterface

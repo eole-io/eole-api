@@ -2,6 +2,7 @@
 
 namespace Eole\Games\TicTacToe;
 
+use Eole\Core\Model\Game;
 use Eole\Silex\GameInterface;
 
 class TicTacToe implements GameInterface
