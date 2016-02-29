@@ -216,6 +216,10 @@ class Application extends BaseApplication
         $this['eole.listener.authorization_header_fix'] = function () {
             return new \Alcalyn\AuthorizationHeaderFix\AuthorizationHeaderFixListener();
         };
+
+        $this['eole.games'] = function () {
+            return new Service\GamesService($this['orm.em']);
+        };
     }
 
     /**

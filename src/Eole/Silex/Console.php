@@ -34,6 +34,7 @@ class Console extends ConsoleApplication
     {
         $this->registerDoctrineCommands();
         $this->registerEoleCommands();
+        $this->registerSilexComands();
     }
 
     private function registerDoctrineCommands()
@@ -59,6 +60,13 @@ class Console extends ConsoleApplication
             new \Alcalyn\UserApi\Command\EncodePasswordCommand($playerManager),
             new \Eole\Core\Command\CreatePlayerCommand($api),
             new \Eole\Core\Command\CreateGuestCommand($api),
+        ));
+    }
+
+    private function registerSilexComands()
+    {
+        $this->addCommands(array(
+            new Command\InstallGamesCommand($this->silexApplication),
         ));
     }
 }
