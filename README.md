@@ -54,6 +54,7 @@ php bin/react-server
 - [Testing and PSR2 check](doc/testing.md)
 - [API documentation](doc/api-documentation.md)
 - [Creating a game](doc/create-game/index.md)
+    - [Initializing a game installation](doc/create-game/init-game.md)
     - [Add API endpoints](doc/create-game/controller-provider.md)
     - [Add websocket topic](doc/create-game/websocket-provider.md)
     - [Register services or listeners](doc/create-game/service-provider.md)

@@ -11,7 +11,15 @@ Eole is a Silex application, so services and controllers from your game
 will be added to the application container through providers.
 
 A game is defined by a name (an identifier you have to choose, lower case and '-'),
-and a `GameInterface`, and is registered in `config/environment.yml`.
+and a `GameInterface`, and is registered in `config/environment.yml` like that:
+
+``` yaml
+games:
+    mygame:
+        interface: Acme\MyGame\MyGame
+```
+
+And call `php bin/console eole:games:install` to install your game instance in database.
 
 A `GameInterface` provides a game instance which represents a game in database,
 and 3 providers:
@@ -26,13 +34,6 @@ See documentation about creating these providers:
  - [Add websocket topic](websocket-provider.md)
  - [Register services or listeners](service-provider.md)
 
-Once created, your `GameInterface` implementation must create and return these providers,
-and will be registered in `config/environment.yml` like that:
+But first, you may be interested by:
 
-``` yaml
-games:
-    mygame:
-        interface: Acme\MyGame\MyGame
-```
-
-And call `php bin/console eole:games:install` to install your game instance in database.
+ - [Initializing a game installation](init-game.md)

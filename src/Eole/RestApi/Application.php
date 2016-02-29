@@ -196,10 +196,20 @@ class Application extends BaseApplication
                 ));
             }
 
-            $this->mount('api/games/'.$gameName, $controllerProvider);
+            $this->mount('api/games/'.$this->gameNameToUrl($gameName), $controllerProvider);
         }
 
         return $this;
+    }
+
+    /**
+     * @param string $gameName
+     *
+     * @return string
+     */
+    private function gameNameToUrl($gameName)
+    {
+        return str_replace('_', '-', $gameName);
     }
 
     /**

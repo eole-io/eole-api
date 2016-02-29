@@ -35,26 +35,19 @@ class MyControllerProvider implements ControllerProviderInterface
 }
 ```
 
-The [ApiResponse](../../src/Eole/Core/ApiResponse.php) is used to return a Symfony agnostic response object
+**Note**: By adding the route `/something/{id}`,
+it will be accessible in Eole with `/api/games/my-game/something/42`
+(underscores are replaces with `-`).
+The prefix `/api/games/my-game` is added to avoid url collisions.
+
+**Note**: The [ApiResponse](../../src/Eole/Core/ApiResponse.php)
+is used to return a Symfony agnostic response object
 that could be used elsewhere than from the Symfony HTTP loop (i.e in commands).
-
-
-## Extending Eole API
-
-Now the ControllerProvider needs to be registered by Eole RestAPI.
-
-You just have to add your provider in configuration in your API environment, `config/environment.yml`:
-
-``` yml
-games:
-    my_game:
-        controller_provider: Acme\MyGame\MyControllerProvider
-```
 
 
 ## Declare services in your controller provider
 
-If you want to register services only for the RestAPI stack,
+If you want to register services only for the RestApi stack,
 note that if your ControllerProvider also implements `Pimple\ServiceProviderInterface`,
 it will be registered before mounted.
 
