@@ -3,9 +3,9 @@
 namespace Eole\Games\Awale;
 
 use Eole\Core\Model\Game;
-use Eole\Silex\GameInterface;
+use Eole\Silex\GameAdapter;
 
-class Awale implements GameInterface
+class Awale extends GameAdapter
 {
     /**
      * {@InheritDoc}

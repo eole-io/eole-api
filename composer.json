@@ -47,8 +47,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Eole\\": "src/Eole",
-            "Alcalyn\\": "src/Alcalyn"
+            "": "src"
         }
     },
     "repositories": [

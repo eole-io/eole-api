@@ -9,9 +9,14 @@ use Eole\Core\Model\Game;
 interface GameInterface
 {
     /**
-     * @return Game instance of game
+     * @return Game instance of game.
      */
     public function createGame();
+
+    /**
+     * Install game.
+     */
+    public function installGame();
 
     /**
      * @return null|ServiceProviderInterface

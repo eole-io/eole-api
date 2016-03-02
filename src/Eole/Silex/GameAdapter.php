@@ -1,22 +1,15 @@
 <?php
 
-namespace Eole\Games\TicTacToe;
+namespace Eole\Silex;
 
-use Eole\Core\Model\Game;
-use Eole\Silex\GameAdapter;
-
-class TicTacToe extends GameAdapter
+abstract class GameAdapter implements GameInterface
 {
     /**
      * {@InheritDoc}
      */
-    public function createGame()
+    public function installGame()
     {
-        $game = new Game();
-
-        $game->setName('tictactoe');
-
-        return $game;
+        // noop
     }
 
     /**
@@ -24,7 +17,7 @@ class TicTacToe extends GameAdapter
      */
     public function createServiceProvider()
     {
-        return new TicTacToeProvider();
+        return null;
     }
 
     /**
@@ -40,6 +33,6 @@ class TicTacToe extends GameAdapter
      */
     public function createWebsocketProvider()
     {
-        return new TicTacToeWebsocketProvider();
+        return null;
     }
 }
