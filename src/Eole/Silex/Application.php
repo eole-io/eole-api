@@ -252,39 +252,38 @@ class Application extends BaseApplication
     /**
      * @param string $gameName
      *
-     * @return GameInterface
+     * @return GameProvider
      */
-    public function createGameInterface($gameName)
+    public function createGameProvider($gameName)
     {
-        $gameInterfaceClass = $this['environment']['games'][$gameName]['interface'];
+        $gameProviderClass = $this['environment']['games'][$gameName]['provider'];
 
-        return new $gameInterfaceClass();
+        $gameProvider = new $gameProviderClass();
+
+        if (!$gameProvider instanceof GameProvider) {
+            throw new \LogicException(sprintf(
+                'Game provider class (%s) for game %s must implement %s.',
+                get_class($gameProvider),
+                $gameName,
+                GameProvider::class
+            ));
+        }
+
+        return $gameProvider;
     }
 
     /**
      * @param string $gameName
      *
-     * @return self
+     * @return GameProvider of the loaded game.
      */
     public function loadGame($gameName)
     {
-        $gameInterface = $this->createGameInterface($gameName);
-        $serviceProvider = $gameInterface->createServiceProvider();
+        $gameProvider = $this->createGameProvider($gameName);
 
-        if (null !== $serviceProvider) {
-            if (!$serviceProvider instanceof \Pimple\ServiceProviderInterface) {
-                throw new \LogicException(sprintf(
-                    'Game service provider class (%s) for game %s must implement %s.',
-                    get_class($serviceProvider),
-                    $gameName,
-                    \Pimple\ServiceProviderInterface::class
-                ));
-            }
+        $this->register($gameProvider);
 
-            $this->register($serviceProvider);
-        }
-
-        return $this;
+        return $gameProvider;
     }
 
     /**

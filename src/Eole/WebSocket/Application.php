@@ -94,8 +94,8 @@ class Application implements WampServerInterface
      */
     public function loadGame($gameName)
     {
-        $gameInterface = $this->silexApp->createGameInterface($gameName);
-        $websocketProvider = $gameInterface->createWebsocketProvider();
+        $gameProvider = $this->silexApp->createGameProvider($gameName);
+        $websocketProvider = $gameProvider->createWebsocketProvider();
 
         if (null !== $websocketProvider) {
             if (!$websocketProvider instanceof \Pimple\ServiceProviderInterface) {

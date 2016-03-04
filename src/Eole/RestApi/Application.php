@@ -174,13 +174,13 @@ class Application extends BaseApplication
      * If the provider also implements ServiceProviderInterface, it is registered.
      *
      * @param string $gameName
+     * @param \Eole\Silex\GameProvider $gameProvider
      *
      * @return self
      */
-    private function mountGame($gameName)
+    private function mountGame($gameName, $gameProvider)
     {
-        $gameInterface = $this->createGameInterface($gameName);
-        $controllerProvider = $gameInterface->createControllerProvider();
+        $controllerProvider = $gameProvider->createControllerProvider();
 
         if (null !== $controllerProvider) {
             if ($controllerProvider instanceof \Pimple\ServiceProviderInterface) {
@@ -196,7 +196,7 @@ class Application extends BaseApplication
                 ));
             }
 
-            $this->mount('api/games/'.$this->gameNameToUrl($gameName), $controllerProvider);
+            $this->mount('api/games/'.self::gameNameToUrl($gameName), $controllerProvider);
         }
 
         return $this;
@@ -207,21 +207,21 @@ class Application extends BaseApplication
      *
      * @return string
      */
-    private function gameNameToUrl($gameName)
+    private static function gameNameToUrl($gameName)
     {
         return str_replace('_', '-', $gameName);
     }
 
     /**
-     * @param string $gameName
+     * {@InheritDoc}
      */
     public function loadGame($gameName)
     {
-        parent::loadGame($gameName);
+        $gameProvider = parent::loadGame($gameName);
 
-        $this->mountGame($gameName);
+        $this->mountGame($gameName, $gameProvider);
 
-        return $this;
+        return $gameProvider;
     }
 
     /**

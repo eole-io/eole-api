@@ -30,6 +30,6 @@ oauth:
 
 games:
     tictactoe:
-        interface: Eole\Games\TicTacToe\TicTacToe
+        provider: Eole\Games\TicTacToe\TicTacToe
     awale:
-        interface: Eole\Games\Awale\Awale
+        provider: Eole\Games\Awale\Awale
