@@ -207,7 +207,7 @@ class Application extends BaseApplication
      *
      * @return string
      */
-    private static function gameNameToUrl($gameName)
+    static private function gameNameToUrl($gameName)
     {
         return str_replace('_', '-', $gameName);
     }
