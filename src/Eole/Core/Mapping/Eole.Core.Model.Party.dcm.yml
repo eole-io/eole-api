@@ -1,7 +1,7 @@
 Eole\Core\Model\Party:
     type: entity
     repositoryClass: Eole\Core\Repository\PartyRepository
-    table: eole_core_party
+    table: eole_party
     id:
         id:
             type: integer

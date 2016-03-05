@@ -1,7 +1,7 @@
 Eole\Core\Model\Slot:
     type: entity
     repositoryClass: Eole\Core\Repository\SlotRepository
-    table: eole_core_slot
+    table: eole_slot
     id:
         id:
             type: integer
