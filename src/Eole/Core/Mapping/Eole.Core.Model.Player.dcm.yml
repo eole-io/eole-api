@@ -1,7 +1,7 @@
 Eole\Core\Model\Player:
     type: entity
     repositoryClass: Eole\Core\Repository\PlayerRepository
-    table: eole_player
+    table: eole_core_player
     id:
         id:
             type: integer
