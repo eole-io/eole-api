@@ -96,11 +96,13 @@ class PartyController
         $party = $this->partyManager->createParty($game, $this->loggedPlayer);
 
         $this->dispatcher->dispatch(PartyEvent::CREATE_BEFORE, new PartyEvent($party));
+        $this->dispatcher->dispatch(SlotEvent::JOIN_BEFORE, new SlotEvent($party, $this->loggedPlayer));
 
         $this->om->persist($party);
         $this->om->flush();
 
         $this->dispatcher->dispatch(PartyEvent::CREATE_AFTER, new PartyEvent($party));
+        $this->dispatcher->dispatch(SlotEvent::JOIN_AFTER, SlotEvent::createFromSlot($party->getSlot(0)));
 
         return new ApiResponse($party, Response::HTTP_CREATED);
     }
