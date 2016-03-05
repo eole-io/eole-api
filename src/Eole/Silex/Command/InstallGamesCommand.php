@@ -63,15 +63,19 @@ class InstallGamesCommand extends Command
         }
 
         $output->writeln('New games has been detected, installing...');
+        $om = $this->silexApplication['orm.em'];
 
         foreach ($newDetectedGames as $game) {
             $output->write('    '.$game.'...');
-            $gameInterface = $this->silexApplication->createGameInterface($game);
-            $this->silexApplication['eole.games']->installGame($gameInterface);
+            $gameProvider = $this->silexApplication->createGameProvider($game);
+
+            $om->persist($gameProvider->createGame());
+            $gameProvider->createFixtures($this->silexApplication, $om);
+
             $output->writeln(' installed.');
         }
 
-        $this->silexApplication['orm.em']->flush();
+        $om->flush();
         $output->writeln('done.');
     }
 }

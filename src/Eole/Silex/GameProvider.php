@@ -2,6 +2,7 @@
 
 namespace Eole\Silex;
 
+use Doctrine\Common\Persistence\ObjectManager;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Eole\Silex\Application as SilexApplication;
@@ -10,7 +11,7 @@ use Eole\Core\Model\Game;
 abstract class GameProvider implements ServiceProviderInterface
 {
     /**
-     * @return Game instance of game
+     * @return Game instance of game.
      */
     public abstract function createGame();
 
