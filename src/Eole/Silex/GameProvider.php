@@ -13,7 +13,7 @@ abstract class GameProvider implements ServiceProviderInterface
     /**
      * @return Game instance of game.
      */
-    public abstract function createGame();
+    abstract public function createGame();
 
     /**
      * Persist game fixtures.
