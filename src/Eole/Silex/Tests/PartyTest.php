@@ -52,8 +52,8 @@ class PartyTest extends AbstractApplicationTest
     {
         parent::tearDown();
 
-        $this->app['db']->executeQuery('delete from eole_slot');
-        $this->app['db']->executeQuery('delete from eole_party');
+        $this->app['db']->executeQuery('delete from eole_core_slot');
+        $this->app['db']->executeQuery('delete from eole_core_party');
     }
 
     public function testGetParties()

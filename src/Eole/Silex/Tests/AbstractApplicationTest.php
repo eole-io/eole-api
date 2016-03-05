@@ -63,8 +63,8 @@ abstract class AbstractApplicationTest extends WebTestCase
 
         $this->playerManager = $this->app['eole.player_manager'];
 
-        $this->app['db']->executeQuery('delete from eole_player');
-        $this->app['db']->executeQuery('delete from eole_game');
+        $this->app['db']->executeQuery('delete from eole_core_player');
+        $this->app['db']->executeQuery('delete from eole_core_game');
 
         $player = new Player();
         $player->setUsername('existing-player');
@@ -98,8 +98,8 @@ abstract class AbstractApplicationTest extends WebTestCase
     {
         parent::tearDown();
 
-        $this->app['db']->executeQuery('delete from eole_player');
-        $this->app['db']->executeQuery('delete from eole_game');
+        $this->app['db']->executeQuery('delete from eole_core_player');
+        $this->app['db']->executeQuery('delete from eole_core_game');
     }
 
     /**

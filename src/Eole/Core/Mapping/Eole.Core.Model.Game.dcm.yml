@@ -1,7 +1,7 @@
 Eole\Core\Model\Game:
     type: entity
     repositoryClass: Eole\Core\Repository\GameRepository
-    table: eole_game
+    table: eole_core_game
     id:
         id:
             type: integer
