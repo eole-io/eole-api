@@ -4,8 +4,6 @@ namespace Eole\Games\TicTacToe;
 
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
-use Eole\WebSocket\Routing\TopicRoute;
-use Eole\Games\TicTacToe\Topic;
 
 class TicTacToeProvider implements ServiceProviderInterface
 {

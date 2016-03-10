@@ -2,7 +2,6 @@
 
 namespace Eole\Silex;
 
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Silex\Application as BaseApplication;
 
 class Application extends BaseApplication
@@ -247,45 +246,40 @@ class Application extends BaseApplication
     }
 
     /**
-     * Register a game service provider.
-     *
      * @param string $gameName
      *
-     * @return self
+     * @return GameProvider
      */
-    private function registerGame($gameName)
+    public function createGameProvider($gameName)
     {
-        $gameConfig = $this['environment']['games'][$gameName];
+        $gameProviderClass = $this['environment']['games'][$gameName]['provider'];
 
-        if (isset($gameConfig['service_provider'])) {
-            $serviceProviderClass = $gameConfig['service_provider'];
-            $serviceProvider = new $serviceProviderClass();
+        $gameProvider = new $gameProviderClass();
 
-            if (!$serviceProvider instanceof \Pimple\ServiceProviderInterface) {
-                throw new \LogicException(sprintf(
-                    'Game service provider class (%s) for game %s must implement %s.',
-                    $serviceProviderClass,
-                    $gameName,
-                    \Pimple\ServiceProviderInterface::class
-                ));
-            }
-
-            $this->register($serviceProvider);
+        if (!$gameProvider instanceof GameProvider) {
+            throw new \LogicException(sprintf(
+                'Game provider class (%s) for game %s must implement %s.',
+                get_class($gameProvider),
+                $gameName,
+                GameProvider::class
+            ));
         }
 
-        return $this;
+        return $gameProvider;
     }
 
     /**
      * @param string $gameName
      *
-     * @return self
+     * @return GameProvider of the loaded game.
      */
     public function loadGame($gameName)
     {
-        $this->registerGame($gameName);
+        $gameProvider = $this->createGameProvider($gameName);
 
-        return $this;
+        $this->register($gameProvider);
+
+        return $gameProvider;
     }
 
     /**

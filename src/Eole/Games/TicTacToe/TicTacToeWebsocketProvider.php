@@ -17,7 +17,7 @@ class TicTacToeWebsocketProvider implements ServiceProviderInterface
             $party = $partyRepository->findFullPartyById($partyId, 'tictactoe');
             $partyManager = $app['eole.party_manager'];
 
-            return new Topic($topicPath, $party, $partyManager, $partyRepository);
+            return new Websocket\Topic($topicPath, $party, $partyManager, $partyRepository);
         };
 
         $app['eole.games.tictactoe.topic.factory'] = $app->protect($tictactoePartiesFactory);

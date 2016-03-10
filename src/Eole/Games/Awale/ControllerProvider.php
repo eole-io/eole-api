@@ -17,7 +17,7 @@ class ControllerProvider implements ServiceProviderInterface, ControllerProvider
     public function register(Container $app)
     {
         $app['eole.games.awale.controller'] = function () use ($app) {
-            return new Controller(
+            return new RestApi\Controller(
                 $app['orm.em']->getRepository('EoleAwale:AwaleParty'),
                 $app['orm.em'],
                 $app['eole.party_manager'],

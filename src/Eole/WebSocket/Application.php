@@ -92,37 +92,23 @@ class Application implements WampServerInterface
      *
      * @throws \LogicException
      */
-    private function registerGame($gameName)
+    public function loadGame($gameName)
     {
-        $gameConfig = $this->silexApp['environment']['games'][$gameName];
+        $gameProvider = $this->silexApp->createGameProvider($gameName);
+        $websocketProvider = $gameProvider->createWebsocketProvider();
 
-        if (isset($gameConfig['websocket_provider'])) {
-            $serviceProviderClass = $gameConfig['websocket_provider'];
-            $serviceProvider = new $serviceProviderClass();
-
-            if (!$serviceProvider instanceof \Pimple\ServiceProviderInterface) {
+        if (null !== $websocketProvider) {
+            if (!$websocketProvider instanceof \Pimple\ServiceProviderInterface) {
                 throw new \LogicException(sprintf(
                     'Websocket provider class (%s) for game %s must implement %s.',
-                    $serviceProviderClass,
+                    $websocketProvider,
                     $gameName,
                     \Pimple\ServiceProviderInterface::class
                 ));
             }
 
-            $this->silexApp->register($serviceProvider);
+            $this->silexApp->register($websocketProvider);
         }
-
-        return $this;
-    }
-
-    /**
-     * @param string $gameName
-     *
-     * @return self
-     */
-    public function loadGame($gameName)
-    {
-        $this->registerGame($gameName);
 
         return $this;
     }

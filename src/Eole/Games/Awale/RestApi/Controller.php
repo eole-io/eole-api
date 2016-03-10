@@ -1,6 +1,6 @@
 <?php
 
-namespace Eole\Games\Awale;
+namespace Eole\Games\Awale\RestApi;
 
 use Alcalyn\Awale\Exception\AwaleException;
 use Alcalyn\Awale\Awale;

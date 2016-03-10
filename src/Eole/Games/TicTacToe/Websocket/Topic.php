@@ -1,6 +1,6 @@
 <?php
 
-namespace Eole\Games\TicTacToe;
+namespace Eole\Games\TicTacToe\Websocket;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Alcalyn\TicTacToe\Exception\TicTacToeException;

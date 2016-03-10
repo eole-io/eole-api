@@ -174,17 +174,15 @@ class Application extends BaseApplication
      * If the provider also implements ServiceProviderInterface, it is registered.
      *
      * @param string $gameName
+     * @param \Eole\Silex\GameProvider $gameProvider
      *
      * @return self
      */
-    private function mountGame($gameName)
+    private function mountGame($gameName, $gameProvider)
     {
-        $gameConfig = $this['environment']['games'][$gameName];
+        $controllerProvider = $gameProvider->createControllerProvider();
 
-        if (isset($gameConfig['controller_provider'])) {
-            $controllerProviderClass = $gameConfig['controller_provider'];
-            $controllerProvider = new $controllerProviderClass();
-
+        if (null !== $controllerProvider) {
             if ($controllerProvider instanceof \Pimple\ServiceProviderInterface) {
                 $this->register($controllerProvider);
             }
@@ -192,13 +190,13 @@ class Application extends BaseApplication
             if (!$controllerProvider instanceof \Silex\Api\ControllerProviderInterface) {
                 throw new \LogicException(sprintf(
                     'Game controller provider class (%s) for game %s must implement %s.',
-                    $controllerProviderClass,
+                    get_class($controllerProvider),
                     $gameName,
-                    'Pimple\\ServiceProviderInterface'
+                    \Silex\Api\ControllerProviderInterface::class
                 ));
             }
 
-            $this->mount('api/games/'.$gameName, $controllerProvider);
+            $this->mount('api/games/'.self::gameNameToUrl($gameName), $controllerProvider);
         }
 
         return $this;
@@ -206,14 +204,24 @@ class Application extends BaseApplication
 
     /**
      * @param string $gameName
+     *
+     * @return string
+     */
+    private static function gameNameToUrl($gameName)
+    {
+        return str_replace('_', '-', $gameName);
+    }
+
+    /**
+     * {@InheritDoc}
      */
     public function loadGame($gameName)
     {
-        parent::loadGame($gameName);
+        $gameProvider = parent::loadGame($gameName);
 
-        $this->mountGame($gameName);
+        $this->mountGame($gameName, $gameProvider);
 
-        return $this;
+        return $gameProvider;
     }
 
     /**
