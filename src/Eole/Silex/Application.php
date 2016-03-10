@@ -106,6 +106,10 @@ class Application extends BaseApplication
             );
         };
 
+        $this['security.default_encoder'] = function () {
+            return $this['security.encoder.digest'];
+        };
+
         $this['eole.user_provider'] = $userProvider;
     }
 
