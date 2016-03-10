@@ -5,6 +5,7 @@ namespace Eole\Silex;
 use Doctrine\Common\Persistence\ObjectManager;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
+use Silex\Api\ControllerProviderInterface;
 use Eole\Silex\Application as SilexApplication;
 use Eole\Core\Model\Game;
 
