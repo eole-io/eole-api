@@ -1,68 +1,16 @@
 <?php
 
-echo 'Initialization...'.PHP_EOL;
-
 require_once __DIR__.'/../vendor/autoload.php';
 
-use React\ZMQ\Context;
-use React\Socket\Server;
-use Ratchet\Server\IoServer;
-use Ratchet\Http\HttpServer;
-use Ratchet\WebSocket\WsServer;
-use Ratchet\Wamp\ServerProtocol;
 use Eole\Silex\Application as SilexApplication;
-use Eole\WebSocket\Application as WebSocketApplication;
+use Eole\WebSocket\Server as WebSocketServer;
 
-$loop = React\EventLoop\Factory::create();
-
-
-// Create Eole websocket application
-$silexApp = new SilexApplication(array(
+$app = new SilexApplication(array(
     'project.root' => dirname(__DIR__),
     'env' => 'dev',
     'debug' => true,
 ));
 
-$wsApp = new WebSocketApplication($silexApp);
+$websocketServer = new WebSocketServer($app);
 
-$socketHost = $silexApp['environment']['websocket']['server']['host'];
-$socketPort = $silexApp['environment']['websocket']['server']['port'];
-
-$socket = new Server($loop);
-$socket->listen($socketPort, $socketHost);
-
-$server = new IoServer(
-    new HttpServer(
-        new WsServer(
-            new ServerProtocol($wsApp)
-        )
-    ),
-    $socket
-);
-
-
-// Create push server
-if ($silexApp['environment']['push_server']['enabled']) {
-    $pushHost = $silexApp['environment']['push_server']['server']['host'];
-    $pushPort = $silexApp['environment']['push_server']['server']['port'];
-
-    $context = new Context($loop);
-    $pushServer = $context->getSocket(ZMQ::SOCKET_PULL);
-    $pushServer->bind("tcp://$pushHost:$pushPort");
-    $pushServer->on('message', function ($message) use ($silexApp) {
-        $data = $silexApp['eole.event_serializer']->deserializeEvent($message);
-
-        echo 'PushServer message event: '.$data['name'].PHP_EOL;
-
-        $silexApp['dispatcher']->dispatch($data['name'], $data['event']);
-    });
-}
-
-// Run servers
-echo "Bind websocket server to $socketHost:$socketPort".PHP_EOL;
-
-if ($silexApp['environment']['push_server']['enabled']) {
-    echo "Bind push server to $pushHost:$pushPort".PHP_EOL;
-}
-
-$loop->run();
+$websocketServer->run();
