@@ -15,6 +15,7 @@ use Eole\Core\ApiResponse;
 use Eole\Core\Model\Party;
 use Eole\Core\Service\PartyManager;
 use Eole\Core\Controller\LoggedPlayerTrait;
+use Eole\Games\Awale\Model\AwaleParty;
 use Eole\Games\Awale\Event\AwaleEvent;
 use Eole\Games\Awale\Repository\AwalePartyRepository;
 
@@ -91,22 +92,10 @@ class Controller
     public function play(Request $request)
     {
         $this->mustBeLogged();
-
-        if (!$request->request->has('move')) {
-            throw new BadRequestHttpException('Missing "move" argument.');
-        }
-
-        if (!$request->request->has('party_id')) {
-            throw new BadRequestHttpException('Missing "party_id" argument.');
-        }
+        $this->checkArguments($request);
 
         $move = $request->request->getInt('move');
         $partyId = $request->request->getInt('party_id');
-
-        if ($move < 0 || $move > 5) {
-            throw new BadRequestHttpException('Argument "move" must be between 0 and 5.');
-        }
-
         $awaleParty = $this->awalePartyRepository->findFullById($partyId);
 
         if (null === $awaleParty) {
@@ -114,26 +103,11 @@ class Controller
         }
 
         $party = $awaleParty->getParty();
-        $partyHasPlayer = $this->partyManager->hasPlayer($party, $this->loggedPlayer);
+        $this->checkPartyState($party);
 
-        if (!$partyHasPlayer) {
-            throw new AccessDeniedHttpException('Observers cannot play.');
-        }
+        $player = $this->getCurrentPlayerNumber($party);
 
-        if (Party::ACTIVE !== $party->getState()) {
-            throw new AccessDeniedHttpException('Party is not active.');
-        }
-
-        $players = array(
-            0 => Awale::PLAYER_0,
-            1 => Awale::PLAYER_1,
-        );
-        $slotPosition = $this->partyManager->getPlayerPosition($party, $this->loggedPlayer);
-        $player = $players[$slotPosition];
-
-        if (!$awaleParty->isPlayerTurn($player)) {
-            throw new ConflictHttpException('Not your turn to play.');
-        }
+        $this->checkTurnToPlay($awaleParty, $player);
 
         try {
             $awaleParty->play($player, $move);
@@ -141,17 +115,10 @@ class Controller
             throw new BadRequestHttpException('Invalid move.', $e);
         }
 
-        $party->getSlot(0)->setScore($awaleParty->getScore(Awale::PLAYER_0));
-        $party->getSlot(1)->setScore($awaleParty->getScore(Awale::PLAYER_1));
-
+        $this->updateScores($party, $awaleParty);
         $this->dispatcher->dispatch(AwaleEvent::PLAY, new AwaleEvent($awaleParty));
 
-        $partyEnded = $awaleParty->isGameOver();
-
-        if ($partyEnded) {
-            $this->partyManager->endParty($party);
-            $this->dispatcher->dispatch(AwaleEvent::PARTY_END, new AwaleEvent($awaleParty, $awaleParty->getWinner()));
-        }
+        $partyEnded = $this->stopIfPartyEnd($party, $awaleParty);
 
         $this->om->persist($awaleParty);
         $this->om->flush();
@@ -163,5 +130,103 @@ class Controller
             'winner' => $awaleParty->getWinner(),
             'is_party_ended' => $partyEnded,
         ));
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @throws BadRequestHttpException
+     */
+    private function checkArguments(Request $request)
+    {
+        if (!$request->request->has('move')) {
+            throw new BadRequestHttpException('Missing "move" argument.');
+        }
+
+        if (!$request->request->has('party_id')) {
+            throw new BadRequestHttpException('Missing "party_id" argument.');
+        }
+
+        $move = $request->request->getInt('move');
+
+        if ($move < 0 || $move > 5) {
+            throw new BadRequestHttpException('Argument "move" must be between 0 and 5.');
+        }
+    }
+
+    /**
+     * @param Party $party
+     *
+     * @throws AccessDeniedHttpException
+     */
+    private function checkPartyState(Party $party)
+    {
+        if (Party::ACTIVE !== $party->getState()) {
+            throw new AccessDeniedHttpException('Party is not active.');
+        }
+
+        $partyHasPlayer = $this->partyManager->hasPlayer($party, $this->loggedPlayer);
+
+        if (!$partyHasPlayer) {
+            throw new AccessDeniedHttpException('Observers cannot play.');
+        }
+    }
+
+    /**
+     * @param Party $party
+     *
+     * @return int
+     */
+    private function getCurrentPlayerNumber(Party $party)
+    {
+        $players = array(
+            0 => Awale::PLAYER_0,
+            1 => Awale::PLAYER_1,
+        );
+
+        $slotPosition = $this->partyManager->getPlayerPosition($party, $this->loggedPlayer);
+
+        return $players[$slotPosition];
+    }
+
+    /**
+     * @param AwaleParty $awaleParty
+     * @param int $player
+     *
+     * @throws ConflictHttpException
+     */
+    private function checkTurnToPlay(AwaleParty $awaleParty, $player)
+    {
+        if (!$awaleParty->isPlayerTurn($player)) {
+            throw new ConflictHttpException('Not your turn to play.');
+        }
+    }
+
+    /**
+     * @param Party $party
+     * @param AwaleParty $awaleParty
+     */
+    private function updateScores(Party $party, AwaleParty $awaleParty)
+    {
+        $party->getSlot(0)->setScore($awaleParty->getScore(Awale::PLAYER_0));
+        $party->getSlot(1)->setScore($awaleParty->getScore(Awale::PLAYER_1));
+    }
+
+    /**
+     * @param Party $party
+     * @param AwaleParty $awaleParty
+     *
+     * @return bool
+     */
+    private function stopIfPartyEnd(Party $party, AwaleParty $awaleParty)
+    {
+        $partyEnded = $awaleParty->isGameOver();
+
+        if ($partyEnded) {
+            $this->partyManager->endParty($party);
+            $this->dispatcher->dispatch(AwaleEvent::PARTY_END, new AwaleEvent($awaleParty, $awaleParty->getWinner()));
+        }
+
+        return $partyEnded;
     }
 }
