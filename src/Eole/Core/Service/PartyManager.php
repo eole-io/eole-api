@@ -2,13 +2,27 @@
 
 namespace Eole\Core\Service;
 
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Eole\Core\Model\Game;
 use Eole\Core\Model\Player;
 use Eole\Core\Model\Party;
-use Eole\Core\Model\Slot;
+use Eole\Core\Event\PartyEvent;
 
 class PartyManager
 {
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $dispatcher;
+
+    /**
+     * @param EventDispatcherInterface $dispatcher
+     */
+    public function __construct(EventDispatcherInterface $dispatcher)
+    {
+        $this->dispatcher = $dispatcher;
+    }
+
     /**
      * @param Game $game
      * @param Player $host
@@ -143,6 +157,7 @@ class PartyManager
         }
 
         $party->setState(Party::ACTIVE);
+        $this->dispatcher->dispatch(PartyEvent::STARTED, new PartyEvent($party));
     }
 
     /**
@@ -157,5 +172,6 @@ class PartyManager
         }
 
         $party->setState(Party::ENDED);
+        $this->dispatcher->dispatch(PartyEvent::ENDED, new PartyEvent($party));
     }
 }

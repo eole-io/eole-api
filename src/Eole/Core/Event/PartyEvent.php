@@ -17,6 +17,16 @@ class PartyEvent extends Event
     const CREATE_AFTER = 'eole.core.event.party.create_after';
 
     /**
+     * @var string
+     */
+    const STARTED = 'eole.core.event.party.started';
+
+    /**
+     * @var string
+     */
+    const ENDED = 'eole.core.event.party.ended';
+
+    /**
      * @var Party
      */
     private $party;
