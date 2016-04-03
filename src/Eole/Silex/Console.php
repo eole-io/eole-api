@@ -60,6 +60,7 @@ class Console extends ConsoleApplication
             new \Alcalyn\UserApi\Command\EncodePasswordCommand($playerManager),
             new \Eole\Core\Command\CreatePlayerCommand($api),
             new \Eole\Core\Command\CreateGuestCommand($api),
+            new \Eole\Core\Command\RunRepositoryMethodCommand($this->silexApplication['orm.em']),
         ));
     }
 
