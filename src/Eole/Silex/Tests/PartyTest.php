@@ -2,6 +2,7 @@
 
 namespace Eole\Silex\Tests;
 
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Eole\Core\Model\Party;
 use Eole\Core\Model\Slot;
@@ -20,13 +21,19 @@ class PartyTest extends AbstractApplicationTest
     private $party;
 
     /**
+     * @var EventDispatcherInterface
+     */
+    private $dispatcherMock;
+
+    /**
      * {@InheritDoc}
      */
     protected function setUp()
     {
         parent::setUp();
 
-        $this->partyManager = new PartyManager();
+        $this->dispatcherMock = $this->getMock(EventDispatcherInterface::class);
+        $this->partyManager = new PartyManager($this->dispatcherMock);
 
         $party = new Party();
 

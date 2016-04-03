@@ -2,6 +2,7 @@
 
 namespace Eole\Core\Test\Service;
 
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Eole\Core\Model\Game;
 use Eole\Core\Model\Player;
 use Eole\Core\Model\Party;
@@ -15,11 +16,18 @@ class PartyManagerTest extends \PHPUnit_Framework_TestCase
      */
     private $partyManager;
 
-    public function __construct()
-    {
-        parent::__construct();
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $dispatcherMock;
 
-        $this->partyManager = new PartyManager();
+    /**
+     * {@InheritDoc}
+     */
+    public function setUp()
+    {
+        $this->dispatcherMock = $this->getMock(EventDispatcherInterface::class);
+        $this->partyManager = new PartyManager($this->dispatcherMock);
     }
 
     public function testCreateParty()
