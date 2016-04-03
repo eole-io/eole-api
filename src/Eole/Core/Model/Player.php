@@ -12,6 +12,11 @@ class Player extends User
     private $guest;
 
     /**
+     * @var Slot[]
+     */
+    private $slots;
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -59,5 +64,13 @@ class Player extends User
     public function getRoles()
     {
         return array('ROLE_PLAYER');
+    }
+
+    /**
+     * @return Slot[]
+     */
+    public function getSlots()
+    {
+        return $this->slots;
     }
 }

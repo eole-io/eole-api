@@ -11,3 +11,9 @@ Eole\Core\Model\Player:
         guest:
             type: boolean
             column: guest
+    oneToMany:
+        slots:
+            targetEntity: Eole\Core\Model\Slot
+            mappedBy: player
+            cascade:
+                - all

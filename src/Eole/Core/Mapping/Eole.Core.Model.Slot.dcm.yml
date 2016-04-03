@@ -13,6 +13,7 @@ Eole\Core\Model\Slot:
     manyToOne:
         player:
             targetEntity: Eole\Core\Model\Player
+            inversedBy: slots
         party:
             targetEntity: Eole\Core\Model\Party
             inversedBy: slots
