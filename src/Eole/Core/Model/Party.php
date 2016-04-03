@@ -2,6 +2,8 @@
 
 namespace Eole\Core\Model;
 
+use Eole\Core\Model\Player;
+
 class Party
 {
     /**
@@ -161,5 +163,25 @@ class Party
         $this->slots []= $slot;
 
         return $this;
+    }
+
+    /**
+     * @return self
+     */
+    public function addEmptySlot()
+    {
+        return $this->addSlot(new Slot($this));
+    }
+
+    /**
+     * Add a Slot with a Player in.
+     *
+     * @param Player $player
+     *
+     * @return self
+     */
+    public function addPlayerSlot(Player $player)
+    {
+        return $this->addSlot(new Slot($this, $player));
     }
 }

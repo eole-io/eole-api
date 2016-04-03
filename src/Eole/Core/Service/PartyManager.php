@@ -22,8 +22,8 @@ class PartyManager
         $party
             ->setGame($game)
             ->setHost($host)
-            ->addSlot(new Slot($party, $host))
-            ->addSlot(new Slot($party))
+            ->addPlayerSlot($host)
+            ->addEmptySlot()
         ;
 
         return $party;
@@ -84,7 +84,7 @@ class PartyManager
     /**
      * @param Party $party
      *
-     * @return boolean
+     * @return bool
      */
     public function hasFreeSlot(Party $party)
     {
@@ -98,6 +98,16 @@ class PartyManager
         }
 
         return false;
+    }
+
+    /**
+     * @param Party $party
+     *
+     * @return bool
+     */
+    public function isFull(Party $party)
+    {
+        return !$this->hasFreeSlot($party);
     }
 
     /**
