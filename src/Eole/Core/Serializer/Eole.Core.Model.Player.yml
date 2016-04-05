@@ -3,3 +3,5 @@ Eole\Core\Model\Player:
     properties:
         guest:
             type: boolean
+        slots:
+            type: array<Eole\Core\Model\Slot>
