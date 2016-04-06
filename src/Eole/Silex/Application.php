@@ -131,6 +131,10 @@ class Application extends BaseApplication
     {
         $this->registerDoctrineDBAL();
         $this->registerDoctrineORM();
+
+        if ($this['debug']) {
+            $this->enableDoctrineSQLLogger();
+        }
     }
 
     /**
@@ -154,6 +158,23 @@ class Application extends BaseApplication
                 'mappings' => $this['eole.mappings'],
             ),
         ));
+    }
+
+    /**
+     * Enable SQL queries logging into a file.
+     */
+    private function enableDoctrineSQLLogger()
+    {
+        $filename = $this['project.root'].'/var/logs/sql-queries.log';
+
+        $this->before(function (\Symfony\Component\HttpFoundation\Request $request) use ($filename) {
+            $uri = $request->getPathInfo();
+            file_put_contents($filename, $uri.PHP_EOL, FILE_APPEND);
+        });
+
+        $logger = new Doctrine\FileLogger($filename);
+
+        $this['db.config']->setSQLLogger($logger);
     }
 
     /**
