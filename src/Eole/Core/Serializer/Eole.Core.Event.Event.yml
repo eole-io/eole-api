@@ -1,5 +1,2 @@
 Eole\Core\Event\Event:
     exclusion_policy: NONE
-    properties:
-        propagationStopped:
-            type: boolean

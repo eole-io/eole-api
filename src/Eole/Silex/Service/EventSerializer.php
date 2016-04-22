@@ -2,8 +2,9 @@
 
 namespace Eole\Silex\Service;
 
+use Symfony\Component\EventDispatcher\Event;
 use JMS\Serializer\SerializerInterface;
-use Eole\Core\Event\Event;
+use JMS\Serializer\SerializationContext;
 
 class EventSerializer
 {
@@ -28,10 +29,18 @@ class EventSerializer
      */
     public function serializeEvent($name, Event $event)
     {
+        $context = SerializationContext::create()
+            ->setSerializeNull(false)
+            ->setGroups(array(
+                'Default',
+                'push_server',
+            ))
+        ;
+
         return json_encode(array(
             'name' => $name,
             'class' => get_class($event),
-            'event' => $this->serializer->serialize($event, 'json'),
+            'event' => $this->serializer->serialize($event, 'json', $context),
         ));
     }
 

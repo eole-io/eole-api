@@ -2,8 +2,8 @@
 
 namespace Eole\RestApi\EventListener;
 
+use Symfony\Component\EventDispatcher\Event;
 use ZMQSocket;
-use Eole\Core\Event\Event;
 use Eole\Silex\Service\EventSerializer;
 
 class EventToSocketListener
