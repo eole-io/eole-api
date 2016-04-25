@@ -6,6 +6,8 @@ database:
         user:       root
         password:   ~
         charset:    utf8
+    orm:
+        auto_generate_proxies: true
 
 websocket:
     server:

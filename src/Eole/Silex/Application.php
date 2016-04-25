@@ -154,6 +154,7 @@ class Application extends BaseApplication
     {
         $this->register(new \Dflydev\Provider\DoctrineOrm\DoctrineOrmServiceProvider(), array(
             'orm.proxies_dir' => $this['project.root'].'/var/cache/doctrine/proxies',
+            'orm.auto_generate_proxies' => $this['environment']['database']['orm']['auto_generate_proxies'],
             'orm.em.options' => array(
                 'mappings' => $this['eole.mappings'],
             ),
