@@ -23,6 +23,10 @@ class Application extends BaseApplication
         $this->registerListeners();
         $this->loadAllGames();
         $this->registerDoctrine();
+
+        if ($this['debug']) {
+            $this->enableProfiler();
+        }
     }
 
     /**
@@ -131,10 +135,6 @@ class Application extends BaseApplication
     {
         $this->registerDoctrineDBAL();
         $this->registerDoctrineORM();
-
-        if ($this['debug']) {
-            $this->enableDoctrineSQLLogger();
-        }
     }
 
     /**
@@ -162,20 +162,25 @@ class Application extends BaseApplication
     }
 
     /**
-     * Enable SQL queries logging into a file.
+     * Enable profiler interface for debugging.
+     *
+     * @throws \LogicException If composer dev dependencies are not loaded.
      */
-    private function enableDoctrineSQLLogger()
+    private function enableProfiler()
     {
-        $filename = $this['project.root'].'/var/logs/sql-queries.log';
+        if (!class_exists('\Silex\Provider\HttpFragmentServiceProvider', true)) {
+            throw new \LogicException('You must load composer dev dependencies in order to use profiler.');
+        }
 
-        $this->before(function (\Symfony\Component\HttpFoundation\Request $request) use ($filename) {
-            $uri = $request->getPathInfo();
-            file_put_contents($filename, $uri.PHP_EOL, FILE_APPEND);
-        });
+        $this->register(new \Silex\Provider\HttpFragmentServiceProvider());
+        $this->register(new \Silex\Provider\TwigServiceProvider());
 
-        $logger = new Doctrine\FileLogger($filename);
+        $this->register(new \Silex\Provider\WebProfilerServiceProvider(), array(
+            'profiler.cache_dir' => $this['project.root'].'/var/cache/profiler',
+            'profiler.mount_prefix' => '/_profiler',
+        ));
 
-        $this['db.config']->setSQLLogger($logger);
+        $this->register(new \Sorien\Provider\DoctrineProfilerServiceProvider());
     }
 
     /**

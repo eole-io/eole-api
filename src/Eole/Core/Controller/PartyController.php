@@ -3,7 +3,7 @@
 namespace Eole\Core\Controller;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
@@ -35,7 +35,7 @@ class PartyController
     private $partyManager;
 
     /**
-     * @var EventDispatcher
+     * @var EventDispatcherInterface
      */
     private $dispatcher;
 
@@ -43,13 +43,13 @@ class PartyController
      * @param PartyRepository $partyRepository
      * @param ObjectManager $om
      * @param PartyManager $partyManager
-     * @param EventDispatcher $dispatcher
+     * @param EventDispatcherInterface $dispatcher
      */
     public function __construct(
         PartyRepository $partyRepository,
         ObjectManager $om,
         PartyManager $partyManager,
-        EventDispatcher $dispatcher
+        EventDispatcherInterface $dispatcher
     ) {
         $this->partyRepository = $partyRepository;
         $this->om = $om;
