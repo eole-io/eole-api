@@ -43,6 +43,7 @@
         "symfony/browser-kit": "~2.8|~3.0",
         "symfony/process": "~2.8|~3.0",
         "symfony/css-selector": "~2.8|~3.0",
+        "symfony/monolog-bridge": "~2.8|~3.0",
         "silex/web-profiler": "~2.0@dev",
         "sorien/silex-dbal-profiler": "~2.0@dev",
         "ekho/zmq-phpdoc": "1.0",

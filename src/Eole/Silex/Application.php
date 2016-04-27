@@ -80,6 +80,10 @@ class Application extends BaseApplication
     private function registerSilexProviders()
     {
         $this->register(new \Silex\Provider\ServiceControllerServiceProvider());
+        $this->register(new \Silex\Provider\MonologServiceProvider(), array(
+            'monolog.name' => 'eole',
+            'monolog.logfile' => $this['project.root'].'/var/logs/monolog_'.$this['env'].'.log',
+        ));
     }
 
     /*
