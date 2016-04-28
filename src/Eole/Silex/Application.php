@@ -204,6 +204,9 @@ class Application extends BaseApplication
                 ->addMetadataDir($this['project.root'].'/src/Eole/Core/Serializer')
                 ->setCacheDir($this['project.root'].'/var/cache/serializer')
                 ->setDebug($this['debug'])
+                ->configureListeners(function (\JMS\Serializer\EventDispatcher\EventDispatcher $dispatcher) {
+                    $dispatcher->addSubscriber(new Serializer\DoctrineProxySubscriber(false));
+                })
             ;
         };
 
