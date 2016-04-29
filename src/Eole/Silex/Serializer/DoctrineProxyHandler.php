@@ -17,8 +17,7 @@ class DoctrineProxyHandler implements SubscribingHandlerInterface
     {
         $methods = [];
 
-        foreach (array('json', 'xml', 'yml') as $format)
-        {
+        foreach (array('json', 'xml', 'yml') as $format) {
             $methods[] = [
                 'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
                 'format' => $format,
