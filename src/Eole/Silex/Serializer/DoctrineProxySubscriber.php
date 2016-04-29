@@ -36,7 +36,8 @@ class DoctrineProxySubscriber extends BaseDoctrineProxySubscriber
         $type = $event->getType();
 
         // If the set type name is not an actual class, but a faked type for which a custom handler exists, we do not
-        // modify it with this subscriber. Also, we forgo autoloading here as an instance of this type is already created,
+        // modify it with this subscriber.
+        // Also, we forgo autoloading here as an instance of this type is already created,
         // so it must be loaded if its a real class.
         $virtualType = ! class_exists($type['name'], false);
 
@@ -44,14 +45,14 @@ class DoctrineProxySubscriber extends BaseDoctrineProxySubscriber
             || $object instanceof MongoDBPersistentCollection
             || $object instanceof PHPCRPersistentCollection
         ) {
-            if ( ! $virtualType) {
+            if (!$virtualType) {
                 $event->setType('ArrayCollection');
             }
 
             return;
         }
 
-        if ( ! $object instanceof Proxy && ! $object instanceof ORMProxy) {
+        if (!$object instanceof Proxy && !$object instanceof ORMProxy) {
             return;
         }
 
@@ -59,7 +60,7 @@ class DoctrineProxySubscriber extends BaseDoctrineProxySubscriber
             $object->__load();
         }
 
-        if ( ! $virtualType) {
+        if (!$virtualType) {
             if ($this->enableLazyLoading) {
                 $event->setType(get_parent_class($object));
             } else {
