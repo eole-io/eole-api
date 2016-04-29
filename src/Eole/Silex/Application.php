@@ -199,11 +199,17 @@ class Application extends BaseApplication
         });
 
         $this['serializer.builder'] = function () {
+            $namingStrategy = new \JMS\Serializer\Naming\SerializedNameAnnotationStrategy(
+                new \JMS\Serializer\Naming\CamelCaseNamingStrategy()
+            );
+
             return
                 \JMS\Serializer\SerializerBuilder::create()
                 ->addMetadataDir($this['project.root'].'/src/Eole/Core/Serializer')
                 ->setCacheDir($this['project.root'].'/var/cache/serializer')
                 ->setDebug($this['debug'])
+                ->setPropertyNamingStrategy($namingStrategy)
+                ->setSerializationVisitor('json', new Serializer\JsonSerializationVisitor($namingStrategy))
                 ->configureListeners(function (\JMS\Serializer\EventDispatcher\EventDispatcher $dispatcher) {
                     $dispatcher->addSubscriber(new Serializer\DoctrineProxySubscriber(false));
                 })
