@@ -74,11 +74,9 @@ class PartyController
      */
     public function getPartiesForGame(Game $game)
     {
-        $parties = $this->partyRepository->findBy(array(
-            'game' => $game,
-        ));
+        $parties = $this->partyRepository->findAllByGame($game);
 
-        return new ApiResponse($parties);
+        return new ApiResponse(array_values($parties));
     }
 
     /**

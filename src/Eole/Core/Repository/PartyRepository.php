@@ -3,11 +3,32 @@
 namespace Eole\Core\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Eole\Core\Model\Game;
 use Eole\Core\Model\Party;
 use Eole\Core\Model\Slot;
 
 class PartyRepository extends EntityRepository
 {
+    /**
+     * @param Game $game
+     *
+     * @return Party[]
+     */
+    public function findAllByGame(Game $game)
+    {
+        $query = $this->createQueryBuilder('party')
+            ->addSelect('host')
+            ->leftJoin('party.host', 'host')
+            ->where('party.game = :game')
+            ->setParameter('game', $game)
+        ;
+
+        return $query
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     /**
      * @param int $id
      * @param string $gameName set game name to ensure party is from this game.
