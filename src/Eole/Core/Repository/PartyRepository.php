@@ -37,18 +37,19 @@ class PartyRepository extends EntityRepository
      */
     public function findFullPartyById($id, $gameName = null)
     {
-        $query = $this->createQueryBuilder('p')
-            ->addSelect('g, s, pl')
-            ->leftJoin('p.game', 'g')
-            ->leftJoin('p.slots', 's')
-            ->leftJoin('s.player', 'pl')
-            ->where('p.id = :id')
+        $query = $this->createQueryBuilder('party')
+            ->addSelect('game, slot, player, host')
+            ->leftJoin('party.game', 'game')
+            ->leftJoin('party.host', 'host')
+            ->leftJoin('party.slots', 'slot')
+            ->leftJoin('slot.player', 'player')
+            ->where('party.id = :id')
             ->setParameter('id', $id)
         ;
 
         if (null !== $gameName) {
             $query
-                ->andWhere('g.name = :gameName')
+                ->andWhere('game.name = :gameName')
                 ->setParameter('gameName', $gameName)
             ;
         }
