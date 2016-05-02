@@ -209,6 +209,8 @@ class Application extends BaseApplication
                 ->setCacheDir($this['project.root'].'/var/cache/serializer')
                 ->setDebug($this['debug'])
                 ->setPropertyNamingStrategy($namingStrategy)
+                ->addDefaultSerializationVisitors()
+                ->addDefaultDeserializationVisitors()
                 ->setSerializationVisitor('json', new Serializer\JsonSerializationVisitor($namingStrategy))
                 ->configureListeners(function (\JMS\Serializer\EventDispatcher\EventDispatcher $dispatcher) {
                     $dispatcher->addSubscriber(new Serializer\DoctrineProxySubscriber(false));
