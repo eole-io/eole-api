@@ -76,7 +76,7 @@ class PartyController
     {
         $parties = $this->partyRepository->findAllByGame($game);
 
-        return new ApiResponse(array_values($parties));
+        return new ApiResponse($parties);
     }
 
     /**
