@@ -1,3 +1,0 @@
-database:
-    orm:
-        auto_generate_proxies: false
