@@ -40,8 +40,7 @@ class Application implements WampServerInterface
     {
         $this->silexApp['eole.websocket_topic.normalizer'] = function () {
             return new Service\Normalizer(
-                $this->silexApp['serializer'],
-                $this->silexApp['serializer.context_factory']
+                $this->silexApp['serializer']
             );
         };
 

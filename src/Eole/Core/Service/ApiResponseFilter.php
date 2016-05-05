@@ -16,27 +16,19 @@ class ApiResponseFilter
     private $serializer;
 
     /**
-     * @var callable
-     */
-    private $contextFactory;
-
-    /**
      * @var string
      */
     private $defaultResponseFormat;
 
     /**
      * @param SerializerInterface $serializer
-     * @param callable $contextFactory
      * @param string $defaultResponseFormat
      */
     public function __construct(
         SerializerInterface $serializer,
-        callable $contextFactory,
         $defaultResponseFormat = 'json'
     ) {
         $this->serializer = $serializer;
-        $this->contextFactory = $contextFactory;
         $this->defaultResponseFormat = $defaultResponseFormat;
     }
 
@@ -49,21 +41,11 @@ class ApiResponseFilter
     public function toSymfonyResponse(ApiResponse $apiResponse, Request $request)
     {
         $format = $request->getRequestFormat($this->defaultResponseFormat);
-        $serialized = $this->serializer->serialize($apiResponse->getData(), $format, $this->createContext());
+        $serialized = $this->serializer->serialize($apiResponse->getData(), $format);
         $response = new Response($serialized, $apiResponse->getStatusCode());
 
         $response->headers->set('Content-Type', $request->getMimeType($format));
 
         return $response;
-    }
-
-    /**
-     * @return SerializationContext
-     */
-    private function createContext()
-    {
-        $contextFactory = $this->contextFactory;
-
-        return $contextFactory();
     }
 }
