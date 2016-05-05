@@ -211,6 +211,7 @@ class Application extends BaseApplication
                 ->setPropertyNamingStrategy($namingStrategy)
                 ->addDefaultSerializationVisitors()
                 ->addDefaultDeserializationVisitors()
+                ->addDefaultHandlers()
                 ->setSerializationVisitor('json', new Serializer\JsonSerializationVisitor($namingStrategy))
                 ->configureListeners(function (\JMS\Serializer\EventDispatcher\EventDispatcher $dispatcher) {
                     $dispatcher->addSubscriber(new Serializer\DoctrineProxySubscriber(false));
