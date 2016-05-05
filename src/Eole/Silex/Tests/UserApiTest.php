@@ -77,7 +77,6 @@ class UserApiTest extends AbstractApplicationTest
         $player = json_decode($client->getResponse()->getContent());
 
         $this->assertEquals('test-user', $player->username, 'Username is the one I defined.');
-        $this->assertContains('ROLE_PLAYER', $player->roles, 'Created player has role ROLE_PLAYER.');
     }
 
     public function testCreatePlayerWithMissingArgumentReturnsBadRequest()
