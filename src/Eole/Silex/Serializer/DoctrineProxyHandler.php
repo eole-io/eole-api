@@ -15,21 +15,37 @@ class DoctrineProxyHandler implements SubscribingHandlerInterface
      */
     public static function getSubscribingMethods()
     {
-        $methods = [];
-
-        foreach (array('json', 'xml', 'yml') as $format) {
-            $methods[] = [
+        return array(
+            array(
                 'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
-                'format' => $format,
                 'type' => SerializerProxyType::class,
-                'method' => 'serializeTo' . ucfirst($format),
-            ];
-        }
-
-        return $methods;
+                'format' => 'json',
+                'method' => 'serializeToJsonOrYml',
+            ),
+            array(
+                'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+                'type' => SerializerProxyType::class,
+                'format' => 'yml',
+                'method' => 'serializeToJsonOrYml',
+            ),
+            array(
+                'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+                'type' => SerializerProxyType::class,
+                'format' => 'xml',
+                'method' => 'serializeToXml',
+            ),
+        );
     }
 
-    public function serializeToJson(VisitorInterface $visitor, $entity, array $type, Context $context)
+    /**
+     * @param VisitorInterface $visitor
+     * @param type $entity
+     * @param array $type
+     * @param Context $context
+     *
+     * @return \stdClass
+     */
+    public function serializeToJsonOrYml(VisitorInterface $visitor, $entity, array $type, Context $context)
     {
         $object = new \stdClass();
         $object->id = $type['params']['id'];
@@ -37,14 +53,14 @@ class DoctrineProxyHandler implements SubscribingHandlerInterface
         return $object;
     }
 
-    public function serializeToYml(VisitorInterface $visitor, $entity, array $type, Context $context)
-    {
-        $object = new \stdClass();
-        $object->id = $type['params']['id'];
-
-        return $object;
-    }
-
+    /**
+     * @param XmlSerializationVisitor $visitor
+     * @param type $entity
+     * @param array $type
+     * @param Context $context
+     *
+     * @return type
+     */
     public function serializeToXml(XmlSerializationVisitor $visitor, $entity, array $type, Context $context)
     {
         $visitor->getCurrentNode()->appendChild(
