@@ -2,23 +2,21 @@
 
 namespace Eole\WebSocket\Service;
 
-use JMS\Serializer\Serializer;
+use JMS\Serializer\NormalizerInterface;
 
 class Normalizer
 {
     /**
-     * Waiting for https://github.com/schmittjoh/serializer/issues/537 to use NormalizerInterface
-     *
-     * @var Serializer
+     * @var NormalizerInterface
      */
-    private $serializer;
+    private $normalizer;
 
     /**
-     * @param Serializer $serializer
+     * @param NormalizerInterface $normalizer
      */
-    public function __construct(Serializer $serializer)
+    public function __construct(NormalizerInterface $normalizer)
     {
-        $this->serializer = $serializer;
+        $this->normalizer = $normalizer;
     }
 
     /**
@@ -28,6 +26,6 @@ class Normalizer
      */
     public function normalize($data)
     {
-        return $this->serializer->toArray($data);
+        return $this->normalizer->toArray($data);
     }
 }
