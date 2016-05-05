@@ -3,11 +3,32 @@
 namespace Eole\Core\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Eole\Core\Model\Game;
 use Eole\Core\Model\Party;
 use Eole\Core\Model\Slot;
 
 class PartyRepository extends EntityRepository
 {
+    /**
+     * @param Game $game
+     *
+     * @return Party[]
+     */
+    public function findAllByGame(Game $game)
+    {
+        $query = $this->createQueryBuilder('party')
+            ->addSelect('host')
+            ->leftJoin('party.host', 'host')
+            ->where('party.game = :game')
+            ->setParameter('game', $game)
+        ;
+
+        return $query
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     /**
      * @param int $id
      * @param string $gameName set game name to ensure party is from this game.
@@ -16,18 +37,19 @@ class PartyRepository extends EntityRepository
      */
     public function findFullPartyById($id, $gameName = null)
     {
-        $query = $this->createQueryBuilder('p')
-            ->addSelect('g, s, pl')
-            ->leftJoin('p.game', 'g')
-            ->leftJoin('p.slots', 's')
-            ->leftJoin('s.player', 'pl')
-            ->where('p.id = :id')
+        $query = $this->createQueryBuilder('party')
+            ->addSelect('game, slot, player, host')
+            ->leftJoin('party.game', 'game')
+            ->leftJoin('party.host', 'host')
+            ->leftJoin('party.slots', 'slot')
+            ->leftJoin('slot.player', 'player')
+            ->where('party.id = :id')
             ->setParameter('id', $id)
         ;
 
         if (null !== $gameName) {
             $query
-                ->andWhere('g.name = :gameName')
+                ->andWhere('game.name = :gameName')
                 ->setParameter('gameName', $gameName)
             ;
         }
