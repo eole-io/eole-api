@@ -34,7 +34,3 @@ Alcalyn\UserApi\Model\User:
             exclude: true
         dateCreated:
             type: DateTime
-    virtual_properties:
-        getRoles:
-            type: array<string>
-            serialized_name: roles
