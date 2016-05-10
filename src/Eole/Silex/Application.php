@@ -213,12 +213,12 @@ class Application extends BaseApplication
                 ->addDefaultSerializationVisitors()
                 ->addDefaultDeserializationVisitors()
                 ->addDefaultHandlers()
-                ->setSerializationVisitor('json', new Serializer\JsonSerializationVisitor($namingStrategy))
+                ->setSerializationVisitor('json', new \Alcalyn\SerializerDoctrineProxies\JsonSerializationVisitor($namingStrategy))
                 ->configureListeners(function (\JMS\Serializer\EventDispatcher\EventDispatcher $dispatcher) {
-                    $dispatcher->addSubscriber(new Serializer\DoctrineProxySubscriber(false));
+                    $dispatcher->addSubscriber(new \Alcalyn\SerializerDoctrineProxies\DoctrineProxySubscriber(false));
                 })
                 ->configureHandlers(function (\JMS\Serializer\Handler\HandlerRegistryInterface $handlerRegistry) {
-                    $handlerRegistry->registerSubscribingHandler(new Serializer\DoctrineProxyHandler());
+                    $handlerRegistry->registerSubscribingHandler(new \Alcalyn\SerializerDoctrineProxies\DoctrineProxyHandler());
                 })
             ;
         };
