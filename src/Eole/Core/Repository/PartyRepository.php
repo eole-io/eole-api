@@ -44,6 +44,7 @@ class PartyRepository extends EntityRepository
             ->leftJoin('party.slots', 'slot')
             ->leftJoin('slot.player', 'player')
             ->where('party.id = :id')
+            ->addOrderBy('slot.order')
             ->setParameter('id', $id)
         ;
 

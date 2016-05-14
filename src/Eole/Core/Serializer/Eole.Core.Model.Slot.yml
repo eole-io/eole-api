@@ -7,5 +7,7 @@ Eole\Core\Model\Slot:
             type: Eole\Core\Model\Player
         party:
             type: Eole\Core\Model\Party
+        order:
+            type: integer
         score:
             type: double

@@ -40,6 +40,8 @@ class PartyManager
             ->addEmptySlot()
         ;
 
+        $this->reorderSlots($party);
+
         return $party;
     }
 
@@ -75,6 +77,19 @@ class PartyManager
     public function hasPlayer(Party $party, Player $player)
     {
         return null !== $this->getPlayerPosition($party, $player);
+    }
+
+    /**
+     * @param Party $party
+     */
+    public function reorderSlots(Party $party)
+    {
+        $order = 1;
+
+        foreach ($party->getSlots() as $index => $slot) {
+            $slot->setOrder($order);
+            $order++;
+        }
     }
 
     /**

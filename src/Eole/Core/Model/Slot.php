@@ -23,6 +23,11 @@ class Slot
     private $party;
 
     /**
+     * @var int
+     */
+    private $order;
+
+    /**
      * @var float
      */
     private $score;
@@ -35,6 +40,7 @@ class Slot
     {
         $this->party = $party;
         $this->player = $player;
+        $this->order = 0;
         $this->score = 0.0;
     }
 
@@ -100,6 +106,27 @@ class Slot
     public function setParty(Party $party)
     {
         $this->party = $party;
+
+        return $this;
+    }
+
+
+    /**
+     * @return int
+     */
+    public function getOrder()
+    {
+        return $this->order;
+    }
+
+    /**
+     * @param int $order
+     *
+     * @return self
+     */
+    public function setOrder($order)
+    {
+        $this->order = $order;
 
         return $this;
     }

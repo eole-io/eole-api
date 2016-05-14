@@ -8,6 +8,9 @@ Eole\Core\Model\Slot:
             generator:
                 strategy: AUTO
     fields:
+        order:
+            type: integer
+            column: "`order`"
         score:
             type: float
     manyToOne:
