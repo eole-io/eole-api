@@ -2,6 +2,8 @@
 
 namespace Eole\Core\Model;
 
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Eole\Core\Model\Player;
 
 class Party
@@ -42,7 +44,7 @@ class Party
     private $state;
 
     /**
-     * @var Slot[]
+     * @var Collection|Slot[]
      */
     private $slots;
 
@@ -51,7 +53,7 @@ class Party
      */
     public function __construct()
     {
-        $this->slots = array();
+        $this->slots = new ArrayCollection();
         $this->state = Party::PREPARATION;
     }
 
@@ -124,7 +126,7 @@ class Party
     }
 
     /**
-     * @return Slot[]
+     * @return Collection|Slot[]
      */
     public function getSlots()
     {
@@ -138,7 +140,7 @@ class Party
      */
     public function getSlot($position)
     {
-        return $this->slots[$position];
+        return $this->slots->get($position);
     }
 
     /**
@@ -148,7 +150,7 @@ class Party
      */
     public function setSlots(array $slots)
     {
-        $this->slots = $slots;
+        $this->slots = new ArrayCollection($slots);
 
         return $this;
     }
@@ -160,7 +162,7 @@ class Party
      */
     public function addSlot(Slot $slot)
     {
-        $this->slots []= $slot;
+        $this->slots->add($slot);
 
         return $this;
     }

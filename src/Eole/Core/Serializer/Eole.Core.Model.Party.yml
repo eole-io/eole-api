@@ -10,4 +10,4 @@ Eole\Core\Model\Party:
         host:
             type: Eole\Core\Model\Player
         slots:
-            type: array<Eole\Core\Model\Slot>
+            type: ArrayCollection<Eole\Core\Model\Slot>

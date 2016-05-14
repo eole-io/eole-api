@@ -4,4 +4,4 @@ Eole\Core\Model\Player:
         guest:
             type: boolean
         slots:
-            type: array<Eole\Core\Model\Slot>
+            type: ArrayCollection<Eole\Core\Model\Slot>
