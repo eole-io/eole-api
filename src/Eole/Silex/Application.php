@@ -196,6 +196,7 @@ class Application extends BaseApplication
             $serializationContextFactory = function () {
                 return \JMS\Serializer\SerializationContext::create()
                     ->setSerializeNull(true)
+                    ->setGroups(array('Default'))
                 ;
             };
 
