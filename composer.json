@@ -15,7 +15,7 @@
     "require": {
         "php": ">=5.5",
         "alcalyn/authorization-header-fix": "~1.0.0",
-        "alcalyn/serializer-doctrine-proxies": "~1.0.0",
+        "alcalyn/serializer-doctrine-proxies": "~1.1.0",
         "alcalyn/elo": "~1.0.0",
         "jdesrosiers/silex-cors-provider": "dev-master",
         "league/oauth2-server": "4.1.x",
