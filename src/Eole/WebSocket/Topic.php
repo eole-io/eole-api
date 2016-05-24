@@ -67,6 +67,7 @@ class Topic extends BaseTopic
      */
     public function onPublish(WampConnection $conn, $topic, $event)
     {
+        // noop
     }
 
     /**

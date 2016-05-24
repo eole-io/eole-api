@@ -6,6 +6,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Ratchet\Wamp\WampConnection;
 use Eole\Core\Model\Party;
 use Eole\Core\Event\PartyEvent;
+use Eole\Core\Event\SlotEvent;
 use Eole\WebSocket\Topic;
 
 class PartiesTopic extends Topic implements EventSubscriberInterface
@@ -77,6 +78,57 @@ class PartiesTopic extends Topic implements EventSubscriberInterface
     }
 
     /**
+     * @param SlotEvent $event
+     */
+    public function onSlotJoin(SlotEvent $event)
+    {
+        $party = $event->getParty();
+
+        if (!$this->souldBroadcastForGame($party)) {
+            return;
+        }
+
+        $this->broadcast([
+            'type' => 'slot_join',
+            'event' => $event,
+        ]);
+    }
+
+    /**
+     * @param PartyEvent $event
+     */
+    public function onPartyStarted(PartyEvent $event)
+    {
+        $party = $event->getParty();
+
+        if (!$this->souldBroadcastForGame($party)) {
+            return;
+        }
+
+        $this->broadcast([
+            'type' => 'party_started',
+            'event' => $event,
+        ]);
+    }
+
+    /**
+     * @param PartyEvent $event
+     */
+    public function onPartyEnded(PartyEvent $event)
+    {
+        $party = $event->getParty();
+
+        if (!$this->souldBroadcastForGame($party)) {
+            return;
+        }
+
+        $this->broadcast([
+            'type' => 'party_ended',
+            'event' => $event,
+        ]);
+    }
+
+    /**
      * {@InheritDoc}
      */
     public function onUnSubscribe(WampConnection $conn, $topic)
@@ -108,6 +160,15 @@ class PartiesTopic extends Topic implements EventSubscriberInterface
         return array(
             PartyEvent::CREATE_AFTER => array(
                 array('onPartyAvailable'),
+            ),
+            SlotEvent::JOIN_AFTER => array(
+                array('onSlotJoin'),
+            ),
+            PartyEvent::STARTED => array(
+                array('onPartyStarted'),
+            ),
+            PartyEvent::ENDED => array(
+                array('onPartyEnded'),
             ),
         );
     }

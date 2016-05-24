@@ -115,6 +115,8 @@ class Application extends BaseApplication
 
         $this->forwardEventToPushServer(\Eole\Core\Event\PartyEvent::CREATE_AFTER);
         $this->forwardEventToPushServer(\Eole\Core\Event\SlotEvent::JOIN_AFTER);
+        $this->forwardEventToPushServer(\Eole\Core\Event\PartyEvent::STARTED);
+        $this->forwardEventToPushServer(\Eole\Core\Event\PartyEvent::ENDED);
     }
 
     /**
