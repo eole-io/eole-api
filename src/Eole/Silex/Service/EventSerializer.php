@@ -29,13 +29,7 @@ class EventSerializer
      */
     public function serializeEvent($name, Event $event)
     {
-        $context = SerializationContext::create()
-            ->setSerializeNull(false)
-            ->setGroups(array(
-                'Default',
-                'push_server',
-            ))
-        ;
+        $context = SerializationContext::create();
 
         return json_encode(array(
             'name' => $name,
