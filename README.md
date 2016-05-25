@@ -29,7 +29,7 @@ composer update
 
 # Configuration files
 cp config/environment.yml.dist config/environment.yml
-cp config/environment_test.yml.dist config/environment_test.yml
+cp config/environment_prod.yml.dist config/environment_prod.yml
 ```
 
  - Edit configuration files,
@@ -37,8 +37,10 @@ cp config/environment_test.yml.dist config/environment_test.yml
 
 ``` bash
 # Create database schema
-php bin/console-test orm:schema-tool:update --force
-php bin/console orm:schema-tool:update --force
+php bin/console orm:schema-tool:create
+
+# And finally, install natives games:
+php bin/console eole:games:install
 ```
 
 Run React server (push server and websocket server)

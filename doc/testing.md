@@ -2,6 +2,14 @@
 
 By default, tests are run in an SQLite database, located in `var/eole-test.sqlite`.
 
+``` bash
+# Create your test environment config file:
+cp config/environment_test.yml.dist config/environment_test.yml
+
+# Create test database schema
+php bin/console-test orm:schema-tool:create
+```
+
 Run tests
 
 ``` bash
