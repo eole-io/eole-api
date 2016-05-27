@@ -2,6 +2,7 @@
 
 namespace Eole\Core\Repository;
 
+use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\ORM\EntityRepository;
 use Eole\Core\Model\Game;
 use Eole\Core\Model\Party;
@@ -10,15 +11,40 @@ use Eole\Core\Model\Slot;
 class PartyRepository extends EntityRepository
 {
     /**
+     * @return QueryBuilder
+     */
+    private function findFullParties()
+    {
+        return $this->createQueryBuilder('party')
+            ->addSelect('host')
+            ->addSelect('slot', 'player')
+            ->leftJoin('party.host', 'host')
+            ->leftJoin('party.slots', 'slot')
+            ->leftJoin('slot.player', 'player')
+            ->addOrderBy('party.id')
+            ->addOrderBy('slot.order')
+        ;
+    }
+
+    /**
+     * @return Party[]
+     */
+    public function findAll()
+    {
+        return $this->findFullParties()
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
      * @param Game $game
      *
      * @return Party[]
      */
     public function findAllByGame(Game $game)
     {
-        $query = $this->createQueryBuilder('party')
-            ->addSelect('host')
-            ->leftJoin('party.host', 'host')
+        $query = $this->findFullParties()
             ->where('party.game = :game')
             ->setParameter('game', $game)
         ;
@@ -37,14 +63,10 @@ class PartyRepository extends EntityRepository
      */
     public function findFullPartyById($id, $gameName = null)
     {
-        $query = $this->createQueryBuilder('party')
-            ->addSelect('game, slot, player, host')
+        $query = $this->findFullParties()
+            ->addSelect('game')
             ->leftJoin('party.game', 'game')
-            ->leftJoin('party.host', 'host')
-            ->leftJoin('party.slots', 'slot')
-            ->leftJoin('slot.player', 'player')
             ->where('party.id = :id')
-            ->addOrderBy('slot.order')
             ->setParameter('id', $id)
         ;
 
