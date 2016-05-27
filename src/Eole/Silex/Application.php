@@ -197,6 +197,7 @@ class Application extends BaseApplication
                 return \JMS\Serializer\SerializationContext::create()
                     ->setSerializeNull(true)
                     ->setGroups(array('Default'))
+                    ->enableMaxDepthChecks()
                 ;
             };
 

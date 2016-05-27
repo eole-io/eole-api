@@ -5,3 +5,4 @@ Eole\Core\Model\Player:
             type: boolean
         slots:
             type: ArrayCollection<Eole\Core\Model\Slot>
+            exclude: true
