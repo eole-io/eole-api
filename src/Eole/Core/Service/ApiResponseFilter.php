@@ -3,7 +3,6 @@
 namespace Eole\Core\Service;
 
 use JMS\Serializer\SerializerInterface;
-use JMS\Serializer\SerializationContext;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Eole\Core\ApiResponse;
