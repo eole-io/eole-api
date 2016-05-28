@@ -107,13 +107,6 @@ class Application extends BaseApplication
             ),
         ));
 
-        $this['eole.player_api'] = function () {
-            return new \Eole\Core\Service\PlayerApi(
-                $this['eole.player_manager'],
-                $this['orm.em']->getRepository('Eole:Player')
-            );
-        };
-
         $this['security.default_encoder'] = function () {
             return $this['security.encoder.digest'];
         };
@@ -194,7 +187,6 @@ class Application extends BaseApplication
     {
         $this['serializer.builder'] = function () {
             return Serializer\SerializerBuilder::create()
-                ->addMetadataDir($this['project.root'].'/src/Eole/Core/Serializer')
                 ->setCacheDir($this['project.root'].'/var/cache/serializer')
                 ->setDebug($this['debug'])
             ;
@@ -213,30 +205,7 @@ class Application extends BaseApplication
                 'path' => $this['project.root'].'/vendor/alcalyn/doctrine-user-api/Mapping',
             );
 
-            $mappings []= array(
-                'type' => 'yml',
-                'namespace' => 'Eole\Core\Model',
-                'path' => $this['project.root'].'/src/Eole/Core/Mapping',
-                'alias' => 'Eole',
-            );
-
             return $mappings;
-        };
-
-        $this['eole.player_manager'] = function () {
-            $encoderFactory = $this['security.encoder_factory'];
-            $userClass = \Eole\Core\Model\Player::class;
-
-            return new \Eole\Core\Service\PlayerManager(
-                $encoderFactory,
-                $userClass
-            );
-        };
-
-        $this['eole.party_manager'] = function () {
-            return new \Eole\Core\Service\PartyManager(
-                $this['dispatcher']
-            );
         };
 
         $this['eole.event_serializer'] = function () {
@@ -306,8 +275,20 @@ class Application extends BaseApplication
     public function loadMod($modName)
     {
         $mod = $this->instanciateMod($modName);
+        $serviceProvider = $mod->createServiceProvider();
 
-        $this->register($mod->createServiceProvider());
+        if (null !== $serviceProvider) {
+            $this->register($serviceProvider);
+        }
+
+        if (!$serviceProvider instanceof \Pimple\ServiceProviderInterface) {
+            throw new \LogicException(sprintf(
+                'Service provider class (%s) for mod %s must implement %s.',
+                get_class($serviceProvider),
+                $modName,
+                \Pimple\ServiceProviderInterface::class
+            ));
+        }
 
         return $mod;
     }

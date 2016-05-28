@@ -30,39 +30,6 @@ class Application extends BaseApplication
             );
         };
 
-        $this['eole.converter.game'] = function () {
-            return new \Eole\Core\Converter\GameConverter(
-                $this['orm.em']->getRepository('Eole:Game')
-            );
-        };
-
-        $this['eole.converter.party'] = function () {
-            return new \Eole\Core\Converter\PartyConverter(
-                $this['orm.em']->getRepository('Eole:Party')
-            );
-        };
-
-        $this['eole.controller.player'] = function () {
-            return new \Eole\Core\Controller\PlayerController(
-                $this['eole.player_api']
-            );
-        };
-
-        $this['eole.controller.game'] = function () {
-            return new \Eole\Core\Controller\GameController(
-                $this['orm.em']->getRepository('Eole:Game')
-            );
-        };
-
-        $this['eole.controller.party'] = function () {
-            return new \Eole\Core\Controller\PartyController(
-                $this['orm.em']->getRepository('Eole:Party'),
-                $this['orm.em'],
-                $this['eole.party_manager'],
-                $this['dispatcher']
-            );
-        };
-
         $this['eole.push_server'] = function () {
             $pushServerPort = $this['environment']['push_server']['server']['port'];
 
@@ -74,13 +41,6 @@ class Application extends BaseApplication
         };
 
         $this->register(new \Eole\OAuth2\Silex\OAuth2ControllerProvider());
-
-        $this->before(function (\Symfony\Component\HttpFoundation\Request $request, BaseApplication $app) {
-            if (null !== $app['user']) {
-                $app['eole.controller.player']->setLoggedUser($app['user']);
-                $app['eole.controller.party']->setLoggedPlayer($app['user']);
-            }
-        });
     }
 
     private function registerEventListeners()
@@ -112,11 +72,6 @@ class Application extends BaseApplication
         $this->on(\Symfony\Component\HttpKernel\KernelEvents::VIEW, function ($event) {
             $this['eole.listener.api_response_filter']->onKernelView($event);
         });
-
-        $this->forwardEventToPushServer(\Eole\Core\Event\PartyEvent::CREATE_AFTER);
-        $this->forwardEventToPushServer(\Eole\Core\Event\SlotEvent::JOIN_AFTER);
-        $this->forwardEventToPushServer(\Eole\Core\Event\PartyEvent::STARTED);
-        $this->forwardEventToPushServer(\Eole\Core\Event\PartyEvent::ENDED);
     }
 
     /**
@@ -151,6 +106,10 @@ class Application extends BaseApplication
      */
     public function forwardEventsToPushServer(array $eventsNames)
     {
+        if (!$this['environment']['push_server']['enabled']) {
+            return $this;
+        }
+
         foreach ($eventsNames as $eventName) {
             $this->forwardEventToPushServer($eventName);
         }
@@ -163,10 +122,6 @@ class Application extends BaseApplication
      */
     private function mountApi()
     {
-        $this->mount('api', new ControllerProvider\PlayerControllerProvider());
-        $this->mount('api', new ControllerProvider\GameControllerProvider());
-        $this->mount('api', new ControllerProvider\PartyControllerProvider());
-
         $this->mount('oauth', new \Eole\OAuth2\Silex\OAuth2ControllerProvider());
     }
 

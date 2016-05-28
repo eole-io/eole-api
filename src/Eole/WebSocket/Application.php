@@ -29,8 +29,7 @@ class Application implements WampServerInterface
         $this->topics = array();
 
         $this->registerServices();
-        $this->registerTopics();
-        $this->loadAllGames();
+        $this->loadAllMods();
     }
 
     /**
@@ -45,69 +44,34 @@ class Application implements WampServerInterface
         };
 
         $this->silexApp->register(new ServiceProvider\TopicRoutingProvider());
-
-        $this->silexApp['eole.websocket_topic.chat'] = function () {
-            return new Topic\ChatTopic('eole/core/chat');
-        };
-
-        $gamePartiesFactory = function ($topicPath, array $arguments) {
-            return new Topic\PartiesTopic($topicPath, $arguments);
-        };
-
-        $this->silexApp['eole.websocket_topic.game_parties.factory'] = $this->silexApp->protect($gamePartiesFactory);
-
-        $this->silexApp['eole.websocket_topic.game_parties'] = function () use ($gamePartiesFactory) {
-            return $gamePartiesFactory('eole/core/parties', array('game_name' => null));
-        };
     }
 
     /**
-     * Register base application topics.
-     */
-    private function registerTopics()
-    {
-        $this->silexApp['eole.websocket.routes']->add('eole_core_chat', new TopicRoute(
-            $this->silexApp['eole.websocket_topic.chat']->getId(),
-            $this->silexApp['eole.websocket_topic.chat']
-        ));
-
-        $this->silexApp['eole.websocket.routes']->add('eole_core_parties', new TopicRoute(
-            $this->silexApp['eole.websocket_topic.game_parties']->getId(),
-            $this->silexApp['eole.websocket_topic.game_parties']
-        ));
-
-        $this->silexApp['eole.websocket.routes']->add('eole_core_game_parties', new TopicRoute(
-            'eole/core/game/{game_name}/parties',
-            'eole.websocket_topic.game_parties.factory',
-            array(),
-            array('game_name' => '^[a-z0-9_\-]+$')
-        ));
-    }
-
-    /**
-     * @param string $gameName
+     * @param string $modName
      *
      * @return self
      *
      * @throws \LogicException
      */
-    public function loadGame($gameName)
+    public function loadMod($modName)
     {
-        $gameProvider = $this->silexApp->createGameProvider($gameName);
-        $websocketProvider = $gameProvider->createWebsocketProvider();
+        $mod = $this->silexApp->instanciateMod($modName);
+        $websocketProvider = $mod->createWebsocketProvider();
 
-        if (null !== $websocketProvider) {
-            if (!$websocketProvider instanceof \Pimple\ServiceProviderInterface) {
-                throw new \LogicException(sprintf(
-                    'Websocket provider class (%s) for game %s must implement %s.',
-                    $websocketProvider,
-                    $gameName,
-                    \Pimple\ServiceProviderInterface::class
-                ));
-            }
-
-            $this->silexApp->register($websocketProvider);
+        if (null === $websocketProvider) {
+            return $this;
         }
+
+        if (!$websocketProvider instanceof \Pimple\ServiceProviderInterface) {
+            throw new \LogicException(sprintf(
+                'Websocket provider class (%s) for mod %s must implement %s.',
+                get_class($websocketProvider),
+                $modName,
+                \Pimple\ServiceProviderInterface::class
+            ));
+        }
+
+        $this->silexApp->register($websocketProvider);
 
         return $this;
     }
@@ -115,12 +79,12 @@ class Application implements WampServerInterface
     /**
      * @return self
      */
-    public function loadAllGames()
+    public function loadAllMods()
     {
-        $games = $this->silexApp['environment']['games'];
+        $mods = $this->silexApp['environment']['mods'];
 
-        foreach ($games as $gameName => $config) {
-            $this->loadGame($gameName);
+        foreach ($mods as $modName => $config) {
+            $this->loadMod($modName);
         }
 
         return $this;
@@ -129,7 +93,7 @@ class Application implements WampServerInterface
     /**
      * @param ConnectionInterface $conn
      *
-     * @return \Eole\Core\Model\Player
+     * @return \Symfony\Component\Security\Core\User\UserInterface
      *
      * @throws \Exception
      */
