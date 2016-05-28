@@ -193,29 +193,10 @@ class Application extends BaseApplication
     private function registerServices()
     {
         $this['serializer.builder'] = function () {
-            $serializationContextFactory = function () {
-                return \JMS\Serializer\SerializationContext::create()
-                    ->setSerializeNull(true)
-                    ->setGroups(array('Default'))
-                    ->enableMaxDepthChecks()
-                ;
-            };
-
-            return
-                \JMS\Serializer\SerializerBuilder::create()
-                ->setDefaultSerializationContextFactory($serializationContextFactory)
+            return Serializer\SerializerBuilder::create()
                 ->addMetadataDir($this['project.root'].'/src/Eole/Core/Serializer')
                 ->setCacheDir($this['project.root'].'/var/cache/serializer')
                 ->setDebug($this['debug'])
-                ->addDefaultHandlers()
-                ->configureListeners(function (\JMS\Serializer\EventDispatcher\EventDispatcher $dispatcher) {
-                    $proxySubscriber = new \Alcalyn\SerializerDoctrineProxies\DoctrineProxySubscriber(false);
-                    $dispatcher->addSubscriber($proxySubscriber);
-                })
-                ->configureHandlers(function (\JMS\Serializer\Handler\HandlerRegistryInterface $handlerRegistry) {
-                    $proxyHandler = new \Alcalyn\SerializerDoctrineProxies\DoctrineProxyHandler();
-                    $handlerRegistry->registerSubscribingHandler($proxyHandler);
-                })
             ;
         };
 
