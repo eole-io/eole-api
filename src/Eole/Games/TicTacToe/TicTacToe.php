@@ -2,7 +2,6 @@
 
 namespace Eole\Games\TicTacToe;
 
-use Pimple\Container;
 use Eole\Core\Model\Game;
 use Eole\Silex\GameProvider;
 
@@ -23,9 +22,9 @@ class TicTacToe extends GameProvider
     /**
      * {@InheritDoc}
      */
-    public function register(Container $app)
+    public function createServiceProvider()
     {
-        $app->register(new TicTacToeProvider());
+        return new TicTacToeProvider();
     }
 
     /**

@@ -30,7 +30,7 @@ oauth:
             id: eole-angular
             secret: eole-angular-secret
 
-games:
+mods:
     tictactoe:
         provider: Eole\Games\TicTacToe\TicTacToe
     awale:

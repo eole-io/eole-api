@@ -21,7 +21,7 @@ class Application extends BaseApplication
         $this->registerOAuth2Security();
         $this->registerServices();
         $this->registerListeners();
-        $this->loadAllGames();
+        $this->loadAllMods();
         $this->registerDoctrine();
 
         if ($this['debug']) {
@@ -276,51 +276,53 @@ class Application extends BaseApplication
     }
 
     /**
-     * @param string $gameName
+     * @param string $modName
      *
-     * @return GameProvider
+     * @return Mod
      */
-    public function createGameProvider($gameName)
+    public function instanciateMod($modName)
     {
-        $gameProviderClass = $this['environment']['games'][$gameName]['provider'];
+        $modClass = $this['environment']['mods'][$modName]['provider'];
 
-        $gameProvider = new $gameProviderClass();
+        $mod = new $modClass();
 
-        if (!$gameProvider instanceof GameProvider) {
+        if (!$mod instanceof Mod) {
             throw new \LogicException(sprintf(
-                'Game provider class (%s) for game %s must implement %s.',
-                get_class($gameProvider),
-                $gameName,
-                GameProvider::class
+                'Mod class (%s) for mod %s must implement %s.',
+                get_class($mod),
+                $modName,
+                Mod::class
             ));
         }
 
-        return $gameProvider;
+        return $mod;
     }
 
     /**
-     * @param string $gameName
+     * @param string $modName
      *
-     * @return GameProvider of the loaded game.
+     * @return Mod
      */
-    public function loadGame($gameName)
+    public function loadMod($modName)
     {
-        $gameProvider = $this->createGameProvider($gameName);
+        $mod = $this->instanciateMod($modName);
 
-        $this->register($gameProvider);
+        $this->register($mod->createServiceProvider());
 
-        return $gameProvider;
+        return $mod;
     }
 
     /**
+     * Load all mods.
+     *
      * @return self
      */
-    public function loadAllGames()
+    public function loadAllMods()
     {
-        $games = $this['environment']['games'];
+        $mods = $this['environment']['mods'];
 
-        foreach ($games as $gameName => $config) {
-            $this->loadGame($gameName);
+        foreach ($mods as $modName => $config) {
+            $this->loadMod($modName);
         }
 
         return $this;

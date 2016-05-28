@@ -171,58 +171,75 @@ class Application extends BaseApplication
     }
 
     /**
-     * Mount a game controller provider.
+     * Mount a mod controller provider.
      * If the provider also implements ServiceProviderInterface, it is registered.
      *
-     * @param string $gameName
-     * @param \Eole\Silex\GameProvider $gameProvider
+     * @param string $modName
+     * @param \Eole\Silex\Mod $mod
      *
      * @return self
      */
-    private function mountGame($gameName, $gameProvider)
+    private function mountMod($modName, \Eole\Silex\Mod $mod)
     {
-        $controllerProvider = $gameProvider->createControllerProvider();
+        $controllerProvider = $mod->createControllerProvider();
 
-        if (null !== $controllerProvider) {
-            if ($controllerProvider instanceof \Pimple\ServiceProviderInterface) {
-                $this->register($controllerProvider);
-            }
-
-            if (!$controllerProvider instanceof \Silex\Api\ControllerProviderInterface) {
-                throw new \LogicException(sprintf(
-                    'Game controller provider class (%s) for game %s must implement %s.',
-                    get_class($controllerProvider),
-                    $gameName,
-                    \Silex\Api\ControllerProviderInterface::class
-                ));
-            }
-
-            $this->mount('api/games/'.self::gameNameToUrl($gameName), $controllerProvider);
+        if (null === $controllerProvider) {
+            return $this;
         }
+
+        if (!$controllerProvider instanceof \Silex\Api\ControllerProviderInterface) {
+            throw new \LogicException(sprintf(
+                'Mod controller provider class (%s) for mod %s must implement %s.',
+                get_class($controllerProvider),
+                $modName,
+                \Silex\Api\ControllerProviderInterface::class
+            ));
+        }
+
+        if ($controllerProvider instanceof \Pimple\ServiceProviderInterface) {
+            $this->register($controllerProvider);
+        }
+
+        $prefix = $this->mountPrefix($modName);
+
+        $this->mount($prefix, $controllerProvider);
 
         return $this;
     }
 
     /**
-     * @param string $gameName
+     * Get prefix for mod.
+     * Can be overrided.
+     *
+     * @param string $modName
      *
      * @return string
      */
-    private static function gameNameToUrl($gameName)
+    public function mountPrefix($modName)
     {
-        return str_replace('_', '-', $gameName);
+        return '/api/games/'.self::modNameToUrl($modName);
+    }
+
+    /**
+     * @param string $modName
+     *
+     * @return string
+     */
+    public static function modNameToUrl($modName)
+    {
+        return str_replace('_', '-', $modName);
     }
 
     /**
      * {@InheritDoc}
      */
-    public function loadGame($gameName)
+    public function loadMod($modName)
     {
-        $gameProvider = parent::loadGame($gameName);
+        $mod = parent::loadMod($modName);
 
-        $this->mountGame($gameName, $gameProvider);
+        $this->mountMod($modName, $mod);
 
-        return $gameProvider;
+        return $mod;
     }
 
     /**
