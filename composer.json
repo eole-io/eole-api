@@ -31,6 +31,7 @@
         "symfony/console": "~2.8|~3.0",
         "silex/silex": "~2.0",
         "jms-serializer/serializer": "^1.3.3",
+        "alcalyn/serializable-api-response": "~1.0",
         "alcalyn/user-api": "^1.1.1",
         "alcalyn/doctrine-user-api": "1.0.x",
         "saxulum/saxulum-doctrine-orm-manager-registry-provider": "~3.0",

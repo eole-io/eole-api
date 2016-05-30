@@ -21,7 +21,7 @@ class Application extends BaseApplication
         $this->registerOAuth2Security();
         $this->registerServices();
         $this->registerListeners();
-        $this->loadAllGames();
+        $this->loadAllMods();
         $this->registerDoctrine();
 
         if ($this['debug']) {
@@ -107,13 +107,6 @@ class Application extends BaseApplication
             ),
         ));
 
-        $this['eole.player_api'] = function () {
-            return new \Eole\Core\Service\PlayerApi(
-                $this['eole.player_manager'],
-                $this['orm.em']->getRepository('Eole:Player')
-            );
-        };
-
         $this['security.default_encoder'] = function () {
             return $this['security.encoder.digest'];
         };
@@ -194,7 +187,6 @@ class Application extends BaseApplication
     {
         $this['serializer.builder'] = function () {
             return Serializer\SerializerBuilder::create()
-                ->addMetadataDir($this['project.root'].'/src/Eole/Core/Serializer')
                 ->setCacheDir($this['project.root'].'/var/cache/serializer')
                 ->setDebug($this['debug'])
             ;
@@ -213,30 +205,7 @@ class Application extends BaseApplication
                 'path' => $this['project.root'].'/vendor/alcalyn/doctrine-user-api/Mapping',
             );
 
-            $mappings []= array(
-                'type' => 'yml',
-                'namespace' => 'Eole\Core\Model',
-                'path' => $this['project.root'].'/src/Eole/Core/Mapping',
-                'alias' => 'Eole',
-            );
-
             return $mappings;
-        };
-
-        $this['eole.player_manager'] = function () {
-            $encoderFactory = $this['security.encoder_factory'];
-            $userClass = \Eole\Core\Model\Player::class;
-
-            return new \Eole\Core\Service\PlayerManager(
-                $encoderFactory,
-                $userClass
-            );
-        };
-
-        $this['eole.party_manager'] = function () {
-            return new \Eole\Core\Service\PartyManager(
-                $this['dispatcher']
-            );
         };
 
         $this['eole.event_serializer'] = function () {
@@ -276,51 +245,65 @@ class Application extends BaseApplication
     }
 
     /**
-     * @param string $gameName
+     * @param string $modName
      *
-     * @return GameProvider
+     * @return Mod
      */
-    public function createGameProvider($gameName)
+    public function instanciateMod($modName)
     {
-        $gameProviderClass = $this['environment']['games'][$gameName]['provider'];
+        $modClass = $this['environment']['mods'][$modName]['provider'];
 
-        $gameProvider = new $gameProviderClass();
+        $mod = new $modClass();
 
-        if (!$gameProvider instanceof GameProvider) {
+        if (!$mod instanceof Mod) {
             throw new \LogicException(sprintf(
-                'Game provider class (%s) for game %s must implement %s.',
-                get_class($gameProvider),
-                $gameName,
-                GameProvider::class
+                'Mod class (%s) for mod %s must implement %s.',
+                get_class($mod),
+                $modName,
+                Mod::class
             ));
         }
 
-        return $gameProvider;
+        return $mod;
     }
 
     /**
-     * @param string $gameName
+     * @param string $modName
      *
-     * @return GameProvider of the loaded game.
+     * @return Mod
      */
-    public function loadGame($gameName)
+    public function loadMod($modName)
     {
-        $gameProvider = $this->createGameProvider($gameName);
+        $mod = $this->instanciateMod($modName);
+        $serviceProvider = $mod->createServiceProvider();
 
-        $this->register($gameProvider);
+        if (null !== $serviceProvider) {
+            $this->register($serviceProvider);
+        }
 
-        return $gameProvider;
+        if (!$serviceProvider instanceof \Pimple\ServiceProviderInterface) {
+            throw new \LogicException(sprintf(
+                'Service provider class (%s) for mod %s must implement %s.',
+                get_class($serviceProvider),
+                $modName,
+                \Pimple\ServiceProviderInterface::class
+            ));
+        }
+
+        return $mod;
     }
 
     /**
+     * Load all mods.
+     *
      * @return self
      */
-    public function loadAllGames()
+    public function loadAllMods()
     {
-        $games = $this['environment']['games'];
+        $mods = $this['environment']['mods'];
 
-        foreach ($games as $gameName => $config) {
-            $this->loadGame($gameName);
+        foreach ($mods as $modName => $config) {
+            $this->loadMod($modName);
         }
 
         return $this;

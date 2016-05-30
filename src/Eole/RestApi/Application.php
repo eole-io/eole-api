@@ -25,41 +25,8 @@ class Application extends BaseApplication
     private function registerServices()
     {
         $this['eole.api_response_filter'] = function () {
-            return new \Eole\Core\Service\ApiResponseFilter(
+            return new \Alcalyn\SerializableApiResponse\ApiResponseFilter(
                 $this['serializer']
-            );
-        };
-
-        $this['eole.converter.game'] = function () {
-            return new \Eole\Core\Converter\GameConverter(
-                $this['orm.em']->getRepository('Eole:Game')
-            );
-        };
-
-        $this['eole.converter.party'] = function () {
-            return new \Eole\Core\Converter\PartyConverter(
-                $this['orm.em']->getRepository('Eole:Party')
-            );
-        };
-
-        $this['eole.controller.player'] = function () {
-            return new \Eole\Core\Controller\PlayerController(
-                $this['eole.player_api']
-            );
-        };
-
-        $this['eole.controller.game'] = function () {
-            return new \Eole\Core\Controller\GameController(
-                $this['orm.em']->getRepository('Eole:Game')
-            );
-        };
-
-        $this['eole.controller.party'] = function () {
-            return new \Eole\Core\Controller\PartyController(
-                $this['orm.em']->getRepository('Eole:Party'),
-                $this['orm.em'],
-                $this['eole.party_manager'],
-                $this['dispatcher']
             );
         };
 
@@ -74,13 +41,6 @@ class Application extends BaseApplication
         };
 
         $this->register(new \Eole\OAuth2\Silex\OAuth2ControllerProvider());
-
-        $this->before(function (\Symfony\Component\HttpFoundation\Request $request, BaseApplication $app) {
-            if (null !== $app['user']) {
-                $app['eole.controller.player']->setLoggedUser($app['user']);
-                $app['eole.controller.party']->setLoggedPlayer($app['user']);
-            }
-        });
     }
 
     private function registerEventListeners()
@@ -95,12 +55,6 @@ class Application extends BaseApplication
             $this->after($this['cors']);
         }
 
-        $this['eole.listener.api_response_filter'] = function () {
-            return new \Eole\Core\EventListener\ApiResponseFilterListener(
-                $this['eole.api_response_filter']
-            );
-        };
-
         $this['eole.listener.event_to_socket'] = function () {
             return new EventListener\EventToSocketListener(
                 $this['eole.push_server'],
@@ -110,13 +64,8 @@ class Application extends BaseApplication
         };
 
         $this->on(\Symfony\Component\HttpKernel\KernelEvents::VIEW, function ($event) {
-            $this['eole.listener.api_response_filter']->onKernelView($event);
+            $this['eole.api_response_filter']->onKernelView($event);
         });
-
-        $this->forwardEventToPushServer(\Eole\Core\Event\PartyEvent::CREATE_AFTER);
-        $this->forwardEventToPushServer(\Eole\Core\Event\SlotEvent::JOIN_AFTER);
-        $this->forwardEventToPushServer(\Eole\Core\Event\PartyEvent::STARTED);
-        $this->forwardEventToPushServer(\Eole\Core\Event\PartyEvent::ENDED);
     }
 
     /**
@@ -151,6 +100,10 @@ class Application extends BaseApplication
      */
     public function forwardEventsToPushServer(array $eventsNames)
     {
+        if (!$this['environment']['push_server']['enabled']) {
+            return $this;
+        }
+
         foreach ($eventsNames as $eventName) {
             $this->forwardEventToPushServer($eventName);
         }
@@ -163,66 +116,79 @@ class Application extends BaseApplication
      */
     private function mountApi()
     {
-        $this->mount('api', new ControllerProvider\PlayerControllerProvider());
-        $this->mount('api', new ControllerProvider\GameControllerProvider());
-        $this->mount('api', new ControllerProvider\PartyControllerProvider());
-
         $this->mount('oauth', new \Eole\OAuth2\Silex\OAuth2ControllerProvider());
     }
 
     /**
-     * Mount a game controller provider.
+     * Mount a mod controller provider.
      * If the provider also implements ServiceProviderInterface, it is registered.
      *
-     * @param string $gameName
-     * @param \Eole\Silex\GameProvider $gameProvider
+     * @param string $modName
+     * @param \Eole\Silex\Mod $mod
      *
      * @return self
      */
-    private function mountGame($gameName, $gameProvider)
+    private function mountMod($modName, \Eole\Silex\Mod $mod)
     {
-        $controllerProvider = $gameProvider->createControllerProvider();
+        $controllerProvider = $mod->createControllerProvider();
 
-        if (null !== $controllerProvider) {
-            if ($controllerProvider instanceof \Pimple\ServiceProviderInterface) {
-                $this->register($controllerProvider);
-            }
-
-            if (!$controllerProvider instanceof \Silex\Api\ControllerProviderInterface) {
-                throw new \LogicException(sprintf(
-                    'Game controller provider class (%s) for game %s must implement %s.',
-                    get_class($controllerProvider),
-                    $gameName,
-                    \Silex\Api\ControllerProviderInterface::class
-                ));
-            }
-
-            $this->mount('api/games/'.self::gameNameToUrl($gameName), $controllerProvider);
+        if (null === $controllerProvider) {
+            return $this;
         }
+
+        if (!$controllerProvider instanceof \Silex\Api\ControllerProviderInterface) {
+            throw new \LogicException(sprintf(
+                'Mod controller provider class (%s) for mod %s must implement %s.',
+                get_class($controllerProvider),
+                $modName,
+                \Silex\Api\ControllerProviderInterface::class
+            ));
+        }
+
+        if ($controllerProvider instanceof \Pimple\ServiceProviderInterface) {
+            $this->register($controllerProvider);
+        }
+
+        $prefix = $this->mountPrefix($modName);
+
+        $this->mount($prefix, $controllerProvider);
 
         return $this;
     }
 
     /**
-     * @param string $gameName
+     * Get prefix for mod.
+     * Can be overrided.
+     *
+     * @param string $modName
      *
      * @return string
      */
-    private static function gameNameToUrl($gameName)
+    public function mountPrefix($modName)
     {
-        return str_replace('_', '-', $gameName);
+        return '/api/games/'.self::modNameToUrl($modName);
+    }
+
+    /**
+     * @param string $modName
+     *
+     * @return string
+     */
+    public static function modNameToUrl($modName)
+    {
+        return str_replace('_', '-', $modName);
     }
 
     /**
      * {@InheritDoc}
      */
-    public function loadGame($gameName)
+    public function loadMod($modName)
     {
-        $gameProvider = parent::loadGame($gameName);
+        $mod = parent::loadMod($modName);
 
-        $this->mountGame($gameName, $gameProvider);
+        $this->mountMod($modName, $mod);
 
-        return $gameProvider;
+        return $mod;
     }
 
     /**
@@ -247,7 +213,7 @@ class Application extends BaseApplication
                 );
             }
 
-            return new \Eole\Core\ApiResponse($errorData, $errorData['status_code']);
+            return new \Alcalyn\SerializableApiResponse\ApiResponse($errorData, $errorData['status_code']);
         });
     }
 }

@@ -2,7 +2,6 @@
 
 namespace Eole\Games\Awale;
 
-use Pimple\Container;
 use Eole\Core\Model\Game;
 use Eole\Silex\GameProvider;
 
@@ -23,9 +22,9 @@ class Awale extends GameProvider
     /**
      * {@InheritDoc}
      */
-    public function register(Container $app)
+    public function createServiceProvider()
     {
-        $app->register(new ServiceProvider());
+        return new ServiceProvider();
     }
 
     /**
