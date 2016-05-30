@@ -308,4 +308,25 @@ class Application extends BaseApplication
 
         return $this;
     }
+
+    /**
+     * Returns all mods which implement GameProvider.
+     *
+     * @return GameProvider[]
+     */
+    public function getGameProviders()
+    {
+        $mods = $this['environment']['mods'];
+        $gameProviders = array();
+
+        foreach ($mods as $modName => $modClass) {
+            $mod = $this->instanciateMod($modName);
+
+            if ($mod instanceof GameProvider) {
+                $gameProviders[$modName] = $mod;
+            }
+        }
+
+        return $gameProviders;
+    }
 }

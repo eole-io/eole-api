@@ -44,17 +44,16 @@ class InstallGamesCommand extends Command
     {
         $gameRepository = $this->silexApplication['orm.em']->getRepository('Eole:Game');
 
-        $registeredGames = $this->silexApplication['environment']['games'];
+        $gameProviders = $this->silexApplication->getGameProviders();
         $installedGames = $gameRepository->findAll();
 
-        $registeredGamesNames = array_keys($registeredGames);
         $installedGamesNames = array();
 
         foreach ($installedGames as $game) {
             $installedGamesNames []= $game->getName();
         }
 
-        $newDetectedGames = array_diff($registeredGamesNames, $installedGamesNames);
+        $newDetectedGames = array_diff(array_keys($gameProviders), $installedGamesNames);
 
         if (0 === count($newDetectedGames)) {
             $output->writeln('No new games detected.');
@@ -65,10 +64,10 @@ class InstallGamesCommand extends Command
         $output->writeln('New games has been detected, installing...');
         $om = $this->silexApplication['orm.em'];
 
-        foreach ($newDetectedGames as $game) {
-            $output->write('    '.$game.'...');
-            $gameProvider = $this->silexApplication->createGameProvider($game);
+        foreach ($newDetectedGames as $gameName) {
+            $gameProvider = $gameProviders[$gameName];
 
+            $output->write('    '.$gameName.'...');
             $om->persist($gameProvider->createGame());
             $gameProvider->createFixtures($this->silexApplication, $om);
 
