@@ -2,6 +2,7 @@
 
 namespace Eole\Games\Awale\RestApi;
 
+use Alcalyn\SerializableApiResponse\ApiResponse;
 use Alcalyn\Awale\Exception\AwaleException;
 use Alcalyn\Awale\Awale;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -11,7 +12,6 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpFoundation\Request;
-use Eole\Core\ApiResponse;
 use Eole\Core\Model\Party;
 use Eole\Core\Service\PartyManager;
 use Eole\Core\Controller\LoggedPlayerTrait;

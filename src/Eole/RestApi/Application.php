@@ -25,7 +25,7 @@ class Application extends BaseApplication
     private function registerServices()
     {
         $this['eole.api_response_filter'] = function () {
-            return new \Eole\Core\Service\ApiResponseFilter(
+            return new \Alcalyn\SerializableApiResponse\ApiResponseFilter(
                 $this['serializer']
             );
         };
@@ -55,12 +55,6 @@ class Application extends BaseApplication
             $this->after($this['cors']);
         }
 
-        $this['eole.listener.api_response_filter'] = function () {
-            return new \Eole\Core\EventListener\ApiResponseFilterListener(
-                $this['eole.api_response_filter']
-            );
-        };
-
         $this['eole.listener.event_to_socket'] = function () {
             return new EventListener\EventToSocketListener(
                 $this['eole.push_server'],
@@ -70,7 +64,7 @@ class Application extends BaseApplication
         };
 
         $this->on(\Symfony\Component\HttpKernel\KernelEvents::VIEW, function ($event) {
-            $this['eole.listener.api_response_filter']->onKernelView($event);
+            $this['eole.api_response_filter']->onKernelView($event);
         });
     }
 

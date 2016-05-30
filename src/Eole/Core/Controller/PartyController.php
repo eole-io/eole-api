@@ -7,7 +7,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
-use Eole\Core\ApiResponse;
+use Alcalyn\SerializableApiResponse\ApiResponse;
 use Eole\Core\Model\Game;
 use Eole\Core\Model\Party;
 use Eole\Core\Repository\PartyRepository;

@@ -2,7 +2,7 @@
 
 namespace Eole\Core\Controller;
 
-use Eole\Core\ApiResponse;
+use Alcalyn\SerializableApiResponse\ApiResponse;
 use Eole\Core\Repository\GameRepository;
 
 class GameController

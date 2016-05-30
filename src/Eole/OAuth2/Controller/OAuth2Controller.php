@@ -5,7 +5,7 @@ namespace Eole\OAuth2\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use League\OAuth2\Server\Exception\OAuthException;
 use League\OAuth2\Server\AuthorizationServer;
-use Eole\Core\ApiResponse;
+use Alcalyn\SerializableApiResponse\ApiResponse;
 
 class OAuth2Controller
 {
