@@ -37,12 +37,6 @@ class Application implements WampServerInterface
      */
     private function registerServices()
     {
-        $this->silexApp['eole.websocket_topic.normalizer'] = function () {
-            return new Service\Normalizer(
-                $this->silexApp['serializer']
-            );
-        };
-
         $this->silexApp->register(new ServiceProvider\TopicRoutingProvider());
     }
 
@@ -162,7 +156,7 @@ class Application implements WampServerInterface
     {
         $topic = $this->silexApp['eole.websocket.router']->loadTopic($topicPath);
 
-        $topic->setNormalizer($this->silexApp['eole.websocket_topic.normalizer']);
+        $topic->setNormalizer($this->silexApp['serializer']);
 
         if ($topic instanceof EventSubscriberInterface) {
             $this->silexApp['dispatcher']->addSubscriber($topic);

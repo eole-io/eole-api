@@ -2,9 +2,9 @@
 
 namespace Eole\WebSocket;
 
+use JMS\Serializer\NormalizerInterface;
 use Ratchet\Wamp\WampConnection;
 use Ratchet\Wamp\Topic as BaseTopic;
-use Eole\WebSocket\Service\Normalizer;
 
 class Topic extends BaseTopic
 {
@@ -14,7 +14,7 @@ class Topic extends BaseTopic
     protected $arguments;
 
     /**
-     * @var Normalizer
+     * @var NormalizerInterface
      */
     protected $normalizer;
 
@@ -30,11 +30,11 @@ class Topic extends BaseTopic
     }
 
     /**
-     * @param Normalizer $normalizer
+     * @param NormalizerInterface $normalizer
      *
      * @return self
      */
-    public function setNormalizer(Normalizer $normalizer)
+    public function setNormalizer(NormalizerInterface $normalizer)
     {
         $this->normalizer = $normalizer;
 
@@ -48,7 +48,7 @@ class Topic extends BaseTopic
      */
     public function broadcast($msg, array $exclude = array(), array $eligible = array())
     {
-        parent::broadcast($this->normalizer->normalize($msg), $exclude, $eligible);
+        parent::broadcast($this->normalizer->toArray($msg), $exclude, $eligible);
     }
 
     /**
