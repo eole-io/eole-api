@@ -6,7 +6,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\WampServerInterface;
 use Eole\Silex\Application as SilexApplication;
-use Eole\WebSocket\Routing\TopicRoute;
 
 class Application implements WampServerInterface
 {
