@@ -2,12 +2,10 @@
 
 namespace Eole\Silex\Provider;
 
-use Symfony\Component\Routing\RouteCollection;
 use Pimple\ServiceProviderInterface;
 use Pimple\Container;
 use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
-use Eole\Core\Event\SlotEvent;
 
 class ControllerProvider implements ServiceProviderInterface, ControllerProviderInterface
 {
