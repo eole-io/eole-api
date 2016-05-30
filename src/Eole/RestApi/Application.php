@@ -213,7 +213,7 @@ class Application extends BaseApplication
                 );
             }
 
-            return new \Eole\Core\ApiResponse($errorData, $errorData['status_code']);
+            return new \Alcalyn\SerializableApiResponse\ApiResponse($errorData, $errorData['status_code']);
         });
     }
 }
