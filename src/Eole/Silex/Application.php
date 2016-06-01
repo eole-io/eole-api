@@ -119,10 +119,11 @@ class Application extends BaseApplication
      */
     private function registerOAuth2Security()
     {
-        $tokensDir = $this['project.root'].'/var/oauth-tokens';
-        $clients = $this['environment']['oauth']['clients'];
-
-        $this->register(new \Eole\OAuth2\Silex\OAuth2ServiceProvider('api', $tokensDir, $clients));
+        $this->register(new \Eole\OAuth2\Silex\OAuth2ServiceProvider(), array(
+            'oauth.firewall_name' => 'api',
+            'oauth.clients' => $this['environment']['oauth']['clients'],
+            'oauth.tokens_dir' => $this['project.root'].'/var/oauth-tokens',
+        ));
     }
 
     /**

@@ -20,73 +20,43 @@ use Eole\OAuth2\ResourceServer;
 class OAuth2ServiceProvider implements ServiceProviderInterface
 {
     /**
-     * @var string
-     */
-    private $firewallName;
-
-    /**
-     * @var string
-     */
-    private $tokensDir;
-
-    /**
-     * @var array[]
-     */
-    private $clientsData;
-
-    /**
-     * @var string
-     */
-    private $accessTokensDir;
-
-    /**
-     * @var string
-     */
-    private $refreshTokensDir;
-
-    /**
-     * @param string $firewallName
-     * @param string $tokensDir
-     * @param array[] $clientsData
-     */
-    public function __construct($firewallName, $tokensDir, array $clientsData)
-    {
-        $this->firewallName = $firewallName;
-        $this->tokensDir = $tokensDir;
-        $this->clientsData = $clientsData;
-
-        $this->accessTokensDir = $this->tokensDir.'/access-tokens';
-        $this->refreshTokensDir = $this->tokensDir.'/refresh-tokens';
-
-        $this->touchTokensDir();
-    }
-
-    /**
      * {@InheritDoc}
      */
     public function register(Container $app)
     {
+        $app['oauth.tokens_dir.access_token'] = function () use ($app) {
+            $dir = $app['oauth.tokens_dir'].'/access-tokens';
+            $this->touchDir($dir);
+            return $dir;
+        };
+
+        $app['oauth.tokens_dir.refresh_token'] = function () use ($app) {
+            $dir = $app['oauth.tokens_dir'].'/refresh-tokens';
+            $this->touchDir($dir);
+            return $dir;
+        };
+
         /**
          * Storage
          */
-        $app['eole.oauth.storage.session'] = function () {
-            return new Session($this->accessTokensDir);
+        $app['eole.oauth.storage.session'] = function () use ($app) {
+            return new Session($app['oauth.tokens_dir.access_token']);
         };
 
-        $app['eole.oauth.storage.access_token'] = function () {
-            return new AccessToken($this->accessTokensDir);
+        $app['eole.oauth.storage.access_token'] = function () use ($app) {
+            return new AccessToken($app['oauth.tokens_dir.access_token']);
         };
 
-        $app['eole.oauth.storage.client'] = function () {
-            return new Client($this->clientsData);
+        $app['eole.oauth.storage.client'] = function () use ($app) {
+            return new Client($app['oauth.clients']);
         };
 
         $app['eole.oauth.storage.scope'] = function () {
             return new Scope();
         };
 
-        $app['eole.oauth.storage.refresh_token'] = function () {
-            return new RefreshTokenStorage($this->refreshTokensDir);
+        $app['eole.oauth.storage.refresh_token'] = function () use ($app) {
+            return new RefreshTokenStorage($app['oauth.tokens_dir.refresh_token']);
         };
 
         /**
@@ -135,7 +105,7 @@ class OAuth2ServiceProvider implements ServiceProviderInterface
             // define the authentication provider object
             $app['security.authentication_provider.'.$name.'.oauth'] = function () use ($app) {
                 return new OAuth2Provider(
-                    $app['security.user_provider.'.$this->firewallName],
+                    $app['security.user_provider.'.$app['oauth.firewall_name']],
                     $app['security.user_checker'],
                     $app['eole.oauth.resource_server']
                 );
@@ -171,14 +141,10 @@ class OAuth2ServiceProvider implements ServiceProviderInterface
     /**
      * Check tokens directory exists or create it.
      */
-    private function touchTokensDir()
+    private function touchDir($dir)
     {
-        if (!is_dir($this->accessTokensDir)) {
-            mkdir($this->accessTokensDir, 0777, true);
-        }
-
-        if (!is_dir($this->refreshTokensDir)) {
-            mkdir($this->refreshTokensDir, 0777, true);
+        if (!is_dir($dir)) {
+            mkdir($dir, 0777, true);
         }
     }
 }
