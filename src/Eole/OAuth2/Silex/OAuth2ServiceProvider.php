@@ -16,6 +16,7 @@ use Eole\OAuth2\Grant\Password;
 use Eole\OAuth2\Grant\RefreshToken as RefreshTokenGrant;
 use Eole\OAuth2\AuthorizationServer;
 use Eole\OAuth2\ResourceServer;
+use Eole\OAuth2\Controller\OAuth2Controller;
 
 class OAuth2ServiceProvider implements ServiceProviderInterface
 {
@@ -136,6 +137,10 @@ class OAuth2ServiceProvider implements ServiceProviderInterface
                 'pre_auth'
             );
         });
+
+        $app['eole.oauth.controller'] = function () use ($app) {
+            return new OAuth2Controller($app['eole.oauth.authorization_server']);
+        };
     }
 
     /**

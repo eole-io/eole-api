@@ -39,8 +39,6 @@ class Application extends BaseApplication
 
             return $socket;
         };
-
-        $this->register(new \Eole\OAuth2\Silex\OAuth2ControllerProvider());
     }
 
     private function registerEventListeners()
