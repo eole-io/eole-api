@@ -2,7 +2,7 @@
 
 namespace Eole\Core\Repository;
 
-use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\EntityRepository;
 use Eole\Core\Model\Game;
 use Eole\Core\Model\Party;
