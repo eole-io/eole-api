@@ -32,19 +32,22 @@ class Server
     public function __construct(SilexApplication $silexApplication)
     {
         $this->silexApplication = $silexApplication;
+        $this->loop = Factory::create();
 
-        $this->init();
+        echo 'Initialization...'.PHP_EOL;
+
+        $this->initWebsocketServer();
+
+        if ($this->silexApplication['environment']['push_server']['enabled']) {
+            $this->initPushServer();
+        }
     }
 
     /**
      * Init websocket server and push server if enabled.
      */
-    private function init()
+    private function initWebsocketServer()
     {
-        echo 'Initialization...'.PHP_EOL;
-
-        $this->loop = Factory::create();
-
         $webSocketHost = $this->silexApplication['environment']['websocket']['server']['host'];
         $webSocketPort = $this->silexApplication['environment']['websocket']['server']['port'];
 
@@ -63,16 +66,12 @@ class Server
             ),
             $socket
         );
-
-        if ($this->silexApplication['environment']['push_server']['enabled']) {
-            $this->enablePushServer();
-        }
     }
 
     /**
      * Init push server and redispatch events from push server to application stack.
      */
-    public function enablePushServer()
+    private function initPushServer()
     {
         $pushHost = $this->silexApplication['environment']['push_server']['server']['host'];
         $pushPort = $this->silexApplication['environment']['push_server']['server']['port'];
