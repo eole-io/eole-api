@@ -3,7 +3,7 @@
 namespace Eole\WebSocket\Topic;
 
 use Ratchet\Wamp\WampConnection;
-use Eole\WebSocket\Topic;
+use Eole\Sandstone\Websocket\Topic;
 
 class ChatTopic extends Topic
 {

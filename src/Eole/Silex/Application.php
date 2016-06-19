@@ -2,7 +2,7 @@
 
 namespace Eole\Silex;
 
-use Silex\Application as BaseApplication;
+use Eole\Sandstone\Application as BaseApplication;
 
 class Application extends BaseApplication
 {
@@ -18,11 +18,11 @@ class Application extends BaseApplication
         $this->loadEnvironmentParameters();
         $this->registerSilexProviders();
         $this->registerSecurity();
-        $this->registerOAuth2Security();
         $this->registerServices();
         $this->registerListeners();
         $this->loadAllMods();
         $this->registerDoctrine();
+        $this->registerOAuth2Security();
 
         if ($this['debug']) {
             $this->enableProfiler();
@@ -119,10 +119,11 @@ class Application extends BaseApplication
      */
     private function registerOAuth2Security()
     {
-        $this->register(new \Eole\OAuth2\Silex\OAuth2ServiceProvider(), array(
+        $this->register(new \Eole\Sandstone\OAuth2\Silex\OAuth2ServiceProvider(), array(
             'oauth.firewall_name' => 'api',
             'oauth.clients' => $this['environment']['oauth']['clients'],
             'oauth.tokens_dir' => $this['project.root'].'/var/oauth-tokens',
+            'oauth.security.user_provider' => $this['eole.user_provider'],
         ));
     }
 
@@ -186,16 +187,25 @@ class Application extends BaseApplication
      */
     private function registerServices()
     {
-        $this['serializer.builder'] = function () {
-            return Serializer\SerializerBuilder::create()
-                ->setCacheDir($this['project.root'].'/var/cache/serializer')
-                ->setDebug($this['debug'])
-            ;
-        };
+        $this->register(new \Eole\Sandstone\Serializer\ServiceProvider());
 
-        $this['serializer'] = function () {
-            return $this['serializer.builder']->build();
-        };
+        $this['serializer.builder']->setCacheDir($this['project.root'].'/var/cache/serializer');
+
+        $this->register(new \Eole\Sandstone\Websocket\ServiceProvider(), [
+            'sandstone.websocket.server' => [
+                'bind' => $this['environment']['websocket']['server']['bind'],
+                'port' => $this['environment']['websocket']['server']['port'],
+            ],
+        ]);
+
+        $this->register(new \Eole\Sandstone\PushServer\ServiceProvider(), [
+            'sandstone.push.enabled' => true,
+            'sandstone.push.server' => [
+                'bind' => $this['environment']['push']['server']['bind'],
+                'host' => $this['environment']['push']['server']['host'],
+                'port' => $this['environment']['push']['server']['port'],
+            ],
+        ]);
 
         $this['eole.mappings'] = function () {
             $mappings = array();
@@ -207,10 +217,6 @@ class Application extends BaseApplication
             );
 
             return $mappings;
-        };
-
-        $this['eole.event_serializer'] = function () {
-            return new Service\EventSerializer($this['serializer']);
         };
 
         $this['eole.listener.authorization_header_fix'] = function () {

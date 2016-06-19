@@ -3,11 +3,11 @@
 namespace Eole\Silex\Tests;
 
 use Silex\WebTestCase;
+use Eole\Sandstone\OAuth2\Test\ResourceServerMock;
 use Eole\Core\Model\Player;
 use Eole\Core\Model\Game;
 use Eole\Core\Service\PlayerManager;
 use Eole\RestApi\Application;
-use Eole\OAuth2\Test\ResourceServerMock;
 
 abstract class AbstractApplicationTest extends WebTestCase
 {

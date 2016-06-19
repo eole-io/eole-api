@@ -29,16 +29,6 @@ class Application extends BaseApplication
                 $this['serializer']
             );
         };
-
-        $this['eole.push_server'] = function () {
-            $pushServerPort = $this['environment']['push_server']['server']['port'];
-
-            $context = new \ZMQContext();
-            $socket = $context->getSocket(\ZMQ::SOCKET_PUSH);
-            $socket->connect('tcp://127.0.0.1:'.$pushServerPort);
-
-            return $socket;
-        };
     }
 
     private function registerEventListeners()
@@ -53,60 +43,9 @@ class Application extends BaseApplication
             $this->after($this['cors']);
         }
 
-        $this['eole.listener.event_to_socket'] = function () {
-            return new EventListener\EventToSocketListener(
-                $this['eole.push_server'],
-                $this['eole.event_serializer'],
-                $this['environment']['push_server']['enabled']
-            );
-        };
-
         $this->on(\Symfony\Component\HttpKernel\KernelEvents::VIEW, function ($event) {
             $this['eole.api_response_filter']->onKernelView($event);
         });
-    }
-
-    /**
-     * Automatically forward rest API event to push server.
-     *
-     * @param string $eventName
-     *
-     * @return self
-     */
-    public function forwardEventToPushServer($eventName)
-    {
-        if (!$this['environment']['push_server']['enabled']) {
-            return $this;
-        }
-
-        $this->before(function () use ($eventName) {
-            $this['dispatcher']->addListener(
-                $eventName,
-                array($this['eole.listener.event_to_socket'], 'sendEventToSocket')
-            );
-        });
-
-        return $this;
-    }
-
-    /**
-     * Automatically forward rest API events to push server.
-     *
-     * @param string[] $eventsNames
-     *
-     * @return self
-     */
-    public function forwardEventsToPushServer(array $eventsNames)
-    {
-        if (!$this['environment']['push_server']['enabled']) {
-            return $this;
-        }
-
-        foreach ($eventsNames as $eventName) {
-            $this->forwardEventToPushServer($eventName);
-        }
-
-        return $this;
     }
 
     /**
@@ -114,7 +53,7 @@ class Application extends BaseApplication
      */
     private function mountApi()
     {
-        $this->mount('oauth', new \Eole\OAuth2\Silex\OAuth2ControllerProvider());
+        $this->mount('oauth', new \Eole\Sandstone\OAuth2\Silex\OAuth2ControllerProvider());
     }
 
     /**
