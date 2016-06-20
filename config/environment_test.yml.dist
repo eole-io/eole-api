@@ -7,5 +7,5 @@ database:
         memory:     false
         charset:    utf8
 
-push_server:
+push:
     enabled:        false

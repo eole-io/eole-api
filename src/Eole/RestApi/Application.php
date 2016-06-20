@@ -15,7 +15,8 @@ class Application extends BaseApplication
 
         $this->registerServices();
         $this->registerEventListeners();
-        $this->mountApi();
+        $this->mountOAuth2Controller();
+        $this->loadRestApis();
         $this->handleProdErrors();
     }
 
@@ -28,16 +29,6 @@ class Application extends BaseApplication
             return new \Alcalyn\SerializableApiResponse\ApiResponseFilter(
                 $this['serializer']
             );
-        };
-
-        $this['eole.push_server'] = function () {
-            $pushServerPort = $this['environment']['push_server']['server']['port'];
-
-            $context = new \ZMQContext();
-            $socket = $context->getSocket(\ZMQ::SOCKET_PUSH);
-            $socket->connect('tcp://127.0.0.1:'.$pushServerPort);
-
-            return $socket;
         };
     }
 
@@ -53,140 +44,42 @@ class Application extends BaseApplication
             $this->after($this['cors']);
         }
 
-        $this['eole.listener.event_to_socket'] = function () {
-            return new EventListener\EventToSocketListener(
-                $this['eole.push_server'],
-                $this['eole.event_serializer'],
-                $this['environment']['push_server']['enabled']
-            );
-        };
-
         $this->on(\Symfony\Component\HttpKernel\KernelEvents::VIEW, function ($event) {
             $this['eole.api_response_filter']->onKernelView($event);
         });
     }
 
     /**
-     * Automatically forward rest API event to push server.
-     *
-     * @param string $eventName
-     *
-     * @return self
+     * Mount /oauth
      */
-    public function forwardEventToPushServer($eventName)
+    private function mountOAuth2Controller()
     {
-        if (!$this['environment']['push_server']['enabled']) {
-            return $this;
-        }
-
-        $this->before(function () use ($eventName) {
-            $this['dispatcher']->addListener(
-                $eventName,
-                array($this['eole.listener.event_to_socket'], 'sendEventToSocket')
-            );
-        });
-
-        return $this;
+        $this->mount('oauth', new \Eole\Sandstone\OAuth2\Silex\OAuth2ControllerProvider());
     }
 
     /**
-     * Automatically forward rest API events to push server.
-     *
-     * @param string[] $eventsNames
-     *
-     * @return self
+     * Mount Eole and games RestApi endpoints.
      */
-    public function forwardEventsToPushServer(array $eventsNames)
+    private function loadRestApis()
     {
-        if (!$this['environment']['push_server']['enabled']) {
-            return $this;
+        foreach ($this['environment']['mods'] as $modName => $modConfig) {
+            $modClass = $modConfig['provider'];
+            $mod = new $modClass();
+            $provider = $mod->createControllerProvider();
+            $prefix = 'api';
+
+            if ($mod instanceof \Eole\Silex\GameProvider) {
+                $prefix = 'api/games/'.$modName;
+            }
+
+            if ($provider instanceof \Pimple\ServiceProviderInterface) {
+                $this->register($provider);
+            }
+
+            if ($provider instanceof \Silex\Api\ControllerProviderInterface) {
+                $this->mount($prefix, $provider);
+            }
         }
-
-        foreach ($eventsNames as $eventName) {
-            $this->forwardEventToPushServer($eventName);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Mount /api
-     */
-    private function mountApi()
-    {
-        $this->mount('oauth', new \Eole\OAuth2\Silex\OAuth2ControllerProvider());
-    }
-
-    /**
-     * Mount a mod controller provider.
-     * If the provider also implements ServiceProviderInterface, it is registered.
-     *
-     * @param string $modName
-     * @param \Eole\Silex\Mod $mod
-     *
-     * @return self
-     */
-    private function mountMod($modName, \Eole\Silex\Mod $mod)
-    {
-        $controllerProvider = $mod->createControllerProvider();
-
-        if (null === $controllerProvider) {
-            return $this;
-        }
-
-        if (!$controllerProvider instanceof \Silex\Api\ControllerProviderInterface) {
-            throw new \LogicException(sprintf(
-                'Mod controller provider class (%s) for mod %s must implement %s.',
-                get_class($controllerProvider),
-                $modName,
-                \Silex\Api\ControllerProviderInterface::class
-            ));
-        }
-
-        if ($controllerProvider instanceof \Pimple\ServiceProviderInterface) {
-            $this->register($controllerProvider);
-        }
-
-        $prefix = $this->mountPrefix($modName);
-
-        $this->mount($prefix, $controllerProvider);
-
-        return $this;
-    }
-
-    /**
-     * Get prefix for mod.
-     * Can be overrided.
-     *
-     * @param string $modName
-     *
-     * @return string
-     */
-    public function mountPrefix($modName)
-    {
-        return '/api/games/'.self::modNameToUrl($modName);
-    }
-
-    /**
-     * @param string $modName
-     *
-     * @return string
-     */
-    public static function modNameToUrl($modName)
-    {
-        return str_replace('_', '-', $modName);
-    }
-
-    /**
-     * {@InheritDoc}
-     */
-    public function loadMod($modName)
-    {
-        $mod = parent::loadMod($modName);
-
-        $this->mountMod($modName, $mod);
-
-        return $mod;
     }
 
     /**

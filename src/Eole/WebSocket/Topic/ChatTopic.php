@@ -3,7 +3,7 @@
 namespace Eole\WebSocket\Topic;
 
 use Ratchet\Wamp\WampConnection;
-use Eole\WebSocket\Topic;
+use Eole\Sandstone\Websocket\Topic;
 
 class ChatTopic extends Topic
 {
@@ -16,7 +16,7 @@ class ChatTopic extends Topic
 
         $this->broadcast([
             'type' => 'join',
-            'player' => $conn->player,
+            'player' => $conn->user,
         ]);
     }
 
@@ -27,7 +27,7 @@ class ChatTopic extends Topic
     {
         $this->broadcast([
             'type' => 'message',
-            'player' => $conn->player,
+            'player' => $conn->user,
             'message' => $event,
         ]);
     }
@@ -39,7 +39,7 @@ class ChatTopic extends Topic
     {
         $this->broadcast([
             'type' => 'leave',
-            'player' => $conn->player,
+            'player' => $conn->user,
         ]);
 
         parent::onUnSubscribe($conn, $topic);

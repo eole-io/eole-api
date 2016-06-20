@@ -4,28 +4,21 @@ namespace Eole\Games\TicTacToe;
 
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
-use Eole\WebSocket\Routing\TopicRoute;
 
 class TicTacToeWebsocketProvider implements ServiceProviderInterface
 {
     public function register(Container $app)
     {
-        $tictactoePartiesFactory = function ($topicPath, array $arguments) use ($app) {
-            $partyId = $arguments['party_id'];
-            $partyRepository = $app['orm.em']->getRepository('Eole:Party');
-            $party = $partyRepository->findFullPartyById($partyId, 'tictactoe');
-            $partyManager = $app['eole.party_manager'];
+        $app
+            ->topic('eole/games/tictactoe/parties/{party_id}', function ($topicPattern, $arguments) use ($app) {
+                $partyId = $arguments['party_id'];
+                $partyRepository = $app['orm.em']->getRepository('Eole:Party');
+                $party = $partyRepository->findFullPartyById($partyId, 'tictactoe');
+                $partyManager = $app['eole.party_manager'];
 
-            return new Websocket\Topic($topicPath, $party, $partyManager, $partyRepository);
-        };
-
-        $app['eole.games.tictactoe.topic.factory'] = $app->protect($tictactoePartiesFactory);
-
-        $app['eole.websocket.routes']->add('eole_games_tictactoe_party', new TopicRoute(
-            'eole/games/tictactoe/parties/{party_id}',
-            'eole.games.tictactoe.topic.factory',
-            array(),
-            array('party_id' => '^[0-9]+$')
-        ));
+                return new Websocket\Topic($topicPattern, $party, $partyManager, $partyRepository);
+            })
+            ->assert('party_id', '^[0-9]+$')
+        ;
     }
 }

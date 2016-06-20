@@ -10,7 +10,7 @@ use Eole\Core\Model\Party;
 use Eole\Core\Event\SlotEvent;
 use Eole\Core\Service\PartyManager;
 use Eole\Core\Repository\PartyRepository;
-use Eole\WebSocket\Topic as BaseTopic;
+use Eole\Sandstone\WebSocket\Topic as BaseTopic;
 
 class Topic extends BaseTopic implements EventSubscriberInterface
 {
@@ -116,7 +116,7 @@ class Topic extends BaseTopic implements EventSubscriberInterface
      */
     private function onMove(WampConnection $conn, $topic, $event)
     {
-        $player = $conn->player;
+        $player = $conn->user;
         $playerPosition = $this->partyManager->getPlayerPosition($this->party, $player);
 
         if (null === $playerPosition) {

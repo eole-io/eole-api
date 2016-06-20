@@ -11,12 +11,13 @@ database:
 
 websocket:
     server:
-        host:       0.0.0.0
+        bind:       0.0.0.0
         port:       8080
 
-push_server:
+push:
     enabled:        true
     server:
+        bind:       127.0.0.1
         host:       127.0.0.1
         port:       5555
 
@@ -24,6 +25,9 @@ cors:
     access_control_allow_origin: ~
 
 oauth:
+    scope:
+        id: eole-scope
+        description: Eole scope.
     clients:
         eole-angular:
             name: eole-angular-name

@@ -2,7 +2,7 @@
 
 namespace Eole\Silex;
 
-use Silex\Application as BaseApplication;
+use Eole\Sandstone\Application as BaseApplication;
 
 class Application extends BaseApplication
 {
@@ -18,11 +18,11 @@ class Application extends BaseApplication
         $this->loadEnvironmentParameters();
         $this->registerSilexProviders();
         $this->registerSecurity();
-        $this->registerOAuth2Security();
         $this->registerServices();
         $this->registerListeners();
-        $this->loadAllMods();
+        $this->loadAllServices();
         $this->registerDoctrine();
+        $this->registerOAuth2Security();
 
         if ($this['debug']) {
             $this->enableProfiler();
@@ -119,10 +119,12 @@ class Application extends BaseApplication
      */
     private function registerOAuth2Security()
     {
-        $this->register(new \Eole\OAuth2\Silex\OAuth2ServiceProvider(), array(
+        $this->register(new \Eole\Sandstone\OAuth2\Silex\OAuth2ServiceProvider(), array(
             'oauth.firewall_name' => 'api',
-            'oauth.clients' => $this['environment']['oauth']['clients'],
+            'oauth.security.user_provider' => 'eole.user_provider',
             'oauth.tokens_dir' => $this['project.root'].'/var/oauth-tokens',
+            'oauth.scope' => $this['environment']['oauth']['scope'],
+            'oauth.clients' => $this['environment']['oauth']['clients'],
         ));
     }
 
@@ -186,16 +188,25 @@ class Application extends BaseApplication
      */
     private function registerServices()
     {
-        $this['serializer.builder'] = function () {
-            return Serializer\SerializerBuilder::create()
-                ->setCacheDir($this['project.root'].'/var/cache/serializer')
-                ->setDebug($this['debug'])
-            ;
-        };
+        $this->register(new \Eole\Sandstone\Serializer\ServiceProvider());
 
-        $this['serializer'] = function () {
-            return $this['serializer.builder']->build();
-        };
+        $this['serializer.builder']->setCacheDir($this['project.root'].'/var/cache/serializer');
+
+        $this->register(new \Eole\Sandstone\Websocket\ServiceProvider(), [
+            'sandstone.websocket.server' => [
+                'bind' => $this['environment']['websocket']['server']['bind'],
+                'port' => $this['environment']['websocket']['server']['port'],
+            ],
+        ]);
+
+        $this->register(new \Eole\Sandstone\PushServer\ServiceProvider(), [
+            'sandstone.push.enabled' => true,
+            'sandstone.push.server' => [
+                'bind' => $this['environment']['push']['server']['bind'],
+                'host' => $this['environment']['push']['server']['host'],
+                'port' => $this['environment']['push']['server']['port'],
+            ],
+        ]);
 
         $this['eole.mappings'] = function () {
             $mappings = array();
@@ -207,10 +218,6 @@ class Application extends BaseApplication
             );
 
             return $mappings;
-        };
-
-        $this['eole.event_serializer'] = function () {
-            return new Service\EventSerializer($this['serializer']);
         };
 
         $this['eole.listener.authorization_header_fix'] = function () {
@@ -234,6 +241,22 @@ class Application extends BaseApplication
     }
 
     /**
+     * Load Eole and games services.
+     */
+    private function loadAllServices()
+    {
+        foreach ($this['environment']['mods'] as $modName => $modConfig) {
+            $modClass = $modConfig['provider'];
+            $mod = new $modClass();
+            $provider = $mod->createServiceProvider();
+
+            if ($provider instanceof \Pimple\ServiceProviderInterface) {
+                $this->register($provider);
+            }
+        }
+    }
+
+    /**
      * Log errors.
      */
     private function logErrors()
@@ -243,91 +266,5 @@ class Application extends BaseApplication
             $message = get_class($e).' '.$e->getMessage().PHP_EOL.$e->getTraceAsString().PHP_EOL.PHP_EOL;
             file_put_contents($logFile, $message, FILE_APPEND);
         });
-    }
-
-    /**
-     * @param string $modName
-     *
-     * @return Mod
-     */
-    public function instanciateMod($modName)
-    {
-        $modClass = $this['environment']['mods'][$modName]['provider'];
-
-        $mod = new $modClass();
-
-        if (!$mod instanceof Mod) {
-            throw new \LogicException(sprintf(
-                'Mod class (%s) for mod %s must implement %s.',
-                get_class($mod),
-                $modName,
-                Mod::class
-            ));
-        }
-
-        return $mod;
-    }
-
-    /**
-     * @param string $modName
-     *
-     * @return Mod
-     */
-    public function loadMod($modName)
-    {
-        $mod = $this->instanciateMod($modName);
-        $serviceProvider = $mod->createServiceProvider();
-
-        if (null !== $serviceProvider) {
-            $this->register($serviceProvider);
-        }
-
-        if (!$serviceProvider instanceof \Pimple\ServiceProviderInterface) {
-            throw new \LogicException(sprintf(
-                'Service provider class (%s) for mod %s must implement %s.',
-                get_class($serviceProvider),
-                $modName,
-                \Pimple\ServiceProviderInterface::class
-            ));
-        }
-
-        return $mod;
-    }
-
-    /**
-     * Load all mods.
-     *
-     * @return self
-     */
-    public function loadAllMods()
-    {
-        $mods = $this['environment']['mods'];
-
-        foreach ($mods as $modName => $config) {
-            $this->loadMod($modName);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Returns all mods which implement GameProvider.
-     *
-     * @return GameProvider[]
-     */
-    public function getGameProviders()
-    {
-        $mods = $this['environment']['mods'];
-        $gameProviders = array();
-
-        foreach ($mods as $modName => $modClass) {
-            $mod = $this->instanciateMod($modName);
-
-            if ($mod instanceof GameProvider) {
-                $gameProviders[$modName] = $mod;
-            }
-        }
-
-        return $gameProviders;
     }
 }

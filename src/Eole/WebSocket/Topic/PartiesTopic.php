@@ -4,10 +4,10 @@ namespace Eole\WebSocket\Topic;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Ratchet\Wamp\WampConnection;
+use Eole\Sandstone\Websocket\Topic;
 use Eole\Core\Model\Party;
 use Eole\Core\Event\PartyEvent;
 use Eole\Core\Event\SlotEvent;
-use Eole\WebSocket\Topic;
 
 class PartiesTopic extends Topic implements EventSubscriberInterface
 {

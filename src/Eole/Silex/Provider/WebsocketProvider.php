@@ -13,35 +13,19 @@ class WebsocketProvider implements ServiceProviderInterface
      */
     public function register(Container $app)
     {
-        $app['eole.websocket_topic.chat'] = function () {
-            return new \Eole\WebSocket\Topic\ChatTopic('eole/core/chat');
-        };
+        $app->topic('eole/core/chat', function ($topicPattern) {
+            return new \Eole\WebSocket\Topic\ChatTopic($topicPattern);
+        });
 
-        $gamePartiesFactory = function ($topicPath, array $arguments) {
-            return new \Eole\WebSocket\Topic\PartiesTopic($topicPath, $arguments);
-        };
+        $app->topic('eole/core/parties', function ($topicPattern) {
+            return new \Eole\WebSocket\Topic\PartiesTopic($topicPattern);
+        });
 
-        $app['eole.websocket_topic.game_parties.factory'] = $app->protect($gamePartiesFactory);
-
-        $app['eole.websocket_topic.game_parties'] = function () use ($gamePartiesFactory) {
-            return $gamePartiesFactory('eole/core/parties', array('game_name' => null));
-        };
-
-        $app['eole.websocket.routes']->add('eole_core_chat', new TopicRoute(
-            $app['eole.websocket_topic.chat']->getId(),
-            $app['eole.websocket_topic.chat']
-        ));
-
-        $app['eole.websocket.routes']->add('eole_core_parties', new TopicRoute(
-            $app['eole.websocket_topic.game_parties']->getId(),
-            $app['eole.websocket_topic.game_parties']
-        ));
-
-        $app['eole.websocket.routes']->add('eole_core_game_parties', new TopicRoute(
-            'eole/core/game/{game_name}/parties',
-            'eole.websocket_topic.game_parties.factory',
-            array(),
-            array('game_name' => '^[a-z0-9_\-]+$')
-        ));
+        $app
+            ->topic('eole/core/game/{game_name}/parties', function ($topicPattern, $arguments) {
+                return new \Eole\WebSocket\Topic\PartiesTopic($topicPattern, $arguments);
+            })
+            ->assert('game_name', '^[a-z0-9_\-]+$')
+        ;
     }
 }
