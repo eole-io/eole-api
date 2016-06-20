@@ -54,7 +54,7 @@ class Application extends BaseApplication
      */
     private function mountOAuth2Controller()
     {
-        $this->mount('oauth', new \Eole\Sandstone\OAuth2\Silex\OAuth2ControllerProvider());
+        $this->mount('oauth', new ControllerProvider\OAuth2ControllerProvider());
     }
 
     /**
