@@ -257,6 +257,27 @@ class Application extends BaseApplication
     }
 
     /**
+     * Get all GameProviders which are in environment.
+     *
+     * @return GameProvider[]
+     */
+    public function getGameProviders()
+    {
+        $gameProviders = array();
+
+        foreach ($this['environment']['mods'] as $modName => $modConfig) {
+            $modClass = $modConfig['provider'];
+            $mod = new $modClass();
+
+            if ($mod instanceof GameProvider) {
+                $gameProviders[$modName] = $mod;
+            }
+        }
+
+        return $gameProviders;
+    }
+
+    /**
      * Log errors.
      */
     private function logErrors()
