@@ -4,7 +4,6 @@ namespace Eole\Silex\Provider;
 
 use Pimple\ServiceProviderInterface;
 use Pimple\Container;
-use Eole\WebSocket\Routing\TopicRoute;
 
 class WebsocketProvider implements ServiceProviderInterface
 {
