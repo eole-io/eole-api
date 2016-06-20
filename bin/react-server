@@ -2,10 +2,10 @@
 
 require_once __DIR__.'/../vendor/autoload.php';
 
-use Eole\Silex\Application as SilexApplication;
-use Eole\WebSocket\Server as WebSocketServer;
+use Eole\Websocket\Application as WebsocketApplication;
+use Eole\Sandstone\Websocket\Server as WebSocketServer;
 
-$app = new SilexApplication(array(
+$app = new WebsocketApplication(array(
     'project.root' => dirname(__DIR__),
     'env' => 'dev',
     'debug' => true,

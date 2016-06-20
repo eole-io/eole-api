@@ -15,7 +15,8 @@ class Application extends BaseApplication
 
         $this->registerServices();
         $this->registerEventListeners();
-        $this->mountApi();
+        $this->mountOAuth2Controller();
+        $this->loadRestApis();
         $this->handleProdErrors();
     }
 
@@ -49,83 +50,36 @@ class Application extends BaseApplication
     }
 
     /**
-     * Mount /api
+     * Mount /oauth
      */
-    private function mountApi()
+    private function mountOAuth2Controller()
     {
         $this->mount('oauth', new \Eole\Sandstone\OAuth2\Silex\OAuth2ControllerProvider());
     }
 
     /**
-     * Mount a mod controller provider.
-     * If the provider also implements ServiceProviderInterface, it is registered.
-     *
-     * @param string $modName
-     * @param \Eole\Silex\Mod $mod
-     *
-     * @return self
+     * Mount Eole and games RestApi endpoints.
      */
-    private function mountMod($modName, \Eole\Silex\Mod $mod)
+    private function loadRestApis()
     {
-        $controllerProvider = $mod->createControllerProvider();
+        foreach ($this['environment']['mods'] as $modName => $modConfig) {
+            $modClass = $modConfig['provider'];
+            $mod = new $modClass();
+            $provider = $mod->createControllerProvider();
+            $prefix = 'api';
 
-        if (null === $controllerProvider) {
-            return $this;
+            if ($mod instanceof \Eole\Silex\GameProvider) {
+                $prefix = 'api/games/'.$modName;
+            }
+
+            if ($provider instanceof \Pimple\ServiceProviderInterface) {
+                $this->register($provider);
+            }
+
+            if ($provider instanceof \Silex\Api\ControllerProviderInterface) {
+                $this->mount($prefix, $provider);
+            }
         }
-
-        if (!$controllerProvider instanceof \Silex\Api\ControllerProviderInterface) {
-            throw new \LogicException(sprintf(
-                'Mod controller provider class (%s) for mod %s must implement %s.',
-                get_class($controllerProvider),
-                $modName,
-                \Silex\Api\ControllerProviderInterface::class
-            ));
-        }
-
-        if ($controllerProvider instanceof \Pimple\ServiceProviderInterface) {
-            $this->register($controllerProvider);
-        }
-
-        $prefix = $this->mountPrefix($modName);
-
-        $this->mount($prefix, $controllerProvider);
-
-        return $this;
-    }
-
-    /**
-     * Get prefix for mod.
-     * Can be overrided.
-     *
-     * @param string $modName
-     *
-     * @return string
-     */
-    public function mountPrefix($modName)
-    {
-        return '/api/games/'.self::modNameToUrl($modName);
-    }
-
-    /**
-     * @param string $modName
-     *
-     * @return string
-     */
-    public static function modNameToUrl($modName)
-    {
-        return str_replace('_', '-', $modName);
-    }
-
-    /**
-     * {@InheritDoc}
-     */
-    public function loadMod($modName)
-    {
-        $mod = parent::loadMod($modName);
-
-        $this->mountMod($modName, $mod);
-
-        return $mod;
     }
 
     /**

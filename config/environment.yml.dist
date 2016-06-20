@@ -25,6 +25,9 @@ cors:
     access_control_allow_origin: ~
 
 oauth:
+    scope:
+        id: eole-scope
+        description: Eole scope.
     clients:
         eole-angular:
             name: eole-angular-name
