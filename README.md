@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/eole-io/eole-api.svg?branch=dev)](https://travis-ci.org/eole-io/eole-api)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/eole-io/eole-api/badges/quality-score.png?b=dev)](https://scrutinizer-ci.com/g/eole-io/eole-api/?branch=dev)
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/8c0ab48f-4dbb-4b89-ab5d-b7acbc926e6d/mini.png)](https://insight.sensiolabs.com/projects/8c0ab48f-4dbb-4b89-ab5d-b7acbc926e6d)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/8d79c694-4535-4302-a83b-11f55cedde04/mini.png)](https://insight.sensiolabs.com/projects/8d79c694-4535-4302-a83b-11f55cedde04)
 
 
 Provides Eole domain, a RestAPI, and a websocket server.
