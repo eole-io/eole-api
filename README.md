@@ -1,6 +1,6 @@
 # Eole API
 
-[![Build Status](https://travis-ci.org/eole-io/eole-api.svg?branch=dev)](https://travis-ci.org/alcalyn/eole-api)
+[![Build Status](https://travis-ci.org/eole-io/eole-api.svg?branch=dev)](https://travis-ci.org/eole-io/eole-api)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/eole-io/eole-api/badges/quality-score.png?b=dev)](https://scrutinizer-ci.com/g/eole-io/eole-api/?branch=dev)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/8c0ab48f-4dbb-4b89-ab5d-b7acbc926e6d/mini.png)](https://insight.sensiolabs.com/projects/8c0ab48f-4dbb-4b89-ab5d-b7acbc926e6d)
 
@@ -21,7 +21,7 @@ This application requires PHP 5.5+, ZMQ and php-zmq extension.
 
 ``` bash
 # Clone project
-git clone git@github.com:alcalyn/eole-api.git --branch=dev
+git clone git@github.com:eole-io/eole-api.git --branch=dev
 cd eole-api
 
 # Install dependencies

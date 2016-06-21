@@ -8,9 +8,9 @@ php:
 before_script:
     - echo "extension=zmq.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
     - composer update
-    - cp /home/travis/build/alcalyn/eole-api/config/environment.yml.dist /home/travis/build/alcalyn/eole-api/config/environment.yml
-    - cp /home/travis/build/alcalyn/eole-api/config/environment_test.yml.dist /home/travis/build/alcalyn/eole-api/config/environment_test.yml
-    - php /home/travis/build/alcalyn/eole-api/bin/console-test orm:schema-tool:create
+    - cp config/environment.yml.dist config/environment.yml
+    - cp config/environment_test.yml.dist config/environment_test.yml
+    - php bin/console-test orm:schema-tool:create
 
 script:
     - ./vendor/bin/phpcs --standard=phpcs.xml src

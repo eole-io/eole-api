@@ -3,7 +3,7 @@
     "license":      "GPL-3.0",
     "type":         "library",
     "description":  "Eole API.",
-    "homepage":     "https://github.com/alcalyn/eole-api",
+    "homepage":     "https://github.com/eole-io/eole-api",
     "keywords":     ["silex", "eole", "api"],
     "authors": [
         {
