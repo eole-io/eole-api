@@ -3,7 +3,8 @@
 namespace Eole\Silex\Tests;
 
 use Silex\WebTestCase;
-use Eole\Sandstone\OAuth2\Test\ResourceServerMock;
+use Eole\Silex\Tests\stubs\OAuth\ClientStorageMock;
+use Eole\Silex\Tests\stubs\OAuth\ResourceServerMock;
 use Eole\Core\Model\Player;
 use Eole\Core\Model\Game;
 use Eole\Core\Service\PlayerManager;
@@ -42,12 +43,16 @@ abstract class AbstractApplicationTest extends WebTestCase
             'debug' => true,
         ));
 
-        $app['eole.oauth.resource_server'] = function () use ($app) {
+        $app['sandstone.oauth.storage.client'] = function () {
+            return new ClientStorageMock();
+        };
+
+        $app['sandstone.oauth.resource_server'] = function () use ($app) {
             return new ResourceServerMock(
-                $app['eole.oauth.storage.session'],
-                $app['eole.oauth.storage.access_token'],
-                $app['eole.oauth.storage.client'],
-                $app['eole.oauth.storage.scope']
+                $app['sandstone.oauth.storage.session'],
+                $app['sandstone.oauth.storage.access_token'],
+                $app['sandstone.oauth.storage.client'],
+                $app['sandstone.oauth.storage.scope']
             );
         };
 

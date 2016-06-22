@@ -200,7 +200,7 @@ class Application extends BaseApplication
         ]);
 
         $this->register(new \Eole\Sandstone\PushServer\ServiceProvider(), [
-            'sandstone.push.enabled' => true,
+            'sandstone.push.enabled' => $this['environment']['push']['enabled'],
             'sandstone.push.server' => [
                 'bind' => $this['environment']['push']['server']['bind'],
                 'host' => $this['environment']['push']['server']['host'],
