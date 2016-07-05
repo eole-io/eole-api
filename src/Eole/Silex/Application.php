@@ -181,6 +181,7 @@ class Application extends BaseApplication
         ));
 
         $this->register(new \Sorien\Provider\DoctrineProfilerServiceProvider());
+        $this->register(new \Eole\Sandstone\Push\Debug\PushServerProfilerServiceProvider());
     }
 
     /**
@@ -199,8 +200,11 @@ class Application extends BaseApplication
             ],
         ]);
 
-        $this->register(new \Eole\Sandstone\PushServer\ServiceProvider(), [
+        $this->register(new \Eole\Sandstone\Push\ServiceProvider(), [
             'sandstone.push.enabled' => $this['environment']['push']['enabled'],
+        ]);
+
+        $this->register(new \Eole\Sandstone\Push\Bridge\ZMQ\ServiceProvider(), [
             'sandstone.push.server' => [
                 'bind' => $this['environment']['push']['server']['bind'],
                 'host' => $this['environment']['push']['server']['host'],
