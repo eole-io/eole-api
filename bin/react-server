@@ -3,7 +3,7 @@
 require_once __DIR__.'/../vendor/autoload.php';
 
 use Eole\Websocket\Application as WebsocketApplication;
-use Eole\Sandstone\Websocket\Server as WebSocketServer;
+use Eole\Sandstone\Websocket\Server as WebsocketServer;
 
 $app = new WebsocketApplication(array(
     'project.root' => dirname(__DIR__),
@@ -11,6 +11,6 @@ $app = new WebsocketApplication(array(
     'debug' => true,
 ));
 
-$websocketServer = new WebSocketServer($app);
+$websocketServer = new WebsocketServer($app);
 
 $websocketServer->run();

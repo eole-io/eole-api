@@ -1,6 +1,6 @@
 <?php
 
-namespace Eole\WebSocket\Topic;
+namespace Eole\Websocket\Topic;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Ratchet\Wamp\WampConnection;

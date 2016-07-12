@@ -1,6 +1,6 @@
 <?php
 
-namespace Eole\WebSocket\Topic;
+namespace Eole\Websocket\Topic;
 
 use Ratchet\Wamp\WampConnection;
 use Eole\Sandstone\Websocket\Topic;

@@ -10,7 +10,7 @@ use Eole\Core\Model\Party;
 use Eole\Core\Event\SlotEvent;
 use Eole\Core\Service\PartyManager;
 use Eole\Core\Repository\PartyRepository;
-use Eole\Sandstone\WebSocket\Topic as BaseTopic;
+use Eole\Sandstone\Websocket\Topic as BaseTopic;
 
 class Topic extends BaseTopic implements EventSubscriberInterface
 {

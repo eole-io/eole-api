@@ -13,16 +13,16 @@ class WebsocketProvider implements ServiceProviderInterface
     public function register(Container $app)
     {
         $app->topic('eole/core/chat', function ($topicPattern) {
-            return new \Eole\WebSocket\Topic\ChatTopic($topicPattern);
+            return new \Eole\Websocket\Topic\ChatTopic($topicPattern);
         });
 
         $app->topic('eole/core/parties', function ($topicPattern) {
-            return new \Eole\WebSocket\Topic\PartiesTopic($topicPattern);
+            return new \Eole\Websocket\Topic\PartiesTopic($topicPattern);
         });
 
         $app
             ->topic('eole/core/game/{game_name}/parties', function ($topicPattern, $arguments) {
-                return new \Eole\WebSocket\Topic\PartiesTopic($topicPattern, $arguments);
+                return new \Eole\Websocket\Topic\PartiesTopic($topicPattern, $arguments);
             })
             ->assert('game_name', '^[a-z0-9_\-]+$')
         ;

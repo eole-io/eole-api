@@ -4,7 +4,7 @@ namespace Eole\Games\Awale;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Eole\Core\Event\SlotEvent;
-use Eole\Sandstone\WebSocket\Topic as BaseTopic;
+use Eole\Sandstone\Websocket\Topic as BaseTopic;
 use Eole\Games\Awale\Event\AwaleEvent;
 
 class AwaleTopic extends BaseTopic implements EventSubscriberInterface

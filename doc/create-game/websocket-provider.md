@@ -12,7 +12,7 @@ to subscribe to this topic, and notify them in real-time that API state changed.
 
 ## Creating your topic
 
-A Topic is a class which implements `Eole\WebSocket\Topic`.
+A Topic is a class which implements `Eole\Websocket\Topic`.
 
 You can then override 3 methods to handle client upcoming notifications:
 
@@ -20,7 +20,7 @@ You can then override 3 methods to handle client upcoming notifications:
 namespace Acme\MyGame;
 
 use Ratchet\Wamp\WampConnection;
-use Eole\WebSocket\Topic;
+use Eole\Websocket\Topic;
 
 class MyTopic extends Topic
 {
@@ -67,10 +67,10 @@ You can then handle client messages in `onPublish`. If a client send 'hello', `$
 
 ### Notify clients
 
-To notify clients, `Eole\WebSocket\Topic` provides a method, `broadcast($msg)`,
+To notify clients, `Eole\Websocket\Topic` provides a method, `broadcast($msg)`,
 which will send a message to each subscribed clients.
 
-Example from `Eole\WebSocket\Topic\ChatTopic`:
+Example from `Eole\Websocket\Topic\ChatTopic`:
 
 ``` php
     public function onSubscribe(WampConnection $conn, $topic)
@@ -203,7 +203,7 @@ namespace Acme\MyGame;
 use Ratchet\Wamp\WampConnection;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Eole\WebSocket\Topic;
+use Eole\Websocket\Topic;
 
 class MyTopic extends Topic implements EventSubscriberInterface
 {
