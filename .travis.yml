@@ -10,7 +10,7 @@ before_script:
     - composer update
     - cp config/environment.yml.dist config/environment.yml
     - cp config/environment_test.yml.dist config/environment_test.yml
-    - php bin/console-test orm:schema-tool:create
+    - php bin/console --env=test orm:schema-tool:create
 
 script:
     - ./vendor/bin/phpcs --standard=phpcs.xml src
