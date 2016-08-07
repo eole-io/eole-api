@@ -4,11 +4,16 @@ require_once __DIR__.'/../vendor/autoload.php';
 
 use Eole\Websocket\Application as WebsocketApplication;
 use Eole\Sandstone\Websocket\Server as WebsocketServer;
+use Symfony\Component\Console\Input\ArgvInput;
+
+$input = new ArgvInput();
+$env = $input->getParameterOption(['--env', '-e'], 'dev');
+$debug = !$input->hasParameterOption(['--no-debug', '']) && $env !== 'prod';
 
 $app = new WebsocketApplication(array(
     'project.root' => dirname(__DIR__),
-    'env' => 'dev',
-    'debug' => true,
+    'env' => $env,
+    'debug' => $debug,
 ));
 
 $websocketServer = new WebsocketServer($app);

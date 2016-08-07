@@ -3,14 +3,19 @@
 require_once __DIR__.'/../vendor/autoload.php';
 
 use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Silex\Application;
 
+$input = new ArgvInput();
+$env = $input->getParameterOption(['--env', '-e'], 'dev');
+$debug = !$input->hasParameterOption(['--no-debug', '']) && $env !== 'prod';
+
 $restApi = new Eole\RestApi\Application(array(
     'project.root' => dirname(__DIR__),
-    'env' => 'dev',
-    'debug' => true,
+    'env' => $env,
+    'debug' => $debug,
 ));
 
 $restApi->flush();

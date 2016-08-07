@@ -2,10 +2,16 @@
 
 require_once __DIR__.'/../vendor/autoload.php';
 
+use Symfony\Component\Console\Input\ArgvInput;
+
+$input = new ArgvInput();
+$env = $input->getParameterOption(['--env', '-e'], 'dev');
+$debug = !$input->hasParameterOption(['--no-debug', '']) && $env !== 'prod';
+
 $app = new Eole\Silex\Application(array(
     'project.root' => dirname(__DIR__),
-    'env' => 'dev',
-    'debug' => true,
+    'env' => $env,
+    'debug' => $debug,
 ));
 
 $console = new \Eole\Silex\Console($app);
