@@ -41,7 +41,7 @@ class Console extends ConsoleApplication
 
         $this
             ->getDefinition()
-            ->addOption(new InputOption('--no-debug', null, InputOption::VALUE_REQUIRED, 'Is debug mode enabled.', true))
+            ->addOption(new InputOption('--no-debug', null, InputOption::VALUE_REQUIRED, 'Enable debug mode.', true))
         ;
     }
 
