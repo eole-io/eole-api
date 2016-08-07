@@ -49,8 +49,29 @@ Run React server (push server and websocket server)
 
 ``` bash
 php bin/react-server
-# This command is blocking
 ```
+
+:heavy_check_mark: The installation is done.
+
+
+> **Note**: Redirect react server logs.
+>
+> The command `bin/react-server` is blocking.
+> You may want to run:
+>
+> `php bin/react-server > var/logs/react-server.log &`
+
+
+> **Another note**: Prod environment.
+>
+> All bin commands have a `prod` mode,
+> you can do instead in a prod environment:
+>
+> `composer update --no-dev`
+>
+> `php bin/console --env=prod`
+>
+> `php bin/react-server --env=prod`
 
 
 ## Documentation
