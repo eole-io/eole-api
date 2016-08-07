@@ -6,6 +6,7 @@ use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
 use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
 use Doctrine\ORM\Tools\Console\ConsoleRunner;
 use Symfony\Component\Console\Helper\HelperSet;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Application as ConsoleApplication;
 use Eole\Silex\Application as SilexApplication;
 
@@ -27,7 +28,21 @@ class Console extends ConsoleApplication
 
         $this->silexApplication = $silexApplication;
         $this->silexApplication->boot();
+        $this->addDefaultOptions();
         $this->registerCommands();
+    }
+
+    private function addDefaultOptions()
+    {
+        $this
+            ->getDefinition()
+            ->addOption(new InputOption('--env', '-e', InputOption::VALUE_REQUIRED, 'The Environment name.', 'dev'))
+        ;
+
+        $this
+            ->getDefinition()
+            ->addOption(new InputOption('--no-debug', null, InputOption::VALUE_REQUIRED, 'Is debug mode enabled.', true))
+        ;
     }
 
     private function registerCommands()
