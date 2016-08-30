@@ -26,7 +26,7 @@ sudo apt-get install php php-dev
 ``` bash
 wget https://archive.org/download/zeromq_4.1.4/zeromq-4.1.4.tar.gz # Latest tarball on 07/08/2016
 tar -xvzf zeromq-4.1.4.tar.gz
-cd zeromq-4.1.4.tar.gz
+cd zeromq-4.1.4
 ./configure
 make
 sudo make install
