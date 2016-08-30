@@ -20,6 +20,9 @@ sudo apt-get install php5 php5-dev
 sudo apt-get install php php-dev
 ```
 
+> **Note for Ubuntu**:
+> `libsodium` has another package name on ubuntu, it is `libsodium-dev`.
+> Check that gist to install it: https://gist.github.com/jonathanpmartins/2510f38abee1e65c6d92
 
 ## Install ZeroMQ
 
