@@ -16,7 +16,7 @@ Allows to plug new API endpoints and websocket topics easily for games.
 
 This application requires PHP 5.5+, ZMQ and php-zmq extension.
 
-[Install ZMQ and php-zmq on Linux](doc/install-php-zmq-linux.md)
+[Install ZMQ and php-zmq on Linux](https://eole-io.github.io/sandstone/install-zmq-php-linux.html)
 
 
 ### Steps
