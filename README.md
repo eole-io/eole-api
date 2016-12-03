@@ -87,4 +87,4 @@ php bin/react-server
 
 ## License
 
-This project is under [GPL-v3 License](LICENSE).
+This project is under [AGPL-v3 License](LICENSE).
