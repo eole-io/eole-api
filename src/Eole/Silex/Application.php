@@ -42,7 +42,7 @@ class Application extends BaseApplication
             throw new \LogicException('env must be defined.');
         }
 
-        $environments = array('dev', 'test', 'prod');
+        $environments = array('dev', 'docker', 'test', 'prod');
 
         if (!in_array($this['env'], $environments)) {
             throw new \DomainException('env must be one of: "'.implode('", "', $environments).'".');

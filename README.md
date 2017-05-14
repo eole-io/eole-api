@@ -14,12 +14,46 @@ Allows to plug new API endpoints and websocket topics easily for games.
 
 ### Requirements
 
-This application requires PHP 5.5+, ZMQ and php-zmq extension.
+This application requires Docker and docker-compose.
+
+Or, without docker, it requires PHP 5.5+, ZMQ and php-zmq extension.
 
 [Install ZMQ and php-zmq on Linux](https://eole-io.github.io/sandstone/install-zmq-php-linux.html)
 
 
-### Steps
+### Docker installation
+
+``` bash
+# Clone project
+git clone git@github.com:eole-io/eole-api.git --branch=dev
+cd eole-api
+
+# Install Eole
+make
+
+# Sometimes needed
+chmod -R 777 var/cache var/logs
+chown -R GROUP:USER .
+```
+
+Youn should now access to:
+
+ - http://0.0.0.0:8480/api-docker.php/api/games Eole Api
+ - http://0.0.0.0:8480/api-docker.php/_profiler/ Symfony profiler
+ - http://0.0.0.0:8481/ PHPMyAdmin (`root` / `root`)
+ - http://0.0.0.0:8482/ Websocket server
+
+Access to the Symfony console:
+
+``` bash
+make bash
+bin/console --env=docker
+```
+
+:heavy_check_mark: The installation is done.
+
+
+### Raw installation
 
 ``` bash
 # Clone project

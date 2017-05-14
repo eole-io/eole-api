@@ -22,7 +22,7 @@ push:
         port:       5555
 
 cors:
-    access_control_allow_origin: ~
+    access_control_allow_origin: '*'
 
 oauth:
     scope:

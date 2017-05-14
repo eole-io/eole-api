@@ -2,6 +2,18 @@
 
 By default, tests are run in an SQLite database, located in `var/eole-test.sqlite`.
 
+
+### Docker installation
+
+Run unit tests and codestyle checker:
+
+``` bash
+make test
+```
+
+
+### Raw installation
+
 ``` bash
 # Create your test environment config file:
 cp config/environment_test.yml.dist config/environment_test.yml
