@@ -3,10 +3,10 @@
 <phpunit bootstrap="vendor/autoload.php">
     <testsuites>
         <testsuite name="Eole Core test suite">
-            <directory suffix="Test.php">./src/Eole/Core/Test/</directory>
+            <directory suffix="Test.php">./tests/Eole/Core/</directory>
         </testsuite>
         <testsuite name="Eole Silex test suite">
-            <directory suffix="Test.php">./src/Eole/Silex/Tests/</directory>
+            <directory suffix="Test.php">./tests/Eole/RestApi/</directory>
         </testsuite>
     </testsuites>
 </phpunit>

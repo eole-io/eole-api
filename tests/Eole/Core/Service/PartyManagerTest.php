@@ -1,6 +1,6 @@
 <?php
 
-namespace Eole\Core\Test\Service;
+namespace Tests\Eole\Core\Service;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Eole\Core\Model\Game;

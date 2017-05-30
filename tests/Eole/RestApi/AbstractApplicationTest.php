@@ -1,14 +1,14 @@
 <?php
 
-namespace Eole\Silex\Tests;
+namespace Tests\Eole\RestApi;
 
 use Silex\WebTestCase;
-use Eole\Silex\Tests\stubs\OAuth\ClientStorageMock;
-use Eole\Silex\Tests\stubs\OAuth\ResourceServerMock;
 use Eole\Core\Model\Player;
 use Eole\Core\Model\Game;
 use Eole\Core\Service\PlayerManager;
 use Eole\RestApi\Application;
+use Tests\Eole\RestApi\stubs\OAuth\ClientStorageMock;
+use Tests\Eole\RestApi\stubs\OAuth\ResourceServerMock;
 
 abstract class AbstractApplicationTest extends WebTestCase
 {
@@ -38,7 +38,7 @@ abstract class AbstractApplicationTest extends WebTestCase
     public function createApplication()
     {
         $app = new Application(array(
-            'project.root' => __DIR__.'/../../../..',
+            'project.root' => __DIR__.'/../../..',
             'env' => 'test',
             'debug' => true,
         ));

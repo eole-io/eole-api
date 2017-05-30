@@ -1,6 +1,6 @@
 <?php
 
-namespace Eole\Silex\Tests;
+namespace Tests\Eole\RestApi;
 
 use Symfony\Component\HttpFoundation\Response;
 

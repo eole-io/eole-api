@@ -53,7 +53,12 @@
     },
     "autoload": {
         "psr-4": {
-            "": "src"
+            "Eole\\": "src/Eole"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\Eole\\": "tests/Eole"
         }
     }
 }

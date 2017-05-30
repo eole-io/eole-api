@@ -1,6 +1,6 @@
 <?php
 
-namespace Eole\Silex\Tests\stubs\OAuth;
+namespace Tests\Eole\RestApi\stubs\OAuth;
 
 use League\OAuth2\Server\Entity\SessionEntity;
 use League\OAuth2\Server\Entity\ClientEntity;

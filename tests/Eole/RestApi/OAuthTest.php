@@ -1,8 +1,8 @@
 <?php
 
-namespace Eole\Sandstone\OAuth2\Test;
+namespace Tests\Eole\RestApi;
 
-use Eole\Silex\Tests\AbstractApplicationTest;
+use Tests\Eole\RestApi\AbstractApplicationTest;
 
 class OAuthTest extends AbstractApplicationTest
 {
