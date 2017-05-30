@@ -68,13 +68,9 @@ class EventListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            PartyEvent::CREATE_BEFORE => array(
-                array('onPartyCreate'),
-            ),
-            SlotEvent::JOIN_AFTER => array(
-                array('onPartyJoin'),
-            ),
-        );
+        return [
+            PartyEvent::CREATE_BEFORE => 'onPartyCreate',
+            SlotEvent::JOIN_AFTER => 'onPartyJoin',
+        ];
     }
 }
