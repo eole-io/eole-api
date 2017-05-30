@@ -17,6 +17,7 @@ class GameControllerProvider implements ControllerProviderInterface
         $gameController = 'eole.controller.game';
 
         $controllers->get('/games', $gameController.':getGames');
+        $controllers->get('/games/{id}', $gameController.':getGameById')->assert('id', '\d+');
         $controllers->get('/games/{name}', $gameController.':getGameByName');
 
         return $controllers;
