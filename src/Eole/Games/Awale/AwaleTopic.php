@@ -4,6 +4,7 @@ namespace Eole\Games\Awale;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Eole\Core\Event\SlotEvent;
+use Eole\Core\Event\PartyEvent;
 use Eole\Sandstone\Websocket\Topic as BaseTopic;
 use Eole\Games\Awale\Event\AwaleEvent;
 
@@ -53,6 +54,20 @@ class AwaleTopic extends BaseTopic implements EventSubscriberInterface
     }
 
     /**
+     * @param PartyEvent $event
+     */
+    public function onPartyStart(PartyEvent $event)
+    {
+        if ($event->getParty()->getId() !== $this->partyId) {
+            return;
+        }
+
+        $this->broadcast(array(
+            'type' => 'party_start',
+        ));
+    }
+
+    /**
      * @param AwaleEvent $event
      */
     public function onPartyEnd(AwaleEvent $event)
@@ -71,6 +86,9 @@ class AwaleTopic extends BaseTopic implements EventSubscriberInterface
         return array(
             SlotEvent::JOIN_AFTER => array(
                 array('onPlayerJoin'),
+            ),
+            PartyEvent::STARTED => array(
+                array('onPartyStart'),
             ),
             AwaleEvent::PLAY => array(
                 array('onPlay'),

@@ -55,7 +55,9 @@ class EventListener implements EventSubscriberInterface
             return;
         }
 
-        $this->partyManager->startParty($event->getParty());
+        if ($this->partyManager->isFull($event->getParty())) {
+            $this->partyManager->startParty($event->getParty());
+        }
 
         $this->om->persist($event->getParty());
         $this->om->flush();
