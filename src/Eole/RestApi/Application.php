@@ -17,7 +17,7 @@ class Application extends BaseApplication
         $this->registerEventListeners();
         $this->mountOAuth2Controller();
         $this->loadRestApis();
-        $this->handleProdErrors();
+        $this->handleErrors();
     }
 
     /**
@@ -83,28 +83,30 @@ class Application extends BaseApplication
     }
 
     /**
-     * Display serialized errors in prod environment.
+     * Handle errors to display json exception.
      */
-    private function handleProdErrors()
+    private function handleErrors()
     {
         $this->error(function (\Exception $e) {
-            if (true === $this['debug']) {
-                return;
-            }
-
+            // Returns Api response on HttpException.
             if ($e instanceof \Symfony\Component\HttpKernel\Exception\HttpException) {
-                $errorData = array(
+                $errorData = [
                     'status_code' => $e->getStatusCode(),
                     'message' => $e->getMessage(),
-                );
-            } else {
-                $errorData = array(
-                    'status_code' => 500,
-                    'message' => 'Internal Server Error.',
-                );
+                ];
+
+                return new \Alcalyn\SerializableApiResponse\ApiResponse($errorData, $errorData['status_code']);
             }
 
-            return new \Alcalyn\SerializableApiResponse\ApiResponse($errorData, $errorData['status_code']);
+            // Hide internal exception if no debug.
+            if (!$this['debug']) {
+                $errorData = [
+                    'status_code' => 500,
+                    'message' => 'Internal Server Error.',
+                ];
+
+                return new \Alcalyn\SerializableApiResponse\ApiResponse($errorData, $errorData['status_code']);
+            }
         });
     }
 }
