@@ -23,4 +23,12 @@ class MyGame extends GameProvider
 
         return $game;
     }
+
+    /**
+     * {@InheritDoc}
+     */
+    public function createControllerProvider()
+    {
+        return new ControllerProvider();
+    }
 }
