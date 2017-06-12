@@ -22,6 +22,9 @@ docker_update:
 bash:
 	docker exec -ti eole-php bash
 
+logs:
+	docker-compose logs -ft
+
 test:
 	docker-compose up --no-deps -d php-fpm database
 
