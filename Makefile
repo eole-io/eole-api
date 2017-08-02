@@ -1,6 +1,6 @@
-all: docker_update
+all: install
 
-docker_update:
+update:
 	docker-compose up --no-deps -d php-fpm database
 
 	docker exec -ti eole-php sh -c "composer update"
@@ -11,11 +11,30 @@ docker_update:
 
 	# Update database
 	docker exec -ti eole-database sh -c "mysql -u root -proot -e 'create database if not exists eole;'"
-	docker exec -ti eole-php sh -c "bin/console --env=docker orm:schema-tool:update --dump-sql"
-	docker exec -ti eole-php sh -c "bin/console --env=docker orm:schema-tool:update --force"
+	docker exec -ti eole-php sh -c "php bin/console --env=docker orm:schema-tool:update --dump-sql"
+	docker exec -ti eole-php sh -c "php bin/console --env=docker orm:schema-tool:update --force"
 
 	# Update games
-	docker exec -ti eole-php sh -c "bin/console --env=docker eole:games:install"
+	docker exec -ti eole-php sh -c "php bin/console --env=docker eole:games:install"
+
+	docker-compose up -d
+
+install:
+	docker-compose up --no-deps -d php-fpm database
+
+	docker exec -ti eole-php sh -c "composer install"
+
+	# Initialize configuration files if not exits
+	docker exec -ti eole-php sh -c "cp -n config/environment.yml.dist config/environment.yml"
+	docker exec -ti eole-php sh -c "cp -n docker/php-fpm/config/* config/"
+
+	# Update database
+	docker exec -ti eole-database sh -c "mysql -u root -proot -e 'create database if not exists eole;'"
+	docker exec -ti eole-php sh -c "php bin/console --env=docker orm:schema-tool:update --dump-sql"
+	docker exec -ti eole-php sh -c "php bin/console --env=docker orm:schema-tool:update --force"
+
+	# Update games
+	docker exec -ti eole-php sh -c "php bin/console --env=docker eole:games:install"
 
 	docker-compose up -d
 
@@ -30,7 +49,7 @@ test:
 
 	# Unit testing
 	docker exec -ti eole-php sh -c "cp -n config/environment_test.yml.dist config/environment_test.yml"
-	docker exec -ti eole-php sh -c "bin/console --env=test orm:schema-tool:update --force"
+	docker exec -ti eole-php sh -c "php bin/console --env=test orm:schema-tool:update --force"
 	docker exec -ti eole-php sh -c "vendor/bin/phpunit -c ."
 
 	# Codestyle checking
@@ -38,3 +57,6 @@ test:
 
 restart_websocket_server:
 	docker restart eole-ws
+
+optimize_autoloader:
+	docker exec -ti eole-php sh -c "composer install --optimize-autoloader"

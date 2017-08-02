@@ -52,6 +52,9 @@ bin/console --env=docker
 
 :heavy_check_mark: The installation is done.
 
+> **Note**:
+> To install Eole Api on RaspberryPi, do `cp docker/docker-compose.arm.yml docker-compose.override.yml` before `make`
+
 
 ### Raw installation
 
